@@ -1,0 +1,9 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: java-boilerplate
+Upstream-Contact: NOI Techpark <digital@noi.bz.it>
+Source: https://github.com/noi-techpark/java-boilerplate
+
+Files: .github/* infrastructure .gitignore .pre-commit-config.yaml LICENSE.md .env.example mvnw mvnw.cmd .mvn/*
+       *.properties src/main/resources/db/migration/*
+Copyright: (c) NOI Techpark <digital@noi.bz.it>
+License: CC0-1.0

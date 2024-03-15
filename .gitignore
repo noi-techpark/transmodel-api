@@ -1,0 +1,18 @@
+# General
+.DS_Store
+
+# Editors
+.idea
+*.iws
+*.iml
+*.ipr
+.vscode
+
+# Project
+/.env
+/src/main/resources/application-local.properties
+!.mvn/wrapper/maven-wrapper.jar
+/target
+.settings
+.project
+.classpath
