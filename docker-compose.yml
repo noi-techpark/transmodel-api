@@ -2,19 +2,20 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-version: "3.4"
-
 services:
   app:
-    build:
-      context: .
-      dockerfile: infrastructure/docker/Dockerfile
-      target: dev
+    image: golang:1.21.5-alpine
+    environment:
+      - LOG_LEVEL=DEBUG
+    entrypoint: >
+      go run .
     volumes:
-      - ./:/code
+      - ./src:/code
+      - pkg:/go/pkg/mod
     working_dir: /code
     tty: true
-    environment:
-      SERVER_PORT: ${SERVER_PORT}
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - 8080:8080
+        
+volumes:
+  pkg:
