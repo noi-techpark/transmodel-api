@@ -13,23 +13,8 @@ services:
     volumes:
       - ./:/code
     working_dir: /code
-    command: ["./mvnw spring-boot:run"]
-    depends_on:
-      - postgres
     tty: true
     environment:
       SERVER_PORT: ${SERVER_PORT}
-      POSTGRES_URL: ${POSTGRES_URL}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
-
-  postgres:
-    image: postgres:11
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"

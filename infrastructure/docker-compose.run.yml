@@ -6,9 +6,6 @@ services:
     restart: unless-stopped
     environment:
       SERVER_PORT: ${SERVER_PORT}
-      POSTGRES_URL: ${POSTGRES_URL}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       _JAVA_OPTIONS: ${JAVA_OPTIONS}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/actuator/health"]

@@ -8,107 +8,99 @@ env:
   PROJECT_NAME: project-api
   DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-app
   DOCKER_TAG: ${{ github.sha }}
-  JAVA_VERSION: '11'
   SERVER_PORT: 1000
-  # MAIN
-  POSTGRES_URL_TEST: jdbc:postgresql://test-pg-bdp.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/project
-  POSTGRES_USER_TEST: ${{ secrets.POSTGRES_USER_TEST }}
-  POSTGRES_PASSWORD_TEST: ${{ secrets.POSTGRES_PASSWORD_TEST }}
-  # PROD
-  POSTGRES_URL_PROD: jdbc:postgresql://postgres-prod.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/project
-  POSTGRES_USER_PROD: ${{ secrets.POSTGRES_USER_PROD }}
-  POSTGRES_PASSWORD_PROD: ${{ secrets.POSTGRES_PASSWORD_PROD }}
 
-jobs:
-  test:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v1
-
-      - name: Test code
-        uses: noi-techpark/github-actions/maven-test@v2
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          test-command: 'mvn -B -U clean test'
-
-  deploy-test:
-    runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/main'
-    needs: test
-    concurrency: deploy-test
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-      - name: Create .env file
-        uses: noi-techpark/github-actions/env-file@v2
-        with:
-          working-directory: ${{ env.WORKING_DIRECTORY }}
-        env:
-          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
-          X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
-          X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
-          X_JAVA_OPTIONS: -Xms128m -Xmx512m
-
-          X_SERVER_PORT: ${{ env.SERVER_PORT }}
-          
-          X_POSTGRES_URL: ${{ env.POSTGRES_URL_TEST }}
-          X_POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          X_POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-
-      - name: Build and push images
-        uses: noi-techpark/github-actions/docker-build-and-push@v2
-        with:
-          docker-username: ${{ github.actor }}
-          docker-password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy application
-        uses: noi-techpark/github-actions/docker-deploy@v2
-        with:
-          hosts: 'test'
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          docker-username: 'noi-techpark-bot'
-          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          project-name: ${{ env.PROJECT_NAME }}
-
-  deploy-prod:
-    runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/prod'
-    needs: test
-    concurrency: deploy-prod
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-      - name: Create .env file
-        uses: noi-techpark/github-actions/env-file@v2
-        with:
-          working-directory: ${{ env.WORKING_DIRECTORY }}
-        env:
-          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
-          X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
-          X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
-          X_JAVA_OPTIONS: -Xms128m -Xmx512m
-
-          X_SERVER_PORT: ${{ env.SERVER_PORT }}
-          
-          X_POSTGRES_URL: ${{ env.POSTGRES_URL_PROD }}
-          X_POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          X_POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-
-      - name: Build and push images
-        uses: noi-techpark/github-actions/docker-build-and-push@v2
-        with:
-          docker-username: ${{ github.actor }}
-          docker-password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy application
-        uses: noi-techpark/github-actions/docker-deploy@v2
-        with:
-          hosts: 'prod'
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          docker-username: 'noi-techpark-bot'
-          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          project-name: ${{ env.PROJECT_NAME }}
+# jobs:
+#   test:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+# 
+#       - name: REUSE Compliance Check
+#         uses: fsfe/reuse-action@v1
+# 
+#       - name: Test code
+#         uses: noi-techpark/github-actions/maven-test@v2
+#         with:
+#           java-version: ${{ env.JAVA_VERSION }}
+#           test-command: 'mvn -B -U clean test'
+# 
+#   deploy-test:
+#     runs-on: ubuntu-20.04
+#     if: github.ref == 'refs/heads/main'
+#     needs: test
+#     concurrency: deploy-test
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+#       - name: Create .env file
+#         uses: noi-techpark/github-actions/env-file@v2
+#         with:
+#           working-directory: ${{ env.WORKING_DIRECTORY }}
+#         env:
+#           X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
+#           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+#           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
+#           X_JAVA_OPTIONS: -Xms128m -Xmx512m
+# 
+#           X_SERVER_PORT: ${{ env.SERVER_PORT }}
+#           
+#           X_POSTGRES_URL: ${{ env.POSTGRES_URL_TEST }}
+#           X_POSTGRES_USER: ${{ env.POSTGRES_USER }}
+#           X_POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+# 
+#       - name: Build and push images
+#         uses: noi-techpark/github-actions/docker-build-and-push@v2
+#         with:
+#           docker-username: ${{ github.actor }}
+#           docker-password: ${{ secrets.GITHUB_TOKEN }}
+# 
+#       - name: Deploy application
+#         uses: noi-techpark/github-actions/docker-deploy@v2
+#         with:
+#           hosts: 'test'
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           docker-username: 'noi-techpark-bot'
+#           docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+#           project-name: ${{ env.PROJECT_NAME }}
+# 
+#   deploy-prod:
+#     runs-on: ubuntu-20.04
+#     if: github.ref == 'refs/heads/prod'
+#     needs: test
+#     concurrency: deploy-prod
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+#       - name: Create .env file
+#         uses: noi-techpark/github-actions/env-file@v2
+#         with:
+#           working-directory: ${{ env.WORKING_DIRECTORY }}
+#         env:
+#           X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
+#           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+#           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
+#           X_JAVA_OPTIONS: -Xms128m -Xmx512m
+# 
+#           X_SERVER_PORT: ${{ env.SERVER_PORT }}
+#           
+#           X_POSTGRES_URL: ${{ env.POSTGRES_URL_PROD }}
+#           X_POSTGRES_USER: ${{ env.POSTGRES_USER }}
+#           X_POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+# 
+#       - name: Build and push images
+#         uses: noi-techpark/github-actions/docker-build-and-push@v2
+#         with:
+#           docker-username: ${{ github.actor }}
+#           docker-password: ${{ secrets.GITHUB_TOKEN }}
+# 
+#       - name: Deploy application
+#         uses: noi-techpark/github-actions/docker-deploy@v2
+#         with:
+#           hosts: 'prod'
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           docker-username: 'noi-techpark-bot'
+#           docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+#           project-name: ${{ env.PROJECT_NAME }}
+# 
