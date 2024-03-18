@@ -10,22 +10,25 @@ env:
   DOCKER_TAG: ${{ github.sha }}
   SERVER_PORT: 1000
 
-# jobs:
-#   test:
-#     runs-on: ubuntu-20.04
-#     steps:
-#       - name: Checkout source code
-#         uses: actions/checkout@v2
-# 
-#       - name: REUSE Compliance Check
-#         uses: fsfe/reuse-action@v1
-# 
-#       - name: Test code
-#         uses: noi-techpark/github-actions/maven-test@v2
-#         with:
-#           java-version: ${{ env.JAVA_VERSION }}
-#           test-command: 'mvn -B -U clean test'
-# 
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v1
+
+      - name: Setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: src/go.mod
+
+      - name: Run automated tests
+        run: go test ./...
+        working-directory: src
+
 #   deploy-test:
 #     runs-on: ubuntu-20.04
 #     if: github.ref == 'refs/heads/main'
