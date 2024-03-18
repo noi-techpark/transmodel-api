@@ -6,10 +6,10 @@ services:
     restart: unless-stopped
     env_file: .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/health"]
+      test: ["CMD", "curl", "-f", "http://app:8080/health"]
       interval: 20s
-      timeout: 10s
+      timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 10s
     ports:
       - ${SERVER_PORT}:8080
