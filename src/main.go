@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"opendatahub/sta-nap-export/netex"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
@@ -14,11 +15,16 @@ import (
 
 func main() {
 	InitLogger()
-	r := gin.Default()
+	r := gin.New()
 
-	// Enable slog logging for gin framework
-	// https://github.com/samber/slog-gin
-	r.Use(sloggin.New(slog.Default()))
+	if os.Getenv("GIN_LOG") == "PRETTY" {
+		r.Use(gin.Logger())
+	} else {
+		// Enable slog logging for gin framework
+		// https://github.com/samber/slog-gin
+		r.Use(sloggin.New(slog.Default()))
+	}
+
 	r.Use(gin.Recovery())
 
 	r.GET("/netex/parking", parking)
