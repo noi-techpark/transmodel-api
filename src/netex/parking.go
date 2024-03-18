@@ -4,13 +4,20 @@
 package netex
 
 import (
+	"encoding/xml"
 	"fmt"
 	"opendatahub/sta-nap-export/ninja"
 )
 
+type NetexParkings struct {
+	XMLName  xml.Name `xml:"parkings"`
+	Parkings []NetexParking
+}
+
 type NetexParking struct {
-	Id        string `xml:"id"`
-	Version   string `xml:"version"`
+	XMLName   xml.Name `xml:"Parking"`
+	Id        string   `xml:"id,attr"`
+	Version   string   `xml:"version,attr"`
 	Name      string
 	ShortName string
 	Centroid  struct {
@@ -36,15 +43,15 @@ type NetexParking struct {
 }
 
 type odhParking struct {
-	Scode       string `json:"scode"`
-	Sname       string `json:"sname"`
-	Sorigin     string `json:"sorigin"`
-	Scoordinate struct {
+	Scode   string `json:"scode"`
+	Sname   string `json:"sname"`
+	Sorigin string `json:"sorigin"`
+	Scoord  struct {
 		X    float32 `json:"x"`
 		Y    float32 `json:"y"`
 		Srid uint32  `json:"srid"`
 	} `json:"scoordinate"`
-	Smetadata struct {
+	Smeta struct {
 		StandardName        string `json:"standard_name"`
 		ParkingType         string `json:"parkingtype"`
 		ParkingVehicleTypes string `json:"parkingvehicletypes"`
@@ -72,23 +79,23 @@ func mapToNetex(os []odhParking) []NetexParking {
 		var p NetexParking
 
 		p.Id = fmt.Sprintf("IT:OpenDataHub:%s:%s", o.Sorigin, o.Scode)
-		p.Name = o.Smetadata.StandardName
+		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?
-		p.Centroid.Location.Longitude = o.Scoordinate.X
-		p.Centroid.Location.Latitude = o.Scoordinate.Y
+		p.Centroid.Location.Longitude = o.Scoord.X
+		p.Centroid.Location.Latitude = o.Scoord.Y
 		p.GmlPolygon = nil
 		p.OperatorRef = o.Sorigin
 		p.Entrances = nil
-		p.ParkingType = o.Smetadata.ParkingType
-		p.ParkingVehicleTypes = o.Smetadata.ParkingVehicleTypes
-		p.ParkingLayout = o.Smetadata.ParkingLayout
+		p.ParkingType = o.Smeta.ParkingType
+		p.ParkingVehicleTypes = o.Smeta.ParkingVehicleTypes
+		p.ParkingLayout = o.Smeta.ParkingLayout
 		p.PrincipalCapacity = ""
-		p.TotalCapacity = o.Smetadata.Capacity
-		p.ProhibitedForHazardousMaterials = o.Smetadata.ParkingProhibitions
-		p.RechargingAvailable = o.Smetadata.ParkingProhibitions
-		p.Secure = o.Smetadata.ParkingSurveillance
-		p.ParkingReservation = o.Smetadata.ParkingReservation
+		p.TotalCapacity = o.Smeta.Capacity
+		p.ProhibitedForHazardousMaterials = o.Smeta.ParkingProhibitions
+		p.RechargingAvailable = o.Smeta.ParkingProhibitions
+		p.Secure = o.Smeta.ParkingSurveillance
+		p.ParkingReservation = o.Smeta.ParkingReservation
 		p.ParkingProperties = nil
 
 		ps = append(ps, p)
@@ -96,22 +103,25 @@ func mapToNetex(os []odhParking) []NetexParking {
 	return ps
 }
 
-func validateXml(ps []NetexParking) error {
+func validateXml(p NetexParkings) error {
 	// TODO: everything
 	return nil
 }
 
-func GetNetexParking() ([]NetexParking, error) {
+func GetNetexParking() (NetexParkings, error) {
+	var ret NetexParkings
 	odh, err := getOdhParking()
 	if err != nil {
-		return nil, err
+		return ret, err
 	}
-	netex := mapToNetex(odh)
 
-	err = validateXml(netex)
+	ps := mapToNetex(odh)
+	ret.Parkings = ps
+
+	err = validateXml(ret)
 	if err != nil {
-		return nil, err
+		return ret, err
 	}
 
-	return netex, nil
+	return ret, nil
 }

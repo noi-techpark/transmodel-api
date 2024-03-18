@@ -1,19 +1,10 @@
-FROM openjdk:11 as base
+FROM golang:1.21.5-bookworm
 
-RUN mkdir -p /code
+# install if docker host doesn't has libc6 installed
+RUN apt-get update && apt-get install -y libc6
 
-# Dev
-FROM base as dev
+WORKDIR app
 
-COPY infrastructure/docker/entrypoint.sh /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
+COPY src/main main
 
-# Build
-FROM base as build
-
-WORKDIR /code
-
-COPY ./ /code
-RUN ./mvnw -B -DskipTests install
-
-CMD [ "./mvnw", "-B", "spring-boot:run" ]
+CMD [ "./main"]

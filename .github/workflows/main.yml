@@ -5,10 +5,10 @@ on:
   pull_request:
 
 env:
-  PROJECT_NAME: project-api
+  PROJECT_NAME: sta-nap-export
   DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-app
   DOCKER_TAG: ${{ github.sha }}
-  SERVER_PORT: 1000
+  SERVER_PORT: 1055
 
 jobs:
   test:
@@ -25,49 +25,76 @@ jobs:
         with:
           go-version-file: src/go.mod
 
+      - name: Setup Golang caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
+
       - name: Run automated tests
         run: go test ./...
         working-directory: src
 
-#   deploy-test:
-#     runs-on: ubuntu-20.04
-#     if: github.ref == 'refs/heads/main'
-#     needs: test
-#     concurrency: deploy-test
-#     steps:
-#       - name: Checkout source code
-#         uses: actions/checkout@v2
-#       - name: Create .env file
-#         uses: noi-techpark/github-actions/env-file@v2
-#         with:
-#           working-directory: ${{ env.WORKING_DIRECTORY }}
-#         env:
-#           X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
-#           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
-#           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
-#           X_JAVA_OPTIONS: -Xms128m -Xmx512m
-# 
-#           X_SERVER_PORT: ${{ env.SERVER_PORT }}
-#           
-#           X_POSTGRES_URL: ${{ env.POSTGRES_URL_TEST }}
-#           X_POSTGRES_USER: ${{ env.POSTGRES_USER }}
-#           X_POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-# 
-#       - name: Build and push images
-#         uses: noi-techpark/github-actions/docker-build-and-push@v2
-#         with:
-#           docker-username: ${{ github.actor }}
-#           docker-password: ${{ secrets.GITHUB_TOKEN }}
-# 
-#       - name: Deploy application
-#         uses: noi-techpark/github-actions/docker-deploy@v2
-#         with:
-#           hosts: 'test'
-#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           docker-username: 'noi-techpark-bot'
-#           docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-#           project-name: ${{ env.PROJECT_NAME }}
-# 
+  deploy-test:
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    concurrency: deploy-test
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: src/go.mod
+
+      - name: Setup Golang caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
+
+      - name: Create .env file
+        uses: noi-techpark/github-actions/env-file@v2
+        env:
+          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
+          X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+          X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
+            
+          X_SERVER_PORT: ${{ env.SERVER_PORT}}
+
+          X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
+          X_NINJA_REFERER: sta-nap-export
+          X_LOG_LEVEL: INFO
+
+      - name: Build go application
+        run: go build -o main main.go
+        working-directory: src
+
+      - name: Build and push images
+        uses: noi-techpark/github-actions/docker-build-and-push@v2
+        with:
+          docker-username: ${{ github.actor }}
+          docker-password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy application
+        uses: noi-techpark/github-actions/docker-deploy@v2
+        with:
+          hosts: 'test'
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          docker-username: 'noi-techpark-bot'
+          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          project-name: ${{ env.PROJECT_NAME }}
+
 #   deploy-prod:
 #     runs-on: ubuntu-20.04
 #     if: github.ref == 'refs/heads/prod'
