@@ -68,6 +68,7 @@ func getOdhParking() ([]odhParking, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation"}
+	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]odhParking]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
