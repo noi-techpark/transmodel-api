@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y libc6
 RUN apt-get clean
 EXPOSE 8080
 
-FROM base as default
+FROM base as build
 WORKDIR app
 COPY src/main main
 CMD [ "./main"]
