@@ -77,7 +77,7 @@ jobs:
           X_LOG_LEVEL: INFO
 
       - name: Build go application
-        run: go build -o main main.go
+        run: go build -o main .
         working-directory: src
 
       - name: Build and push images
