@@ -4,11 +4,12 @@
 
 services:
   app:
-    image: golang:1.21.5-alpine
+    build:
+      dockerfile: infrastructure/docker/Dockerfile
+      context: . 
+      target: debug
     env_file:
       - .env
-    entrypoint: >
-      go run .
     volumes:
       - ./src:/code
       - pkg:/go/pkg/mod
