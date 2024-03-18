@@ -1,0 +1,3 @@
+[submodule "netex-schema"]
+	path = netex-schema
+	url = https://github.com/NeTEx-CEN/NeTEx.git

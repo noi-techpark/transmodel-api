@@ -6,6 +6,7 @@ package main
 import (
 	"log/slog"
 	"net/http"
+	"opendatahub/sta-nap-export/netex"
 
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
@@ -20,9 +21,9 @@ func main() {
 	r.Use(sloggin.New(slog.Default()))
 	r.Use(gin.Recovery())
 
-	r.GET("/parking", parking)
-	r.GET("/sharing/static", sharing)
-	r.GET("/sharing/rt/:id", realtime)
+	r.GET("/netex/parking", parking)
+	r.GET("/netex/sharing", sharing)
+	r.GET("/siri/fm/:id", realtime)
 	r.GET("/health", health)
 	r.Run()
 }
@@ -30,7 +31,11 @@ func health(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 func parking(c *gin.Context) {
-	c.XML(http.StatusOK, gin.H{"msg": "Hello parking world"})
+	res, err := netex.GetNetexParking()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	c.XML(http.StatusOK, res)
 }
 func sharing(c *gin.Context) {
 	c.XML(http.StatusOK, gin.H{"msg": "Hello sharing world"})
