@@ -74,12 +74,16 @@ func getOdhParking() ([]odhParking, error) {
 	return res.Data, err
 }
 
+func parkingId(scode string) string {
+	return fmt.Sprintf("it:ITH10:Parking:%s", scode)
+}
+
 func mapToNetex(os []odhParking) []NetexParking {
 	var ps []NetexParking
 	for _, o := range os {
 		var p NetexParking
 
-		p.Id = fmt.Sprintf("IT:OpenDataHub:%s:%s", o.Sorigin, o.Scode)
+		p.Id = parkingId(o.Scode)
 		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?
