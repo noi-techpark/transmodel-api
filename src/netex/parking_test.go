@@ -5,26 +5,13 @@ package netex
 
 import (
 	"encoding/xml"
-	"opendatahub/sta-nap-export/ninja"
 	"testing"
 
 	"gotest.tools/v3/assert"
 )
 
 func TestGetOdhData(t *testing.T) {
-	ninja.BaseUrl = "https://mobility.api.opendatahub.testingmachine.eu"
-	ninja.Referer = "sta-nap-export-unit-test"
-
-	res, err := getOdhParking()
-
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
-
-	t.Log(res)
-
-	// Looks like we managed to parse the response structure
+	testOdhGet(t, getOdhParking)
 }
 
 func bzCentro() OdhParking {

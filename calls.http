@@ -1,9 +1,19 @@
 @host=http://localhost:{{$dotenv SERVER_PORT}}
-###
+### Healthcheck 
 GET {{host}}/health
-###
+### static NeTEx parking data
 GET {{host}}/netex/parking
-###
+### static NeTEx mobility sharing data
 GET {{host}}/netex/sharing
-###
+### SIRI-FM real time parking availability. Station ID as a parameter
 GET {{host}}/sharing/rt/123
+
+
+###
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_BOLZANO
+###
+GET https://mobility.api.opendatahub.com/v2/flat/Bicycle?where=sorigin.eq.BIKE_SHARING_MERANO
+###
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_PAPIN
+###
+GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation?where=sorigin.eq.HAL-API
