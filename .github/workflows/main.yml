@@ -75,7 +75,7 @@ jobs:
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
           X_NINJA_REFERER: sta-nap-export
           X_GIN_MODE: release
-          X_LOG_LEVEL: INFO
+          X_LOG_LEVEL: WARNING
 
       - name: Build go application
         run: go build -o main .
