@@ -10,12 +10,12 @@ import (
 	"regexp"
 )
 
-type NetexParkings struct {
+type Parkings struct {
 	XMLName  xml.Name `xml:"parkings"`
-	Parkings []NetexParking
+	Parkings []Parking
 }
 
-type NetexParking struct {
+type Parking struct {
 	XMLName   xml.Name `xml:"Parking"`
 	Id        string   `xml:"id,attr"`
 	Version   string   `xml:"version,attr"`
@@ -43,7 +43,7 @@ type NetexParking struct {
 	ParkingProperties               any
 }
 
-type odhParking struct {
+type OdhParking struct {
 	Scode   string `json:"scode"`
 	Sname   string `json:"sname"`
 	Sorigin string `json:"sorigin"`
@@ -65,12 +65,12 @@ type odhParking struct {
 	} `json:"smetadata"`
 }
 
-func getOdhParking() ([]odhParking, error) {
+func getOdhParking() ([]OdhParking, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation"}
 	// TODO: limit bounding box / polygon
-	var res ninja.NinjaResponse[[]odhParking]
+	var res ninja.NinjaResponse[[]OdhParking]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
@@ -83,10 +83,10 @@ func ParkingId(scode string) string {
 	return fmt.Sprintf("IT:ITH10:Parking:%s", sanitized)
 }
 
-func mapToNetex(os []odhParking) []NetexParking {
-	var ps []NetexParking
+func mapToNetex(os []OdhParking) []Parking {
+	var ps []Parking
 	for _, o := range os {
-		var p NetexParking
+		var p Parking
 
 		p.Id = ParkingId(o.Scode)
 		p.Name = o.Smeta.StandardName
@@ -113,13 +113,13 @@ func mapToNetex(os []odhParking) []NetexParking {
 	return ps
 }
 
-func validateXml(p NetexParkings) error {
+func validateXml(p Parkings) error {
 	// TODO: everything
 	return nil
 }
 
-func GetNetexParking() (NetexParkings, error) {
-	var ret NetexParkings
+func GetNetexParking() (Parkings, error) {
+	var ret Parkings
 	odh, err := getOdhParking()
 	if err != nil {
 		return ret, err

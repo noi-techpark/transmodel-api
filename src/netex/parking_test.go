@@ -27,8 +27,8 @@ func TestGetOdhData(t *testing.T) {
 	// Looks like we managed to parse the response structure
 }
 
-func bzCentro() odhParking {
-	var o odhParking
+func bzCentro() OdhParking {
+	var o OdhParking
 	o.Scode = "bolzano-centro"
 	o.Sname = "Bolzano Centro"
 	o.Sorigin = "skidata"
@@ -49,8 +49,8 @@ func bzCentro() odhParking {
 func TestMapNetex(t *testing.T) {
 	o := bzCentro()
 
-	p := mapToNetex([]odhParking{o})
-	ps := NetexParkings{Parkings: p}
+	p := mapToNetex([]OdhParking{o})
+	ps := Parkings{Parkings: p}
 
 	x, err := xml.MarshalIndent(ps, "", " ")
 	if err != nil {
