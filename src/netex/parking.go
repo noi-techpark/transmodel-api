@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"opendatahub/sta-nap-export/ninja"
+	"regexp"
 )
 
 type NetexParkings struct {
@@ -74,8 +75,12 @@ func getOdhParking() ([]odhParking, error) {
 	return res.Data, err
 }
 
-func parkingId(scode string) string {
-	return fmt.Sprintf("it:ITH10:Parking:%s", scode)
+// As per NeTEx spec, IDs must only contain non-accented charaters, numbers, hyphens and underscores
+var idInvalid = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
+
+func ParkingId(scode string) string {
+	sanitized := idInvalid.ReplaceAllString(scode, "_")
+	return fmt.Sprintf("IT:ITH10:Parking:%s", sanitized)
 }
 
 func mapToNetex(os []odhParking) []NetexParking {
@@ -83,7 +88,7 @@ func mapToNetex(os []odhParking) []NetexParking {
 	for _, o := range os {
 		var p NetexParking
 
-		p.Id = parkingId(o.Scode)
+		p.Id = ParkingId(o.Scode)
 		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?

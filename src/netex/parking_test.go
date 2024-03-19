@@ -7,6 +7,8 @@ import (
 	"encoding/xml"
 	"opendatahub/sta-nap-export/ninja"
 	"testing"
+
+	"gotest.tools/v3/assert"
 )
 
 func TestGetOdhData(t *testing.T) {
@@ -57,4 +59,14 @@ func TestMapNetex(t *testing.T) {
 	}
 
 	t.Log(string(x))
+}
+
+func TestParkingId(t *testing.T) {
+	s1 := "merano0123"
+	s2 := "me:test123"
+	s3 := ":',|?=+"
+
+	assert.Equal(t, ParkingId(s1), "IT:ITH10:Parking:merano0123")
+	assert.Equal(t, ParkingId(s2), "IT:ITH10:Parking:me_test123")
+	assert.Equal(t, ParkingId(s3), "IT:ITH10:Parking:_______")
 }
