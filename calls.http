@@ -13,6 +13,7 @@ GET {{host}}/sharing/rt/123
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_BOLZANO
 ###
 GET https://mobility.api.opendatahub.com/v2/flat/Bicycle?where=sorigin.eq.BIKE_SHARING_MERANO
+
 ###
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_PAPIN
 ###

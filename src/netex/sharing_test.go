@@ -23,8 +23,8 @@ func testOdhGet[T any](t *testing.T, f func() (T, error)) {
 }
 
 func TestOdhGetSharing(t *testing.T) {
-	testOdhGet(t, getOdhSharingBz)
-	testOdhGet(t, getOdhSharingMe)
-	testOdhGet(t, getOdhSharingPapin)
-	testOdhGet(t, getOdhSharingHal)
+	testOdhGet(t, bikeSharingBz)
+	testOdhGet(t, bikeMe)
+	testOdhGet(t, bikeSharingPapin)
+	testOdhGet(t, carSharingHal)
 }
