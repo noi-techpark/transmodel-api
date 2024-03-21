@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package parking
 
 import (
 	"encoding/xml"
+	"opendatahub/sta-nap-export/netex"
 	"testing"
 
 	"gotest.tools/v3/assert"
 )
 
 func TestGetOdhData(t *testing.T) {
-	testOdhGet(t, getOdhParking)
+	netex.TestOdhGet(t, getOdhParking)
 }
 
 func bzCentro() OdhParking {
@@ -53,7 +54,7 @@ func TestParkingId(t *testing.T) {
 	s2 := "me:test123"
 	s3 := ":',|?=+"
 
-	assert.Equal(t, ParkingId(s1), "IT:ITH10:Parking:merano0123")
-	assert.Equal(t, ParkingId(s2), "IT:ITH10:Parking:me_test123")
-	assert.Equal(t, ParkingId(s3), "IT:ITH10:Parking:_______")
+	assert.Equal(t, netex.CreateID("Parking", s1), "IT:ITH10:Parking:merano0123")
+	assert.Equal(t, netex.CreateID("Parking", s2), "IT:ITH10:Parking:me_test123")
+	assert.Equal(t, netex.CreateID("Parking", s3), "IT:ITH10:Parking:_______")
 }

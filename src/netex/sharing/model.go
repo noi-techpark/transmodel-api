@@ -1,12 +1,21 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package sharing
 
 import (
 	"encoding/xml"
 	"time"
 )
+
+type MobilityServiceFrame struct {
+	Id                             string                          `xml:"id,attr"`
+	Version                        string                          `xml:"version,attr"`
+	Fleets                         []Fleet                         `xml:"fleets"`
+	ModesOfOperation               []VehicleSharing                `xml:"modesOfOperation"`
+	MobilityServices               []VehicleSharingService         `xml:"mobilityServices"`
+	MobilityServiceConstraintZones []MobilityServiceConstraintZone `xml:"mobilityServiceContraintZones"`
+}
 
 type Ref struct {
 	XMLName xml.Name

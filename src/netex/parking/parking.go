@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package parking
 
 import (
 	"encoding/xml"
-	"fmt"
+	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
-	"regexp"
 )
 
 type Parkings struct {
@@ -75,20 +74,12 @@ func getOdhParking() ([]OdhParking, error) {
 	return res.Data, err
 }
 
-// As per NeTEx spec, IDs must only contain non-accented charaters, numbers, hyphens and underscores
-var idInvalid = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
-
-func ParkingId(scode string) string {
-	sanitized := idInvalid.ReplaceAllString(scode, "_")
-	return fmt.Sprintf("IT:ITH10:Parking:%s", sanitized)
-}
-
 func mapToNetex(os []OdhParking) []Parking {
 	var ps []Parking
 	for _, o := range os {
 		var p Parking
 
-		p.Id = ParkingId(o.Scode)
+		p.Id = netex.CreateID("Parking", o.Scode)
 		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?
@@ -118,7 +109,7 @@ func validateXml(p Parkings) error {
 	return nil
 }
 
-func GetNetexParking() (Parkings, error) {
+func GetParking() (Parkings, error) {
 	var ret Parkings
 	odh, err := getOdhParking()
 	if err != nil {

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package sharing
 
 import (
 	"encoding/json"
@@ -59,40 +59,49 @@ func odhMob[T any](tp string, origin string) (T, error) {
 	return res.Data, err
 }
 
-func bikeSharingBz() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("BikesharingStation", "BIKE_SHARING_BOLZANO")
-}
-func bikeBz() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("Bicycle", "BIKE_SHARING_BOLZANO")
-}
-func bikeMe() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("Bicycle", "BIKE_SHARING_MERANO")
-}
-func bikeSharingPapin() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("BikesharingStation", "BIKE_SHARING_PAPIN")
-}
-func carSharingHal() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("CarsharingStation", "HAL-API")
+type SharingData struct {
+	fleets        []Fleet
+	vehicles      []Vehicle
+	vehicleModels []VehicleModel
+	carModels     []CarModelProfile
+	cycleModels   []CycleModelProfile
+	operators     []Operator
+	modes         []VehicleSharing
+	services      []VehicleSharingService
+	constraints   []MobilityServiceConstraintZone
 }
 
-func getFleet() (Fleet, error) {
-	ret := Fleet{}
-	bz, err := bikeSharingBz()
-	if err != nil {
-		return ret, err
-	}
-	me, err := bikeMe()
-	if err != nil {
-		return ret, err
-	}
-	// carsharing HAL CarsharingCar
-	car, err := bikeMe()
-	if err != nil {
-		return ret, err
-	}
-	_ = bz
-	_ = me
-	_ = car
+type SharingProvider interface {
+	get() (SharingData, error)
+}
 
-	return ret, nil
+func GetSharing() (MobilityServiceFrame, error) {
+	return frame([]SharingProvider{&Bz{}})
+}
+
+func frame(ps []SharingProvider) (MobilityServiceFrame, error) {
+	f := MobilityServiceFrame{}
+	f.Id = "edp:IT:ITH10:ASDASDASDASDASD"
+	f.Version = "1"
+
+	for _, p := range ps {
+		d, err := p.get()
+		if err != nil {
+			return f, err
+		}
+		f.Fleets = append(f.Fleets, d.fleets...)
+		f.ModesOfOperation = append(f.ModesOfOperation, d.modes...)
+		f.MobilityServices = append(f.MobilityServices, d.services...)
+		f.MobilityServiceConstraintZones = append(f.MobilityServiceConstraintZones, d.constraints...)
+	}
+
+	return f, nil
+}
+
+func MkRef(tp string, id string) Ref {
+	r := Ref{}
+	r.Ref = id
+	r.Version = "1"
+	r.XMLName.Local = tp + "Ref"
+	return r
 }
