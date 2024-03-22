@@ -60,23 +60,24 @@ func odhMob[T any](tp string, origin string) (T, error) {
 }
 
 type SharingData struct {
-	fleets        []Fleet
-	vehicles      []Vehicle
-	vehicleModels []VehicleModel
-	carModels     []CarModelProfile
-	cycleModels   []CycleModelProfile
-	operators     []Operator
-	modes         []VehicleSharing
-	services      []VehicleSharingService
-	constraints   []MobilityServiceConstraintZone
+	Fleets        []Fleet
+	Vehicles      []Vehicle
+	VehicleModels []VehicleModel
+	CarModels     []CarModelProfile
+	CycleModels   []CycleModelProfile
+	Operators     []Operator
+	Modes         []VehicleSharing
+	Services      []VehicleSharingService
+	Constraints   []MobilityServiceConstraintZone
 }
 
 type SharingProvider interface {
 	get() (SharingData, error)
 }
 
-func GetSharing() (MobilityServiceFrame, error) {
-	return frame([]SharingProvider{&Bz{}})
+func GetSharing() (SharingData, error) {
+	p := Bz{}
+	return p.get()
 }
 
 func frame(ps []SharingProvider) (MobilityServiceFrame, error) {
@@ -89,10 +90,10 @@ func frame(ps []SharingProvider) (MobilityServiceFrame, error) {
 		if err != nil {
 			return f, err
 		}
-		f.Fleets = append(f.Fleets, d.fleets...)
-		f.ModesOfOperation = append(f.ModesOfOperation, d.modes...)
-		f.MobilityServices = append(f.MobilityServices, d.services...)
-		f.MobilityServiceConstraintZones = append(f.MobilityServiceConstraintZones, d.constraints...)
+		f.Fleets = append(f.Fleets, d.Fleets...)
+		f.ModesOfOperation = append(f.ModesOfOperation, d.Modes...)
+		f.MobilityServices = append(f.MobilityServices, d.Services...)
+		f.MobilityServiceConstraintZones = append(f.MobilityServiceConstraintZones, d.Constraints...)
 	}
 
 	return f, nil

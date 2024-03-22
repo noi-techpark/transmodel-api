@@ -4,6 +4,7 @@
 package sharing
 
 import (
+	"encoding/xml"
 	"opendatahub/sta-nap-export/netex"
 	"testing"
 
@@ -36,4 +37,19 @@ func TestEmptyProvider(t *testing.T) {
 func TestBzProvider(t *testing.T) {
 	_, err := frame([]SharingProvider{&Bz{}})
 	assert.NilError(t, err)
+}
+
+func TestGetSharingData(t *testing.T) {
+	netex.SetupNinja()
+
+	d, err := GetSharing()
+	assert.NilError(t, err)
+
+	x, err := xml.MarshalIndent(d, "", " ")
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+
+	t.Log(string(x))
 }

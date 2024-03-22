@@ -9,9 +9,13 @@ import (
 	"testing"
 )
 
-func TestOdhGet[T any](t *testing.T, f func() (T, error)) {
+func SetupNinja() {
 	ninja.BaseUrl = "https://mobility.api.opendatahub.com"
 	ninja.Referer = "sta-nap-export-unit-test"
+}
+
+func TestOdhGet[T any](t *testing.T, f func() (T, error)) {
+	SetupNinja()
 
 	res, err := f()
 

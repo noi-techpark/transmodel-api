@@ -48,7 +48,7 @@ func (b *Bz) get() (SharingData, error) {
 	o.ShortName = b.origin
 	o.LegalName = b.origin
 	o.OrganizationType = "operator"
-	ret.operators = append(ret.operators, o)
+	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
 	m := VehicleSharing{}
@@ -60,7 +60,7 @@ func (b *Bz) get() (SharingData, error) {
 	sub.TransportMode = "bicycle"
 	sub.SelfDriveMode = "hireCycle"
 	m.Submodes = append(m.Submodes, sub)
-	ret.modes = append(ret.modes, m)
+	ret.Modes = append(ret.Modes, m)
 
 	// Cycle model profile
 	p := CycleModelProfile{}
@@ -72,7 +72,7 @@ func (b *Bz) get() (SharingData, error) {
 	p.Pump = false
 	p.Basket = true // todo map
 	p.Lock = false  // true for merano
-	ret.cycleModels = append(ret.cycleModels, p)
+	ret.CycleModels = append(ret.CycleModels, p)
 
 	// Vehicles
 	for _, c := range b.cycles {
@@ -84,18 +84,18 @@ func (b *Bz) get() (SharingData, error) {
 		v.PrivateCode = c.Scode
 		v.OperatorRef = MkRef("Operator", o.Id)
 		v.VehicleTypeRef = MkRef("VehicleType", p.Id)
-		ret.vehicles = append(ret.vehicles, v)
+		ret.Vehicles = append(ret.Vehicles, v)
 	}
 
 	// Fleets = all Vehicles + operator
 	f := Fleet{}
 	f.Id = netex.CreateID("Fleet", b.origin)
 	f.Version = "1"
-	for _, v := range ret.vehicles {
+	for _, v := range ret.Vehicles {
 		f.Members = append(f.Members, MkRef("Vehicle", v.Id))
 	}
 	f.OperatorRef = MkRef("Operator", o.Id)
-	ret.fleets = append(ret.fleets, f)
+	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
 
@@ -104,10 +104,10 @@ func (b *Bz) get() (SharingData, error) {
 	s.Version = "1"
 	s.VehicleSharingRef = MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
-	for _, fl := range ret.fleets {
+	for _, fl := range ret.Fleets {
 		s.Fleets = append(s.Fleets, MkRef("Fleet", fl.Id))
 	}
-	ret.services = append(ret.services, s)
+	ret.Services = append(ret.Services, s)
 
 	// Constraint zone
 	c := MobilityServiceConstraintZone{}
@@ -115,7 +115,7 @@ func (b *Bz) get() (SharingData, error) {
 	c.Version = "1"
 	c.GmlPolygon = ""
 	c.VehicleSharingRef = MkRef("VehicleSharingService", s.Id)
-	ret.constraints = append(ret.constraints, c)
+	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil
 }
