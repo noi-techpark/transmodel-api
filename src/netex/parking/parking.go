@@ -80,6 +80,7 @@ func mapToNetex(os []OdhParking) []Parking {
 		var p Parking
 
 		p.Id = netex.CreateID("Parking", o.Scode)
+		p.Version = "1"
 		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?

@@ -95,8 +95,27 @@ func (b *Bz) get() (SharingData, error) {
 		f.Members = append(f.Members, MkRef("Vehicle", v.Id))
 	}
 	f.OperatorRef = MkRef("Operator", o.Id)
+	ret.fleets = append(ret.fleets, f)
 
 	// Mobility services = Fleet + mode
+
+	s := VehicleSharingService{}
+	s.Id = netex.CreateID("VehicleSharingService", b.origin)
+	s.Version = "1"
+	s.VehicleSharingRef = MkRef("VehicleSharing", m.Id)
+	s.FloatingVehicles = false
+	for _, fl := range ret.fleets {
+		s.Fleets = append(s.Fleets, MkRef("Fleet", fl.Id))
+	}
+	ret.services = append(ret.services, s)
+
+	// Constraint zone
+	c := MobilityServiceConstraintZone{}
+	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
+	c.Version = "1"
+	c.GmlPolygon = ""
+	c.VehicleSharingRef = MkRef("VehicleSharingService", s.Id)
+	ret.constraints = append(ret.constraints, c)
 
 	return ret, nil
 }
