@@ -138,6 +138,6 @@ type VehicleSharingService struct {
 type MobilityServiceConstraintZone struct {
 	Id                string `xml:"id,attr"`
 	Version           string `xml:"version,attr"`
-	GmlPolygon        any    `xml:"gml:Polygon"`
+	GmlPolygon        any    `xml:"http://www.opengis.net/gml Polygon"`
 	VehicleSharingRef Ref
 }
