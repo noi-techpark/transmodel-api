@@ -36,8 +36,8 @@ type SiriFM struct {
 		Count uint16
 	}
 	FacilityUpdatedPosition struct {
-		Longitude float32
-		Latitude  float32
+		Longitude *float32
+		Latitude  *float32
 	}
 }
 
