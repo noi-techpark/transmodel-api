@@ -40,7 +40,7 @@ func TestBzProvider(t *testing.T) {
 }
 
 func TestGetSharingData(t *testing.T) {
-	netex.SetupNinja()
+	netex.NinjaTestSetup()
 
 	d, err := GetSharing()
 	assert.NilError(t, err)

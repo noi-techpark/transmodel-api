@@ -9,12 +9,24 @@ GET {{host}}/netex/sharing
 GET {{host}}/sharing/rt/123
 
 
-###
+### Bike sharing bolzano
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_BOLZANO
-###
+### Bike sharing merano
 GET https://mobility.api.opendatahub.com/v2/flat/Bicycle?where=sorigin.eq.BIKE_SHARING_MERANO
+### Bike sharing PAPIN
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_PAPIN
+### Car sharing HAL
+GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation?where=sorigin.eq.HAL-API
+### parking station realtime
+GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation/free,occupied/latest
+?where=scode.eq."115"
+&select=tname,mperiod,mvalue,mvalidtime,scode
+### Sharing station realtime
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation/availability,free-bays/latest
+?where=scode.eq."BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--33150e8ef8c952030277c63eec20b5e9ea6c76d3",mperiod.eq.300
+&select=tname,mperiod,mvalue,mvalidtime,scode
 
 ###
-GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_PAPIN
-###
-GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation?where=sorigin.eq.HAL-API
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation/availability,free-bays/latest
+?where=scode.eq."BIKE_SHARING_PAPIN:58"
+#&select=tname,mperiod,mvalue,mvalidtime,scode

@@ -9,13 +9,13 @@ import (
 	"testing"
 )
 
-func SetupNinja() {
+func NinjaTestSetup() {
 	ninja.BaseUrl = "https://mobility.api.opendatahub.com"
 	ninja.Referer = "sta-nap-export-unit-test"
 }
 
 func TestOdhGet[T any](t *testing.T, f func() (T, error)) {
-	SetupNinja()
+	NinjaTestSetup()
 
 	res, err := f()
 
