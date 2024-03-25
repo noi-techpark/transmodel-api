@@ -8,6 +8,7 @@ import (
 	"net/http"
 	nParking "opendatahub/sta-nap-export/netex/parking"
 	nSharing "opendatahub/sta-nap-export/netex/sharing"
+	"opendatahub/sta-nap-export/siri"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -52,5 +53,10 @@ func sharing(c *gin.Context) {
 	c.XML(http.StatusOK, res)
 }
 func realtime(c *gin.Context) {
-	c.XML(http.StatusOK, gin.H{"msg": "Hello realtime world", "station": c.Param("id")})
+	scode := c.Param("id")
+	res, err := siri.Parking(scode)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	c.XML(http.StatusOK, res)
 }

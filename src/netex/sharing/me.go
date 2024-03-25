@@ -5,27 +5,19 @@ package sharing
 
 import "opendatahub/sta-nap-export/netex"
 
-type odhBzShare []OdhMobility[metaAny]
-type odhBzBike []OdhMobility[metaAny]
+type odhMeBike []OdhMobility[metaAny]
 
-type Bz struct {
-	sharing odhBzShare
-	cycles  odhBzBike
-	origin  string
+type Me struct {
+	cycles odhMeBike
+	origin string
 }
 
-const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
+const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
-func (b *Bz) init() error {
-	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
+func (b *Me) init() error {
+	b.origin = ORIGIN_BIKE_SHARING_MERANO
 
-	s, err := bzSharing()
-	if err != nil {
-		return err
-	}
-	b.sharing = s
-
-	bk, err := bzBike()
+	bk, err := meBike()
 	if err != nil {
 		return err
 	}
@@ -33,7 +25,7 @@ func (b *Bz) init() error {
 	return nil
 }
 
-func (b *Bz) get() (SharingData, error) {
+func (b *Me) get() (SharingData, error) {
 	ret := SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
@@ -78,7 +70,7 @@ func (b *Bz) get() (SharingData, error) {
 	// Vehicles
 	for _, c := range b.cycles {
 		v := Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
+		v.Id = netex.CreateID("Vehicle", b.origin, c.Sname)
 		v.Version = "1"
 		v.Name = c.Sname
 		v.ShortName = c.Sname
@@ -121,9 +113,6 @@ func (b *Bz) get() (SharingData, error) {
 	return ret, nil
 }
 
-func bzSharing() (odhBzShare, error) {
-	return odhMob[odhBzShare]("BikesharingStation", ORIGIN_BIKE_SHARING_BOLZANO)
-}
-func bzBike() (odhBzBike, error) {
-	return odhMob[odhBzBike]("Bicycle", ORIGIN_BIKE_SHARING_BOLZANO)
+func meBike() (odhMeBike, error) {
+	return odhMob[odhMeBike]("Bicycle", ORIGIN_BIKE_SHARING_MERANO)
 }

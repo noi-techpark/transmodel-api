@@ -19,9 +19,6 @@ func TestOdhGetSharing(t *testing.T) {
 	netex.TestOdhGet(t, halSharing)
 }
 
-func meBike() ([]OdhMobility[metaAny], error) {
-	return odhMob[[]OdhMobility[metaAny]]("Bicycle", "BIKE_SHARING_MERANO")
-}
 func papingSharing() ([]OdhMobility[metaAny], error) {
 	return odhMob[[]OdhMobility[metaAny]]("BikesharingStation", "BIKE_SHARING_PAPIN")
 }

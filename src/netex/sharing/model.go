@@ -106,6 +106,7 @@ type Operator struct {
 	}
 	OrganizationType string
 	Address          struct {
+		Id          string `xml:"id,attr"`
 		CountryName string
 		Street      string
 		Town        string

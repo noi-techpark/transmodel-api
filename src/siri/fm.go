@@ -117,7 +117,7 @@ func mapParkingStatus(free uint16) string {
 	}
 }
 
-func parking(scode string) (SiriFM, error) {
+func Parking(scode string) (SiriFM, error) {
 	os, err := odhParkingState(scode)
 	if err != nil {
 		return SiriFM{}, err
