@@ -60,15 +60,15 @@ func odhMob[T any](tp string, origin string) (T, error) {
 }
 
 type SharingData struct {
-	Fleets        []Fleet
-	Vehicles      []Vehicle
-	VehicleModels []VehicleModel
-	CarModels     []CarModelProfile
-	CycleModels   []CycleModelProfile
-	Operators     []Operator
-	Modes         []VehicleSharing
-	Services      []VehicleSharingService
-	Constraints   []MobilityServiceConstraintZone
+	Fleets        []Fleet                         `xml:"fleets>Fleet"`
+	Vehicles      []Vehicle                       `xml:"vehicles>Vehicle"`
+	VehicleModels []VehicleModel                  `xml:"models>VehicleModel"`
+	CarModels     []CarModelProfile               `xml:"carModels>CarModelProfile"`
+	CycleModels   []CycleModelProfile             `xml:"cycleModels>CycleModelProfile"`
+	Operators     []Operator                      `xml:"operators>Operator"`
+	Modes         []VehicleSharing                `xml:"modes>VehicleSharing"`
+	Services      []VehicleSharingService         `xml:"services>VehicleSharingService"`
+	Constraints   []MobilityServiceConstraintZone `xml:"constraints>MobilityServiceConstraintZone"`
 }
 
 type SharingProvider interface {

@@ -24,8 +24,8 @@ type Ref struct {
 }
 
 type ValidBetween struct {
-	FromDate time.Time
-	ToDate   time.Time
+	FromDate *time.Time `xml:"FromDate,omitempty"`
+	ToDate   *time.Time `xml:"ToDate,omitempty"`
 }
 
 type Fleet struct {
@@ -37,8 +37,9 @@ type Fleet struct {
 }
 
 type Vehicle struct {
-	Id                 string `xml:"id,attr"`
-	Version            string `xml:"version,attr"`
+	XMLName            xml.Name `xml:"Vehicle"`
+	Id                 string   `xml:"id,attr"`
+	Version            string   `xml:"version,attr"`
 	ValidBetween       ValidBetween
 	Name               string
 	ShortName          string
