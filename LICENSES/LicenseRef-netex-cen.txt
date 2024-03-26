@@ -1,0 +1,15 @@
+These files are part of the Italian profile NeTEx and SIRI documentation.
+No license is provided, but the files are publicly accessible.
+
+The terms of use say that the standard has to be purchased:
+https://netex-cen.eu/terms-of-use/
+But the documentation used here is linked publicly on that very same site:
+https://netex-cen.eu/implementation/italian-implementation/
+
+For SIRI, there is even a public github repository, which also lacks licensing information:
+https://github.com/5Tsrl/siri-italian-profile/tree/main/Linee%20guida
+
+Terms of use are "TBD"
+https://www.siri-cen.eu/Page.aspx?CAT=STANDARD&IdPage=940458c1-1410-468e-b2d5-462bbb49eeb6
+
+The schemas themselves are published under Apache 2.0
