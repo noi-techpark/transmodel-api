@@ -113,7 +113,7 @@ func validateXml(p any) error {
 func GetParking() (netex.CompositeFrame, error) {
 	var ret netex.CompositeFrame
 	ret.Defaults()
-	ret.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "EPIP", "ita")
+	ret.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "PARKING", "ita")
 	ret.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 
 	site := siteFrame()
