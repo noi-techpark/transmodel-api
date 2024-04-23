@@ -37,6 +37,7 @@ type SiteFrame struct {
 
 func (c *CompositeFrame) Defaults() {
 	c.Version = "1"
+	c.ValidBetween.AYear()
 	c.Codespaces.Codespace.Id = "ita"
 	c.Codespaces.Codespace.Xmlns = "ita"
 	c.Codespaces.Codespace.XmlnsUrl = "http://www.ita.it"
@@ -56,6 +57,6 @@ type TypeOfFrameRef struct {
 }
 
 type ValidBetween struct {
-	FromDate *time.Time `xml:"FromDate,omitempty"`
-	ToDate   *time.Time `xml:"ToDate,omitempty"`
+	FromDate time.Time
+	ToDate   time.Time
 }

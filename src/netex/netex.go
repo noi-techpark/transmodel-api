@@ -7,6 +7,7 @@ import (
 	"opendatahub/sta-nap-export/ninja"
 	"regexp"
 	"testing"
+	"time"
 )
 
 func NinjaTestSetup() {
@@ -55,4 +56,9 @@ func MkTypeOfFrameRef(tp string) TypeOfFrameRef {
 	r.Version = "1"
 	r.XMLName.Local = "TypeOfFrameRef"
 	return r
+}
+
+func (v *ValidBetween) AYear() {
+	v.FromDate = time.Now().Truncate(time.Hour * 24)
+	v.ToDate = time.Now().AddDate(1, 0, 0).Truncate(time.Hour * 24)
 }

@@ -80,6 +80,7 @@ func (b *Bz) get() (SharingData, error) {
 		v := Vehicle{}
 		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
 		v.Version = "1"
+		v.ValidBetween.AYear()
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
@@ -92,6 +93,7 @@ func (b *Bz) get() (SharingData, error) {
 	f := Fleet{}
 	f.Id = netex.CreateID("Fleet", b.origin)
 	f.Version = "1"
+	f.ValidBetween.AYear()
 	for _, v := range ret.Vehicles {
 		f.Members = append(f.Members, netex.MkRef("Vehicle", v.Id))
 	}
