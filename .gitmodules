@@ -1,3 +1,6 @@
 [submodule "netex-schema"]
 	path = netex-schema
 	url = https://github.com/NeTEx-CEN/NeTEx.git
+[submodule "netex-italian-profile"]
+	path = netex-italian-profile
+	url = git@github.com:5Tsrl/netex-italian-profile.git
