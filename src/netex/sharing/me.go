@@ -75,8 +75,8 @@ func (b *Me) get() (SharingData, error) {
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
-		v.OperatorRef = MkRef("Operator", o.Id)
-		v.VehicleTypeRef = MkRef("VehicleType", p.Id)
+		v.OperatorRef = netex.MkRef("Operator", o.Id)
+		v.VehicleTypeRef = netex.MkRef("VehicleType", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
 
@@ -85,9 +85,9 @@ func (b *Me) get() (SharingData, error) {
 	f.Id = netex.CreateID("Fleet", b.origin)
 	f.Version = "1"
 	for _, v := range ret.Vehicles {
-		f.Members = append(f.Members, MkRef("Vehicle", v.Id))
+		f.Members = append(f.Members, netex.MkRef("Vehicle", v.Id))
 	}
-	f.OperatorRef = MkRef("Operator", o.Id)
+	f.OperatorRef = netex.MkRef("Operator", o.Id)
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
@@ -95,10 +95,10 @@ func (b *Me) get() (SharingData, error) {
 	s := VehicleSharingService{}
 	s.Id = netex.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
-	s.VehicleSharingRef = MkRef("VehicleSharing", m.Id)
+	s.VehicleSharingRef = netex.MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
 	for _, fl := range ret.Fleets {
-		s.Fleets = append(s.Fleets, MkRef("Fleet", fl.Id))
+		s.Fleets = append(s.Fleets, netex.MkRef("Fleet", fl.Id))
 	}
 	ret.Services = append(ret.Services, s)
 
@@ -107,7 +107,7 @@ func (b *Me) get() (SharingData, error) {
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon = ""
-	c.VehicleSharingRef = MkRef("VehicleSharingService", s.Id)
+	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil

@@ -105,20 +105,27 @@ func mapToNetex(os []OdhParking) []Parking {
 	return ps
 }
 
-func validateXml(p Parkings) error {
+func validateXml(p any) error {
 	// TODO: everything
 	return nil
 }
 
-func GetParking() (Parkings, error) {
-	var ret Parkings
+func GetParking() (netex.CompositeFrame, error) {
+	var ret netex.CompositeFrame
+	ret.Defaults()
+	ret.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "EPIP", "ita")
+	ret.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+
+	site := siteFrame()
+	ret.Frames.Frames = append(ret.Frames.Frames, &site)
+
 	odh, err := getOdhParking()
 	if err != nil {
 		return ret, err
 	}
 
-	ps := mapToNetex(odh)
-	ret.Parkings = ps
+	parkings := mapToNetex(odh)
+	site.Parkings = Parkings{Parkings: parkings}
 
 	err = validateXml(ret)
 	if err != nil {
@@ -126,4 +133,12 @@ func GetParking() (Parkings, error) {
 	}
 
 	return ret, nil
+}
+
+func siteFrame() netex.SiteFrame {
+	var site netex.SiteFrame
+	site.Id = netex.CreateFrameId("SiteFrame_EU_PI_STOP", "ita")
+	site.Version = "1"
+	site.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_STOP")
+	return site
 }

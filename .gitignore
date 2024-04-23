@@ -22,6 +22,10 @@
 *.so
 *.dylib
 
+# Golang air hot reload
+tmp
+src/tmp
+
 # Test binary, built with `go test -c`
 *.test
 

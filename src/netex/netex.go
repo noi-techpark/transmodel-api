@@ -37,3 +37,22 @@ func CreateID(segments ...string) string {
 	}
 	return id
 }
+
+func CreateFrameId(segments ...string) string {
+	return "edp:" + CreateID(segments...)
+}
+
+func MkRef(tp string, id string) Ref {
+	r := Ref{}
+	r.Ref = id
+	r.Version = "1"
+	r.XMLName.Local = tp + "Ref"
+	return r
+}
+func MkTypeOfFrameRef(tp string) TypeOfFrameRef {
+	r := TypeOfFrameRef{}
+	r.Ref = "epip:" + tp
+	r.Version = "1"
+	r.XMLName.Local = "TypeOfFrameRef"
+	return r
+}

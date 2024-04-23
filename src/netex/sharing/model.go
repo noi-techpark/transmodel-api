@@ -5,59 +5,66 @@ package sharing
 
 import (
 	"encoding/xml"
-	"time"
+	"opendatahub/sta-nap-export/netex"
 )
 
 type MobilityServiceFrame struct {
-	Id                             string                          `xml:"id,attr"`
-	Version                        string                          `xml:"version,attr"`
+	XMLName       xml.Name `xml:"MobilityServiceFrame"`
+	Id            string   `xml:"id,attr"`
+	Version       string   `xml:"version,attr"`
+	FrameDefaults struct {
+		DefaultCurrency string
+	}
+
 	Fleets                         []Fleet                         `xml:"fleets"`
 	ModesOfOperation               []VehicleSharing                `xml:"modesOfOperation"`
 	MobilityServices               []VehicleSharingService         `xml:"mobilityServices"`
 	MobilityServiceConstraintZones []MobilityServiceConstraintZone `xml:"mobilityServiceContraintZones"`
 }
 
-type Ref struct {
-	XMLName xml.Name
-	Ref     string `xml:"ref,attr"`
-	Version string `xml:"version,attr"`
-}
+type ResourceFrame struct {
+	XMLName        xml.Name `xml:"ResourceFrame"`
+	Id             string   `xml:"id,attr"`
+	Version        string   `xml:"version,attr"`
+	TypeOfFrameRef netex.TypeOfFrameRef
 
-type ValidBetween struct {
-	FromDate *time.Time `xml:"FromDate,omitempty"`
-	ToDate   *time.Time `xml:"ToDate,omitempty"`
+	Vehicles      []Vehicle           `xml:"vehicles>Vehicle"`
+	VehicleModels []VehicleModel      `xml:"models>VehicleModel"`
+	CarModels     []CarModelProfile   `xml:"carModels>CarModelProfile"`
+	CycleModels   []CycleModelProfile `xml:"cycleModels>CycleModelProfile"`
+	Operators     []Operator          `xml:"operators>Operator"`
 }
 
 type Fleet struct {
 	Id           string `xml:"id,attr"`
 	Version      string `xml:"version,attr"`
-	ValidBetween ValidBetween
-	Members      []Ref `xml:"members"`
-	OperatorRef  Ref
+	ValidBetween netex.ValidBetween
+	Members      []netex.Ref `xml:"members"`
+	OperatorRef  netex.Ref
 }
 
 type Vehicle struct {
 	XMLName            xml.Name `xml:"Vehicle"`
 	Id                 string   `xml:"id,attr"`
 	Version            string   `xml:"version,attr"`
-	ValidBetween       ValidBetween
+	ValidBetween       netex.ValidBetween
 	Name               string
 	ShortName          string
 	RegistrationNumber string
 	VehicleIdNumber    string
 	PrivateCode        string
-	OperatorRef        Ref
-	VehicleTypeRef     Ref
+	OperatorRef        netex.Ref
+	VehicleTypeRef     netex.Ref
 }
 
 type VehicleModel struct {
 	Id             string `xml:"id,attr"`
 	Version        string `xml:"version,attr"`
-	ValidBetween   ValidBetween
+	ValidBetween   netex.ValidBetween
 	Name           string
 	Description    string
 	Manufacturer   string
-	VehicleTypeRef Ref
+	VehicleTypeRef netex.Ref
 }
 
 type CycleModelProfile struct {
@@ -131,14 +138,14 @@ type VehicleSharing struct {
 type VehicleSharingService struct {
 	Id                string `xml:"id,attr"`
 	Version           string `xml:"version,attr"`
-	VehicleSharingRef Ref
+	VehicleSharingRef netex.Ref
 	FloatingVehicles  bool
-	Fleets            []Ref `xml:"fleets"`
+	Fleets            []netex.Ref `xml:"fleets"`
 }
 
 type MobilityServiceConstraintZone struct {
 	Id                string `xml:"id,attr"`
 	Version           string `xml:"version,attr"`
 	GmlPolygon        any    `xml:"http://www.opengis.net/gml Polygon"`
-	VehicleSharingRef Ref
+	VehicleSharingRef netex.Ref
 }

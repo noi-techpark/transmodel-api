@@ -1,4 +1,4 @@
-FROM golang:1.21.5-bookworm as base
+FROM golang:1.22.2-bookworm as base
 
 # install if docker host doesn't has libc6 installed
 RUN apt-get update && apt-get install -y libc6
@@ -12,4 +12,7 @@ CMD [ "./main"]
 
 FROM base as debug
 WORKDIR /code
-CMD [ "go", "run", "."]
+# Air for auto rebuild on changes
+RUN go install github.com/cosmtrek/air@latest
+RUN air init
+CMD ["air"]

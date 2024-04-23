@@ -6,6 +6,7 @@ package sharing
 import (
 	"encoding/json"
 	"log/slog"
+	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 )
 
@@ -60,49 +61,58 @@ func odhMob[T any](tp string, origin string) (T, error) {
 }
 
 type SharingData struct {
-	Fleets        []Fleet                         `xml:"fleets>Fleet"`
-	Vehicles      []Vehicle                       `xml:"vehicles>Vehicle"`
-	VehicleModels []VehicleModel                  `xml:"models>VehicleModel"`
-	CarModels     []CarModelProfile               `xml:"carModels>CarModelProfile"`
-	CycleModels   []CycleModelProfile             `xml:"cycleModels>CycleModelProfile"`
-	Operators     []Operator                      `xml:"operators>Operator"`
-	Modes         []VehicleSharing                `xml:"modes>VehicleSharing"`
-	Services      []VehicleSharingService         `xml:"services>VehicleSharingService"`
-	Constraints   []MobilityServiceConstraintZone `xml:"constraints>MobilityServiceConstraintZone"`
+	Fleets        []Fleet
+	Vehicles      []Vehicle
+	VehicleModels []VehicleModel
+	CarModels     []CarModelProfile
+	CycleModels   []CycleModelProfile
+	Operators     []Operator
+	Modes         []VehicleSharing
+	Services      []VehicleSharingService
+	Constraints   []MobilityServiceConstraintZone
 }
 
 type SharingProvider interface {
 	get() (SharingData, error)
 }
 
-func GetSharing() (SharingData, error) {
-	p := Bz{}
-	return p.get()
+func GetSharing() (*netex.CompositeFrame, error) {
+	return frame([]SharingProvider{&Bz{}})
 }
 
-func frame(ps []SharingProvider) (MobilityServiceFrame, error) {
-	f := MobilityServiceFrame{}
-	f.Id = "edp:IT:ITH10:ASDASDASDASDASD"
-	f.Version = "1"
+func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
+	mob := MobilityServiceFrame{}
+	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "BikeSharing", "ita")
+	mob.Version = "1"
+	mob.FrameDefaults.DefaultCurrency = "EUR"
+
+	res := ResourceFrame{}
+	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
+	res.Version = "1"
+	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 
 	for _, p := range ps {
 		d, err := p.get()
 		if err != nil {
-			return f, err
+			return nil, err
 		}
-		f.Fleets = append(f.Fleets, d.Fleets...)
-		f.ModesOfOperation = append(f.ModesOfOperation, d.Modes...)
-		f.MobilityServices = append(f.MobilityServices, d.Services...)
-		f.MobilityServiceConstraintZones = append(f.MobilityServiceConstraintZones, d.Constraints...)
+		mob.Fleets = append(mob.Fleets, d.Fleets...)
+		mob.ModesOfOperation = append(mob.ModesOfOperation, d.Modes...)
+		mob.MobilityServices = append(mob.MobilityServices, d.Services...)
+		mob.MobilityServiceConstraintZones = append(mob.MobilityServiceConstraintZones, d.Constraints...)
+
+		res.Vehicles = append(res.Vehicles, d.Vehicles...)
+		res.VehicleModels = append(res.VehicleModels, d.VehicleModels...)
+		res.CarModels = append(res.CarModels, d.CarModels...)
+		res.CycleModels = append(res.CycleModels, d.CycleModels...)
+		res.Operators = append(res.Operators, d.Operators...)
 	}
 
-	return f, nil
-}
+	comp := netex.CompositeFrame{}
+	comp.Defaults()
+	comp.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", "ita")
+	comp.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
 
-func MkRef(tp string, id string) Ref {
-	r := Ref{}
-	r.Ref = id
-	r.Version = "1"
-	r.XMLName.Local = tp + "Ref"
-	return r
+	return &comp, nil
 }
