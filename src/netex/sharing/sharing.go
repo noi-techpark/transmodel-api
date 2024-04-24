@@ -61,15 +61,15 @@ func odhMob[T any](tp string, origin string) (T, error) {
 }
 
 type SharingData struct {
-	Fleets        []Fleet
-	Vehicles      []Vehicle
-	VehicleModels []VehicleModel
-	CarModels     []CarModelProfile
-	CycleModels   []CycleModelProfile
-	Operators     []Operator
-	Modes         []VehicleSharing
-	Services      []VehicleSharingService
-	Constraints   []MobilityServiceConstraintZone
+	Fleets        []netex.Fleet
+	Vehicles      []netex.Vehicle
+	VehicleModels []netex.VehicleModel
+	CarModels     []netex.CarModelProfile
+	CycleModels   []netex.CycleModelProfile
+	Operators     []netex.Operator
+	Modes         []netex.VehicleSharing
+	Services      []netex.VehicleSharingService
+	Constraints   []netex.MobilityServiceConstraintZone
 }
 
 type SharingProvider interface {
@@ -81,12 +81,12 @@ func GetSharing() (*netex.CompositeFrame, error) {
 }
 
 func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
-	mob := MobilityServiceFrame{}
+	mob := netex.MobilityServiceFrame{}
 	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "BikeSharing", "ita")
 	mob.Version = "1"
 	mob.FrameDefaults.DefaultCurrency = "EUR"
 
-	res := ResourceFrame{}
+	res := netex.ResourceFrame{}
 	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
 	res.Version = "1"
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")

@@ -5,8 +5,11 @@ package parking
 
 import (
 	"encoding/xml"
+	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+
+	"golang.org/x/exp/maps"
 )
 
 type Parkings struct {
@@ -28,12 +31,12 @@ type Parking struct {
 		}
 	}
 	GmlPolygon                      any `xml:"gml:Polygon"`
-	OperatorRef                     string
+	OperatorRef                     netex.Ref
 	Entrances                       any `xml:"entrances"`
 	ParkingType                     string
 	ParkingVehicleTypes             string
 	ParkingLayout                   string
-	PrincipalCapacity               string
+	PrincipalCapacity               int32
 	TotalCapacity                   int32
 	ProhibitedForHazardousMaterials bool
 	RechargingAvailable             bool
@@ -68,13 +71,46 @@ func getOdhParking() ([]OdhParking, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation"}
+	req.Where = "sactive.eq.true"
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParking]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
 
-func mapToNetex(os []OdhParking) []Parking {
+func defEmpty(s string, d string) string {
+	if s == "" {
+		return d
+	} else {
+		return s
+	}
+}
+
+func getOperator(id string) netex.Operator {
+	o := netex.Operator{}
+	o.Id = netex.CreateID("Operator", id)
+	o.Version = "1"
+	o.PrivateCode = id
+	o.Name = id
+	o.ShortName = id
+	o.LegalName = id
+	o.TradingName = id
+	o.ContactDetails.Email = fmt.Sprintf("info@%s.it", id)
+	o.ContactDetails.Phone = "1234567890"
+	o.ContactDetails.URL = fmt.Sprintf("https://%s.it", id)
+	o.OrganizationType = "operator"
+	o.Address.Id = netex.CreateID("Address", id)
+	o.Address.CountryName = "Italia"
+	o.Address.Street = "Via A. Volta 13A"
+	o.Address.Town = "Bolzano"
+	o.Address.PostCode = "39100"
+	return o
+
+}
+
+func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
+	ops := make(map[string]netex.Operator)
+
 	var ps []Parking
 	for _, o := range os {
 		var p Parking
@@ -87,22 +123,25 @@ func mapToNetex(os []OdhParking) []Parking {
 		p.Centroid.Location.Longitude = o.Scoord.X
 		p.Centroid.Location.Latitude = o.Scoord.Y
 		p.GmlPolygon = nil
-		p.OperatorRef = o.Sorigin
+		op := getOperator(o.Sorigin)
+		ops[op.Id] = op
+		p.OperatorRef = netex.MkRef("Operator", o.Sorigin)
+
 		p.Entrances = nil
-		p.ParkingType = o.Smeta.ParkingType
+		p.ParkingType = defEmpty(o.Smeta.ParkingType, "undefined")
 		p.ParkingVehicleTypes = o.Smeta.ParkingVehicleTypes
-		p.ParkingLayout = o.Smeta.ParkingLayout
-		p.PrincipalCapacity = ""
+		p.ParkingLayout = defEmpty(o.Smeta.ParkingLayout, "undefined")
+		p.PrincipalCapacity = o.Smeta.Capacity
 		p.TotalCapacity = o.Smeta.Capacity
 		p.ProhibitedForHazardousMaterials = o.Smeta.ParkingProhibitions
 		p.RechargingAvailable = o.Smeta.ParkingProhibitions
 		p.Secure = o.Smeta.ParkingSurveillance
-		p.ParkingReservation = o.Smeta.ParkingReservation
+		p.ParkingReservation = defEmpty(o.Smeta.ParkingReservation, "noReservations")
 		p.ParkingProperties = nil
 
 		ps = append(ps, p)
 	}
-	return ps
+	return ps, maps.Values(ops)
 }
 
 func validateXml(p any) error {
@@ -119,13 +158,20 @@ func GetParking() (netex.CompositeFrame, error) {
 	site := siteFrame()
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
+	res := netex.ResourceFrame{}
+	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
+	res.Version = "1"
+	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
+	ret.Frames.Frames = append(ret.Frames.Frames, &res)
+
 	odh, err := getOdhParking()
 	if err != nil {
 		return ret, err
 	}
 
-	parkings := mapToNetex(odh)
+	parkings, operators := mapToNetex(odh)
 	site.Parkings = Parkings{Parkings: parkings}
+	res.Operators = operators
 
 	err = validateXml(ret)
 	if err != nil {

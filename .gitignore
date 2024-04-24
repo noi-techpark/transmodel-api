@@ -37,3 +37,5 @@ src/tmp
 
 # Go workspace file
 go.work
+
+validation/validate.xml

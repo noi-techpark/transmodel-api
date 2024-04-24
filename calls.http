@@ -8,15 +8,20 @@ GET {{host}}/netex/sharing
 ### SIRI-FM real time parking availability. Station ID as a parameter
 GET {{host}}/siri/fm/115
 ### Bike sharing bolzano sharing service
-GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_BOLZANO
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation
+?where=sorigin.eq.BIKE_SHARING_BOLZANO,sactive.eq.true
 ### Bike sharing bolzano single bicycles
-GET https://mobility.api.opendatahub.com/v2/flat/Bicycle?where=sorigin.eq.BIKE_SHARING_BOLZANO
+GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
+?where=sorigin.eq.BIKE_SHARING_BOLZANO,sactive.eq.true
 ### Bike sharing merano
-GET https://mobility.api.opendatahub.com/v2/flat/Bicycle?where=sorigin.eq.BIKE_SHARING_MERANO
+GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
+?where=sorigin.eq.BIKE_SHARING_MERANO,sactive.eq.true
 ### Bike sharing PAPIN
-GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation?where=sorigin.eq.BIKE_SHARING_PAPIN
+GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation
+?where=sorigin.eq.BIKE_SHARING_PAPIN,sactive.eq.true
 ### Car sharing HAL
-GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation?where=sorigin.eq.HAL-API
+GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation
+?where=sorigin.eq.HAL-API,sactive.eq.true
 ### parking station realtime
 GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation/free,occupied/latest
 ?where=scode.eq."115"

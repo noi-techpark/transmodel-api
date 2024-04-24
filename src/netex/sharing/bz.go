@@ -40,7 +40,7 @@ func (b *Bz) get() (SharingData, error) {
 	}
 
 	// Operators
-	o := Operator{}
+	o := netex.Operator{}
 	o.Id = netex.CreateID("Operator", b.origin)
 	o.Version = "1"
 	o.PrivateCode = b.origin
@@ -52,10 +52,10 @@ func (b *Bz) get() (SharingData, error) {
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
-	m := VehicleSharing{}
+	m := netex.VehicleSharing{}
 	m.Id = netex.CreateID("VehicleSharing", b.origin)
 	m.Version = "1"
-	sub := Submode{}
+	sub := netex.Submode{}
 	sub.Id = netex.CreateID("Submode", b.origin)
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
@@ -64,7 +64,7 @@ func (b *Bz) get() (SharingData, error) {
 	ret.Modes = append(ret.Modes, m)
 
 	// Cycle model profile
-	p := CycleModelProfile{}
+	p := netex.CycleModelProfile{}
 	p.Id = netex.CreateID("CycleModelProfile", b.origin, "default")
 	p.Version = "1"
 	p.ChildSeat = "none"
@@ -77,7 +77,7 @@ func (b *Bz) get() (SharingData, error) {
 
 	// Vehicles
 	for _, c := range b.cycles {
-		v := Vehicle{}
+		v := netex.Vehicle{}
 		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
 		v.Version = "1"
 		v.ValidBetween.AYear()
@@ -90,7 +90,7 @@ func (b *Bz) get() (SharingData, error) {
 	}
 
 	// Fleets = all Vehicles + operator
-	f := Fleet{}
+	f := netex.Fleet{}
 	f.Id = netex.CreateID("Fleet", b.origin)
 	f.Version = "1"
 	f.ValidBetween.AYear()
@@ -102,7 +102,7 @@ func (b *Bz) get() (SharingData, error) {
 
 	// Mobility services = Fleet + mode
 
-	s := VehicleSharingService{}
+	s := netex.VehicleSharingService{}
 	s.Id = netex.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
 	s.VehicleSharingRef = netex.MkRef("VehicleSharing", m.Id)
@@ -113,7 +113,7 @@ func (b *Bz) get() (SharingData, error) {
 	ret.Services = append(ret.Services, s)
 
 	// Constraint zone
-	c := MobilityServiceConstraintZone{}
+	c := netex.MobilityServiceConstraintZone{}
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon = ""

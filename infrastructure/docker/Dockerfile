@@ -10,7 +10,7 @@ WORKDIR app
 COPY src/main main
 CMD [ "./main"]
 
-FROM base as debug
+FROM base as dev
 WORKDIR /code
 # Air for auto rebuild on changes
 RUN go install github.com/cosmtrek/air@latest

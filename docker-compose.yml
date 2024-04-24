@@ -7,7 +7,7 @@ services:
     build:
       dockerfile: infrastructure/docker/Dockerfile
       context: . 
-      target: debug
+      target: dev
     env_file:
       - .env
     volumes:
@@ -17,6 +17,21 @@ services:
     tty: true
     ports:
       - ${SERVER_PORT}:8080
+        
+  validate:
+    depends_on: [app]
+    profiles: [validate]
+    build:
+      dockerfile_inline: |
+        FROM alpine:latest
+        RUN apk add --no-cache bash curl libxml2-utils
+    environment:
+      ENDPOINT: app:8080
+      TMPFILE: /tmp/foo.xml
+    entrypoint: ./validate.sh
+    working_dir: /val/validation
+    volumes:
+      - ./:/val
         
 volumes:
   pkg:

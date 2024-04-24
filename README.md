@@ -4,118 +4,60 @@ SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-Replace all `ToDo` notes with the appropriate names, descriptions and commands.
-
 # NeTEx and SIRI FM export for STA MaaS4Italy project
 
 [![REUSE Compliance](https://github.com/noi-techpark/java-boilerplate/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 
-ToDo: Description of the project.
+This API provides data from the Open Data Hub in the standard formats NeTEx (Italian Profile) and SIRI FM.
 
-## Table of contents
-
-- [ToDo: Project Name](#todo-project-name)
-  - [Table of contents](#table-of-contents)
-  - [Getting started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Source code](#source-code)
-    - [Execute without Docker](#execute-without-docker)
-    - [Execute with Docker](#execute-with-docker)
-  - [Information](#information)
-    - [Guidelines](#guidelines)
-    - [Support](#support)
-    - [Contributing](#contributing)
-    - [Documentation](#documentation)
-    - [Boilerplate](#boilerplate)
-    - [License](#license)
+It acts as a wrapper and has no internal data.
 
 ## Getting started
 
-These instructions will get you a copy of the project up and running
-on your local machine for development and testing purposes.
+Clone the repository and cd into it
 
-### Prerequisites
+We suggest using `docker compose up` to build and test.  
+The docker image provides live code reloading  
 
-To build the project, the following prerequisites must be met:
+To run natively
+```sh
+cd src
+go run .
+```
+Refer to the [docker file](infrastructure/docker/Dockerfile) and [docker-compose](docker-compose.yml) for more details
 
-- ToDo: Check the prerequisites
-- Java JDK 1.8 or higher (e.g. [OpenJDK](https://openjdk.java.net/))
-- [Maven](https://maven.apache.org/) 3.x
-- [PostgreSQL](https://www.postgresql.org/) 11
+## Tech stack
+The application is written in Go with
+ - [gin](https://github.com/gin-gonic/gin) for REST
+ - [air](https://github.com/cosmtrek/air) to provide live reloading during development (not mandatory)
 
-If you want to run the application using [Docker](https://www.docker.com/), the environment is already set up with all dependencies for you. You only have to install [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) and follow the instruction in the [dedicated section](#execute-with-docker).
+## Domain documentation
+See documentation on the procotols, see the [initial issue](https://github.com/noi-techpark/sta-nap-export/issues/1)
 
-### Source code
+The documents linked there are also in the [documentation](./documentation/) directory
 
-Get a copy of the repository:
+A subrepo [netex-italian-profile](netex-italian-profile) contains examples and validation xsd files.  
+Note that the Italian profile is an extension of the base NeTEx specification
 
+## Open Data Hub API calls
+Example calls such as the ones used by this API are provided in [calls.http](calls.http)
+
+## XML Validation
+The [validation](./validation) directory has a script to validate the produced XML files against the Italian Profile xsd.  
+`xmllint` is needed to run it locally, but we have also set up a dockerized version.  
 ```bash
-ToDo: git clone https://github.com/noi-techpark/project-name.git
+docker compose --profile validate up --attach validate --abort-on-container-exit
 ```
+This starts a local API, requests the XML files, adds the missing header parts, and validates them
 
-Change directory:
-
-```bash
-ToDo: cd project-name/
-```
-
-### Execute without Docker
-
-Copy the file `src/main/resources/application.properties` to `src/main/resources/application-local.properties` and adjust the variables that get their values from environment variables. You can take a look at the `.env.example` for some help.
-
-Build the project:
-
-```bash
-mvn -Dspring.profiles.active=local clean install
-```
-
-Run external dependencies, such as the database:
-
-```
-docker-compose -f docker-compose.dependencies.yml up --detach
-```
-
-Run the project:
-
-```bash
-mvn -Dspring.profiles.active=local spring-boot:run
-```
-
-The service will be available at localhost and your specified server port.
-
-To execute the test you can run the following command:
-
-```bash
-mvn clean test
-```
-
-### Execute with Docker
-
-Copy the file `.env.example` to `.env` and adjust the configuration parameters.
-
-Then you can start the application using the following command:
-
-```bash
-docker-compose up
-```
-
-The service will be available at localhost and your specified server port.
-
-To execute the test you can run the following command:
-
-```bash
-docker-compose run --rm app mvn clean test
-```
-
-## Information
-
+## General Information
 ### Guidelines
 
 Find [here](https://opendatahub.readthedocs.io/en/latest/guidelines.html) guidelines for developers.
 
 ### Support
 
-ToDo: For support, please contact [info@opendatahub.com](mailto:info@opendatahub.com).
+For support, please contact [info@opendatahub.com](mailto:info@opendatahub.com).
 
 ### Contributing
 
@@ -126,10 +68,6 @@ instructions.
 ### Documentation
 
 More documentation can be found at [https://opendatahub.readthedocs.io/en/latest/index.html](https://opendatahub.readthedocs.io/en/latest/index.html).
-
-### Boilerplate
-
-The project uses this boilerplate: [https://github.com/noi-techpark/java-boilerplate](https://github.com/noi-techpark/java-boilerplate).
 
 ### License
 
