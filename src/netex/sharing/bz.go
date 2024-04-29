@@ -59,7 +59,7 @@ func (b *Bz) get() (SharingData, error) {
 	sub.Id = netex.CreateID("Submode", b.origin)
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
-	sub.SelfDriveMode = "hireCycle"
+	sub.SelfDriveSubmode = "hireCycle"
 	m.Submodes = append(m.Submodes, sub)
 	ret.Modes = append(ret.Modes, m)
 
@@ -85,7 +85,7 @@ func (b *Bz) get() (SharingData, error) {
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
 		v.OperatorRef = netex.MkRef("Operator", o.Id)
-		v.VehicleTypeRef = netex.MkRef("VehicleType", p.Id)
+		v.VehicleTypeRef = netex.MkRef("CycleModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
 
@@ -116,7 +116,7 @@ func (b *Bz) get() (SharingData, error) {
 	c := netex.MobilityServiceConstraintZone{}
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
-	c.GmlPolygon = ""
+	c.GmlPolygon.Id = "1"
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 

@@ -13,6 +13,7 @@ GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation
 ### Bike sharing bolzano single bicycles
 GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
 ?where=sorigin.eq.BIKE_SHARING_BOLZANO,sactive.eq.true
+&limit=-1
 ### Bike sharing merano
 GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
 ?where=sorigin.eq.BIKE_SHARING_MERANO,sactive.eq.true

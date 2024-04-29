@@ -125,7 +125,7 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 		p.GmlPolygon = nil
 		op := getOperator(o.Sorigin)
 		ops[op.Id] = op
-		p.OperatorRef = netex.MkRef("Operator", o.Sorigin)
+		p.OperatorRef = netex.MkRef("Operator", op.Id)
 
 		p.Entrances = nil
 		p.ParkingType = defEmpty(o.Smeta.ParkingType, "undefined")

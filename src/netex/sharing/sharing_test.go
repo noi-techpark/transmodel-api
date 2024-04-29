@@ -32,6 +32,7 @@ func TestEmptyProvider(t *testing.T) {
 }
 
 func TestBzProvider(t *testing.T) {
+	netex.NinjaTestSetup()
 	_, err := frame([]SharingProvider{&Bz{}})
 	assert.NilError(t, err)
 }

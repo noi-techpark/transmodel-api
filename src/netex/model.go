@@ -33,11 +33,10 @@ type ResourceFrame struct {
 	Version        string   `xml:"version,attr"`
 	TypeOfFrameRef TypeOfFrameRef
 
-	Vehicles      *[]Vehicle           `xml:"vehicles>Vehicle"`
-	VehicleModels *[]VehicleModel      `xml:"models>VehicleModel"`
-	CarModels     *[]CarModelProfile   `xml:"carModels>CarModelProfile"`
-	CycleModels   *[]CycleModelProfile `xml:"cycleModels>CycleModelProfile"`
-	Operators     *[]Operator          `xml:"organisations>Operator"`
+	Operators   *[]Operator          `xml:"organisations>Operator"`
+	CarModels   *[]CarModelProfile   `xml:"vehicleModelProfiles>CarModelProfile"`
+	CycleModels *[]CycleModelProfile `xml:"vehicleModelProfiles>CycleModelProfile"`
+	Vehicles    *[]Vehicle           `xml:"vehicles>Vehicle"`
 }
 
 type SiteFrame struct {
@@ -106,17 +105,17 @@ type MobilityServiceFrame struct {
 		DefaultCurrency string
 	}
 
-	Fleets                         []Fleet                         `xml:"fleets"`
-	ModesOfOperation               []VehicleSharing                `xml:"modesOfOperation"`
-	MobilityServices               []VehicleSharingService         `xml:"mobilityServices"`
-	MobilityServiceConstraintZones []MobilityServiceConstraintZone `xml:"mobilityServiceContraintZones"`
+	Fleets                         []Fleet                         `xml:"fleets>Fleet"`
+	ModesOfOperation               []VehicleSharing                `xml:"modesOfOperation>VehicleSharing"`
+	MobilityServices               []VehicleSharingService         `xml:"mobilityServices>VehicleSharingService"`
+	MobilityServiceConstraintZones []MobilityServiceConstraintZone `xml:"mobilityServiceConstraintZones>MobilityServiceConstraintZone"`
 }
 
 type Fleet struct {
 	Id           string `xml:"id,attr"`
 	Version      string `xml:"version,attr"`
 	ValidBetween ValidBetween
-	Members      []Ref `xml:"members"`
+	Members      []Ref `xml:"members>VehicleRef"`
 	OperatorRef  Ref
 }
 
@@ -128,20 +127,10 @@ type Vehicle struct {
 	Name               string
 	ShortName          string
 	RegistrationNumber string
-	VehicleIdNumber    string
+	OperationalNumber  string
 	PrivateCode        string
 	OperatorRef        Ref
 	VehicleTypeRef     Ref
-}
-
-type VehicleModel struct {
-	Id             string `xml:"id,attr"`
-	Version        string `xml:"version,attr"`
-	ValidBetween   ValidBetween
-	Name           string
-	Description    string
-	Manufacturer   string
-	VehicleTypeRef Ref
 }
 
 type CycleModelProfile struct {
@@ -176,16 +165,16 @@ type CarModelProfile struct {
 }
 
 type Submode struct {
-	Id            string `xml:"id,attr"`
-	Version       string `xml:"version,attr"`
-	TransportMode string
-	SelfDriveMode string
+	Id               string `xml:"id,attr"`
+	Version          string `xml:"version,attr"`
+	TransportMode    string
+	SelfDriveSubmode string
 }
 
 type VehicleSharing struct {
 	Id       string    `xml:"id,attr"`
 	Version  string    `xml:"version,attr"`
-	Submodes []Submode `xml:"submodes"`
+	Submodes []Submode `xml:"submodes>Submode"`
 }
 
 type VehicleSharingService struct {
@@ -193,12 +182,14 @@ type VehicleSharingService struct {
 	Version           string `xml:"version,attr"`
 	VehicleSharingRef Ref
 	FloatingVehicles  bool
-	Fleets            []Ref `xml:"fleets"`
+	Fleets            []Ref `xml:"fleets>FleetRef"`
 }
 
 type MobilityServiceConstraintZone struct {
-	Id                string `xml:"id,attr"`
-	Version           string `xml:"version,attr"`
-	GmlPolygon        any    `xml:"http://www.opengis.net/gml Polygon"`
+	Id         string `xml:"id,attr"`
+	Version    string `xml:"version,attr"`
+	GmlPolygon struct {
+		Id string `xml:"http://www.opengis.net/gml/3.2 id,attr"`
+	} `xml:"http://www.opengis.net/gml/3.2 Polygon"`
 	VehicleSharingRef Ref
 }

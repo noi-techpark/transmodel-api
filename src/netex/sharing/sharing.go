@@ -54,22 +54,23 @@ func odhMob[T any](tp string, origin string) (T, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{tp}
-	req.Where = `sorigin.eq.` + origin
+	req.Where = `sorigin.eq.` + origin + `,sactive.eq.true`
 	var res ninja.NinjaResponse[T]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
 
 type SharingData struct {
-	Fleets        []netex.Fleet
-	Vehicles      []netex.Vehicle
-	VehicleModels []netex.VehicleModel
-	CarModels     []netex.CarModelProfile
-	CycleModels   []netex.CycleModelProfile
-	Operators     []netex.Operator
-	Modes         []netex.VehicleSharing
-	Services      []netex.VehicleSharingService
-	Constraints   []netex.MobilityServiceConstraintZone
+	Fleets   []netex.Fleet
+	Vehicles []netex.Vehicle
+	// VehicleTypes  []netex.VehicleType
+	// VehicleModels []netex.VehicleModel
+	CarModels   []netex.CarModelProfile
+	CycleModels []netex.CycleModelProfile
+	Operators   []netex.Operator
+	Modes       []netex.VehicleSharing
+	Services    []netex.VehicleSharingService
+	Constraints []netex.MobilityServiceConstraintZone
 }
 
 type SharingProvider interface {
@@ -87,7 +88,7 @@ func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	mob.FrameDefaults.DefaultCurrency = "EUR"
 
 	res := netex.ResourceFrame{}
-	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
+	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_COMMON", "ita")
 	res.Version = "1"
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 
@@ -103,8 +104,6 @@ func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
 		mob.MobilityServiceConstraintZones = append(mob.MobilityServiceConstraintZones, d.Constraints...)
 
 		res.Vehicles = netex.AppendSafe(res.Vehicles, d.Vehicles...)
-		res.Vehicles = netex.AppendSafe(res.Vehicles, d.Vehicles...)
-		res.VehicleModels = netex.AppendSafe(res.VehicleModels, d.VehicleModels...)
 		res.CarModels = netex.AppendSafe(res.CarModels, d.CarModels...)
 		res.CycleModels = netex.AppendSafe(res.CycleModels, d.CycleModels...)
 		res.Operators = netex.AppendSafe(res.Operators, d.Operators...)
