@@ -33,12 +33,13 @@ type ResourceFrame struct {
 	Version        string   `xml:"version,attr"`
 	TypeOfFrameRef TypeOfFrameRef
 
-	Vehicles      []Vehicle           `xml:"vehicles>Vehicle"`
-	VehicleModels []VehicleModel      `xml:"models>VehicleModel"`
-	CarModels     []CarModelProfile   `xml:"carModels>CarModelProfile"`
-	CycleModels   []CycleModelProfile `xml:"cycleModels>CycleModelProfile"`
-	Operators     []Operator          `xml:"operators>Operator"`
+	Vehicles      *[]Vehicle           `xml:"vehicles>Vehicle"`
+	VehicleModels *[]VehicleModel      `xml:"models>VehicleModel"`
+	CarModels     *[]CarModelProfile   `xml:"carModels>CarModelProfile"`
+	CycleModels   *[]CycleModelProfile `xml:"cycleModels>CycleModelProfile"`
+	Operators     *[]Operator          `xml:"organisations>Operator"`
 }
+
 type SiteFrame struct {
 	XMLName        xml.Name `xml:"SiteFrame"`
 	Id             string   `xml:"id,attr"`
@@ -70,7 +71,7 @@ type Operator struct {
 		Phone string
 		Url   string
 	}
-	OrganizationType string
+	OrganisationType string
 	Address          struct {
 		Id          string `xml:"id,attr"`
 		CountryName string

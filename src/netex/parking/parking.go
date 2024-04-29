@@ -98,7 +98,7 @@ func getOperator(id string) netex.Operator {
 	o.ContactDetails.Email = fmt.Sprintf("info@%s.it", id)
 	o.ContactDetails.Phone = "1234567890"
 	o.ContactDetails.Url = fmt.Sprintf("https://%s.it", id)
-	o.OrganizationType = "operator"
+	o.OrganisationType = "operator"
 	o.Address.Id = netex.CreateID("Address", id)
 	o.Address.CountryName = "Italia"
 	o.Address.Street = "Via A. Volta 13A"
@@ -165,7 +165,7 @@ func compFrame(ps []Parking, os []netex.Operator) netex.CompositeFrame {
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
 	site.Parkings = Parkings{Parkings: ps}
-	res.Operators = os
+	res.Operators = &os
 
 	return ret
 }

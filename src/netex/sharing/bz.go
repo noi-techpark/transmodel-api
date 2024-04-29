@@ -47,7 +47,7 @@ func (b *Bz) get() (SharingData, error) {
 	o.Name = b.origin
 	o.ShortName = b.origin
 	o.LegalName = b.origin
-	o.OrganizationType = "operator"
+	o.OrganisationType = "operator"
 	o.Address.Id = netex.CreateID("Address", b.origin)
 	ret.Operators = append(ret.Operators, o)
 

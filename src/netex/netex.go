@@ -43,9 +43,9 @@ func CreateFrameId(segments ...string) string {
 	return "edp:" + CreateID(segments...)
 }
 
-func MkRef(tp string, id string) Ref {
+func MkRef(tp string, segments ...string) Ref {
 	r := Ref{}
-	r.Ref = id
+	r.Ref = CreateID(append([]string{tp}, segments...)...)
 	r.Version = "1"
 	r.XMLName.Local = tp + "Ref"
 	return r
@@ -61,4 +61,14 @@ func MkTypeOfFrameRef(tp string) TypeOfFrameRef {
 func (v *ValidBetween) AYear() {
 	v.FromDate = time.Now().Truncate(time.Hour * 24)
 	v.ToDate = time.Now().AddDate(1, 0, 0).Truncate(time.Hour * 24)
+}
+
+func AppendSafe[T any](h *[]T, t ...T) *[]T {
+	if len(t) > 0 {
+		if h == nil {
+			h = &t
+		}
+		*h = append(*h, t...)
+	}
+	return h
 }

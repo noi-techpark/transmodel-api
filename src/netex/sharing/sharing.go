@@ -96,16 +96,18 @@ func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		mob.Fleets = append(mob.Fleets, d.Fleets...)
 		mob.ModesOfOperation = append(mob.ModesOfOperation, d.Modes...)
 		mob.MobilityServices = append(mob.MobilityServices, d.Services...)
 		mob.MobilityServiceConstraintZones = append(mob.MobilityServiceConstraintZones, d.Constraints...)
 
-		res.Vehicles = append(res.Vehicles, d.Vehicles...)
-		res.VehicleModels = append(res.VehicleModels, d.VehicleModels...)
-		res.CarModels = append(res.CarModels, d.CarModels...)
-		res.CycleModels = append(res.CycleModels, d.CycleModels...)
-		res.Operators = append(res.Operators, d.Operators...)
+		res.Vehicles = netex.AppendSafe(res.Vehicles, d.Vehicles...)
+		res.Vehicles = netex.AppendSafe(res.Vehicles, d.Vehicles...)
+		res.VehicleModels = netex.AppendSafe(res.VehicleModels, d.VehicleModels...)
+		res.CarModels = netex.AppendSafe(res.CarModels, d.CarModels...)
+		res.CycleModels = netex.AppendSafe(res.CycleModels, d.CycleModels...)
+		res.Operators = netex.AppendSafe(res.Operators, d.Operators...)
 	}
 
 	comp := netex.CompositeFrame{}
