@@ -38,4 +38,8 @@ src/tmp
 # Go workspace file
 go.work
 
+# output file of validation script
 validation/validate.xml
+
+# Libreoffice lock files
+.~lock.*
