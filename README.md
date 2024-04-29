@@ -45,10 +45,13 @@ Example calls such as the ones used by this API are provided in [calls.http](cal
 ## XML Validation
 The [validation](./validation) directory has a script to validate the produced XML files against the Italian Profile xsd.  
 `xmllint` is needed to run it locally, but we have also set up a dockerized version.  
+
 ```bash
 docker compose --profile validate up --attach validate --abort-on-container-exit
 ```
 This starts a local API, requests the XML files, adds the missing header parts, and validates them
+
+The XML file that was validated is saved in `./validation/validate.xml`
 
 ## General Information
 ### Guidelines

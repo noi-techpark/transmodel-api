@@ -35,18 +35,25 @@ func bzCentro() OdhParking {
 }
 
 func TestMapNetex(t *testing.T) {
-	o := bzCentro()
+	odh := bzCentro()
 
-	p := mapToNetex([]OdhParking{o})
-	ps := Parkings{Parkings: p}
+	ps, os := mapToNetex([]OdhParking{odh})
 
-	x, err := xml.MarshalIndent(ps, "", " ")
-	if err != nil {
-		t.Log(err)
-		t.Fail()
+	marshall := func(a any) string {
+		r, err := xml.MarshalIndent(a, "", " ")
+		if err != nil {
+			t.Log(err)
+			t.Fail()
+		}
+		return string(r)
 	}
 
-	t.Log(string(x))
+	s := marshall(ps)
+	t.Log(s)
+
+	s = marshall(os)
+	t.Log(s)
+
 }
 
 func TestParkingId(t *testing.T) {

@@ -14,12 +14,17 @@ services:
       - ./src:/code
       - pkg:/go/pkg/mod
     working_dir: /code
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
     tty: true
     ports:
       - ${SERVER_PORT}:8080
         
   validate:
-    depends_on: [app]
+    depends_on:
+      app:
+        condition: service_healthy
     profiles: [validate]
     build:
       dockerfile_inline: |
@@ -27,7 +32,7 @@ services:
         RUN apk add --no-cache bash curl libxml2-utils
     environment:
       ENDPOINT: app:8080
-      TMPFILE: /tmp/foo.xml
+      TMPFILE: /val/validation/validate.xml
     entrypoint: ./validate.sh
     working_dir: /val/validation
     volumes:

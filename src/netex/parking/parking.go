@@ -97,7 +97,7 @@ func getOperator(id string) netex.Operator {
 	o.TradingName = id
 	o.ContactDetails.Email = fmt.Sprintf("info@%s.it", id)
 	o.ContactDetails.Phone = "1234567890"
-	o.ContactDetails.URL = fmt.Sprintf("https://%s.it", id)
+	o.ContactDetails.Url = fmt.Sprintf("https://%s.it", id)
 	o.OrganizationType = "operator"
 	o.Address.Id = netex.CreateID("Address", id)
 	o.Address.CountryName = "Italia"
@@ -149,7 +149,7 @@ func validateXml(p any) error {
 	return nil
 }
 
-func GetParking() (netex.CompositeFrame, error) {
+func compFrame(ps []Parking, os []netex.Operator) netex.CompositeFrame {
 	var ret netex.CompositeFrame
 	ret.Defaults()
 	ret.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "PARKING", "ita")
@@ -164,14 +164,22 @@ func GetParking() (netex.CompositeFrame, error) {
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
+	site.Parkings = Parkings{Parkings: ps}
+	res.Operators = os
+
+	return ret
+}
+
+func GetParking() (netex.CompositeFrame, error) {
+	var ret netex.CompositeFrame
+
 	odh, err := getOdhParking()
 	if err != nil {
 		return ret, err
 	}
 
 	parkings, operators := mapToNetex(odh)
-	site.Parkings = Parkings{Parkings: parkings}
-	res.Operators = operators
+	ret = compFrame(parkings, operators)
 
 	err = validateXml(ret)
 	if err != nil {

@@ -68,7 +68,7 @@ type Operator struct {
 	ContactDetails struct {
 		Email string
 		Phone string
-		URL   string
+		Url   string
 	}
 	OrganizationType string
 	Address          struct {
