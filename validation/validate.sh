@@ -11,7 +11,7 @@ tmpfile="${TMPFILE:-validate.xml}"
 function vUrl () {
     parking=`curl $1`
     xmllint --format - <<<"${template//PLACEHOLDER/$parking}" > $tmpfile
-    xmllint --noout --schema ../netex-italian-profile/xsd/NeTEx_publication_Lev5.xsd $tmpfile
+    xmllint --noout --schema ../netex-italian-profile/xsd/NeTEx_publication_Lev4.xsd $tmpfile
 }
 
 vUrl $endpoint/netex/parking \
