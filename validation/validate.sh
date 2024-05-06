@@ -6,14 +6,20 @@
 
 template=$(<delivery_container.xml)
 endpoint="${ENDPOINT:-localhost:8000}"
+
 tmpfile="${TMPFILE:-validate.xml}"
 
 function vUrl () {
-    parking=`curl $1`
-    xmllint --format - <<<"${template//PLACEHOLDER/$parking}" > $tmpfile
+    content=""
+    for arg in "$@"
+    do
+        content+=`curl $arg`
+    done
+
+    xmllint --format - <<<"${template//PLACEHOLDER/$content}" > $tmpfile
     xmllint --noout --schema ../netex-italian-profile/xsd/NeTEx_publication_Lev4.xsd $tmpfile
 }
 
 vUrl $endpoint/netex/parking \
-&& vUrl $endpoint/netex/sharing
-
+&& vUrl $endpoint/netex/sharing \
+&& vUrl $endpoint/netex/parking $endpoint/netex/sharing
