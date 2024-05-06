@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/xml"
 	"log/slog"
 	"net/http"
 	nParking "opendatahub/sta-nap-export/netex/parking"
@@ -12,6 +13,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 	sloggin "github.com/samber/slog-gin"
 )
 
@@ -43,14 +45,15 @@ func parking(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-	c.XML(http.StatusOK, res)
+	prettyXML(c, http.StatusOK, res)
 }
 func sharing(c *gin.Context) {
 	res, err := nSharing.GetSharing()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-	c.XML(http.StatusOK, res)
+
+	prettyXML(c, http.StatusOK, res)
 }
 func realtime(c *gin.Context) {
 	scode := c.Param("id")
@@ -58,5 +61,15 @@ func realtime(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-	c.XML(http.StatusOK, res)
+	prettyXML(c, http.StatusOK, res)
+}
+
+func prettyXML(c *gin.Context, code int, object any) {
+	// Due to a request, this renders the xml in a pretty format.
+	// Once this is production ready, should probably switch back to just c.XML(...)
+	data, err := xml.MarshalIndent(object, "", "  ")
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	c.Render(code, render.Data{Data: data, ContentType: "application/xml; charset=utf-8"})
 }
