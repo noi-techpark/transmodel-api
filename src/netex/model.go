@@ -20,10 +20,11 @@ type CompositeFrame struct {
 			XmlnsUrl    string
 			Description string
 		}
-	} `xml:"codespaces"`
+		//} `xml:"codespaces"`
+	} `xml:"-"`
 	FrameDefaults struct {
 		DefaultCodespaceRef Ref
-	}
+	} `xml:"-"`
 	Frames struct{ Frames []any } `xml:"frames"`
 }
 
