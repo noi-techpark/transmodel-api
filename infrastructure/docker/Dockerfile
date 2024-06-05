@@ -8,7 +8,7 @@ EXPOSE 8080
 FROM base as build
 WORKDIR app
 COPY src/main main
-COPY src/resources resources
+COPY src/resources/ resources/
 CMD [ "./main"]
 
 FROM base as dev
