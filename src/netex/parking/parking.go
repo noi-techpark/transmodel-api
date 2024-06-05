@@ -55,15 +55,18 @@ type OdhParking struct {
 		Srid uint32  `json:"srid"`
 	} `json:"scoordinate"`
 	Smeta struct {
-		StandardName        string `json:"standard_name"`
-		ParkingType         string `json:"parkingtype"`
-		ParkingVehicleTypes string `json:"parkingvehicletypes"`
-		ParkingLayout       string `json:"parkinglayout"`
-		Capacity            int32  `json:"capacity"`
-		ParkingProhibitions bool   `json:"parkingprohibitions"`
-		ParkingCharging     bool   `json:"parkingcharging"`
-		ParkingSurveillance bool   `json:"parkingsurveillance"`
-		ParkingReservation  string `json:"parkingreservation"`
+		StandardName string `json:"standard_name"`
+		Capacity     int32  `json:"capacity"`
+		Municipality string `json:"municipality"`
+		Netex        struct {
+			Type             string `json:"type"`
+			VehicleTypes     string `json:"vehicletypes"`
+			Layout           string `json:"layout"`
+			HazardProhibited bool   `json:"hazard_prohibited"`
+			Charging         bool   `json:"charging"`
+			Surveillance     bool   `json:"surveillance"`
+			Reservation      string `json:"reservation"`
+		} `json:"netex_parking"`
 	} `json:"smetadata"`
 }
 
@@ -86,26 +89,12 @@ func defEmpty(s string, d string) string {
 	}
 }
 
-func getOperator(id string) netex.Operator {
-	o := netex.Operator{}
-	o.Id = netex.CreateID("Operator", id)
-	o.Version = "1"
-	o.PrivateCode = id
-	o.Name = id
-	o.ShortName = id
-	o.LegalName = id
-	o.TradingName = id
-	o.ContactDetails.Email = fmt.Sprintf("info@%s.it", id)
-	o.ContactDetails.Phone = "1234567890"
-	o.ContactDetails.Url = fmt.Sprintf("https://%s.it", id)
-	o.OrganisationType = "operator"
-	o.Address.Id = netex.CreateID("Address", id)
-	o.Address.CountryName = "Italia"
-	o.Address.Street = "Via A. Volta 13A"
-	o.Address.Town = "Bolzano"
-	o.Address.PostCode = "39100"
-	return o
-
+func originButWithHacks(p OdhParking) string {
+	// There are two different Operators that both have origin FBK (Trento and Rovereto)
+	if p.Sorigin == "FBK" {
+		return fmt.Sprintf("%s-%s", p.Sorigin, p.Smeta.Municipality)
+	}
+	return p.Sorigin
 }
 
 func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
@@ -123,20 +112,20 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 		p.Centroid.Location.Longitude = o.Scoord.X
 		p.Centroid.Location.Latitude = o.Scoord.Y
 		p.GmlPolygon = nil
-		op := getOperator(o.Sorigin)
+		op := netex.GetOperator(originButWithHacks(o))
 		ops[op.Id] = op
 		p.OperatorRef = netex.MkRef("Operator", op.Id)
 
 		p.Entrances = nil
-		p.ParkingType = defEmpty(o.Smeta.ParkingType, "undefined")
-		p.ParkingVehicleTypes = o.Smeta.ParkingVehicleTypes
-		p.ParkingLayout = defEmpty(o.Smeta.ParkingLayout, "undefined")
+		p.ParkingType = defEmpty(o.Smeta.Netex.Type, "undefined")
+		p.ParkingVehicleTypes = o.Smeta.Netex.VehicleTypes
+		p.ParkingLayout = defEmpty(o.Smeta.Netex.Layout, "undefined")
 		p.PrincipalCapacity = o.Smeta.Capacity
 		p.TotalCapacity = o.Smeta.Capacity
-		p.ProhibitedForHazardousMaterials = o.Smeta.ParkingProhibitions
-		p.RechargingAvailable = o.Smeta.ParkingProhibitions
-		p.Secure = o.Smeta.ParkingSurveillance
-		p.ParkingReservation = defEmpty(o.Smeta.ParkingReservation, "noReservations")
+		p.ProhibitedForHazardousMaterials = o.Smeta.Netex.HazardProhibited
+		p.RechargingAvailable = o.Smeta.Netex.Charging
+		p.Secure = o.Smeta.Netex.Surveillance
+		p.ParkingReservation = defEmpty(o.Smeta.Netex.Reservation, "noReservations")
 		p.ParkingProperties = nil
 
 		ps = append(ps, p)

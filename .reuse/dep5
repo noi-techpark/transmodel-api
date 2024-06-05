@@ -4,6 +4,6 @@ Upstream-Contact: NOI Techpark <digital@noi.bz.it>
 Source: https://github.com/noi-techpark/sta-nap-export
 
 Files: .github/* infrastructure .gitignore .gitmodules .pre-commit-config.yaml LICENSE.md .env.example mvnw mvnw.cmd .mvn/*
-       *.properties src/main/resources/db/migration/* src/go.mod src/go.sum calls.http
+       *.properties src/main/resources/db/migration/* src/go.mod src/go.sum calls.http src/resources/*.csv
 Copyright: (c) NOI Techpark <digital@noi.bz.it>
 License: CC0-1.0
