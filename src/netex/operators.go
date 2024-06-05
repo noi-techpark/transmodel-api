@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
+	"testing"
 
 	"github.com/gocarina/gocsv"
 )
@@ -41,8 +43,17 @@ func readOps(path string) []operatorCfg {
 var ops []operatorCfg
 
 func getCsvPath() string {
-	os, _ := os.Getwd()
-	return filepath.Join(os, "resources", "operators.csv")
+	// https://stackoverflow.com/questions/31873396/is-it-possible-to-get-the-current-root-of-package-structure-as-a-string-in-golan
+	// Relative paths are a pain in the butt with unit tests because they always execute from the module they are in
+	// This is a hack to always start from root folder and compose the full "absolute" path
+	if testing.Testing() {
+		_, b, _, _ := runtime.Caller(0)
+		root := filepath.Join(filepath.Dir(b), "../..")
+		return filepath.Join(root, "src", "resources", "operators.csv")
+	}
+
+	cwd, _ := os.Getwd()
+	return filepath.Join(cwd, "resources", "operators.csv")
 }
 
 func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
