@@ -20,17 +20,17 @@ func bzCentro() OdhParking {
 	o.Scode = "bolzano-centro"
 	o.Sname = "Bolzano Centro"
 	o.Sorigin = "skidata"
-	o.Scoord.X = 11.123123
-	o.Scoord.Y = 46.432132
-	o.Smeta.Capacity = 10
-	o.Smeta.StandardName = "Bolzano Centro 1"
-	o.Smeta.Netex.Type = "parkingZone"
-	o.Smeta.Netex.VehicleTypes = "all"
-	o.Smeta.Netex.Layout = "covered"
-	o.Smeta.Netex.HazardProhibited = true
-	o.Smeta.Netex.Charging = true
-	o.Smeta.Netex.Surveillance = false
-	o.Smeta.Netex.Reservation = "noReservations"
+	o.Scoordinate.X = 11.123123
+	o.Scoordinate.Y = 46.432132
+	o.Smetadata.Capacity = 10
+	o.Smetadata.StandardName = "Bolzano Centro 1"
+	o.Smetadata.Netex.Type = "parkingZone"
+	o.Smetadata.Netex.VehicleTypes = "all"
+	o.Smetadata.Netex.Layout = "covered"
+	o.Smetadata.Netex.HazardProhibited = true
+	o.Smetadata.Netex.Charging = true
+	o.Smetadata.Netex.Surveillance = false
+	o.Smetadata.Netex.Reservation = "noReservations"
 	return o
 }
 

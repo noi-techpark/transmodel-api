@@ -47,28 +47,30 @@ type Parking struct {
 }
 
 type OdhParking struct {
-	Scode   string `json:"scode"`
-	Sname   string `json:"sname"`
-	Sorigin string `json:"sorigin"`
-	Scoord  struct {
-		X    float32 `json:"x"`
-		Y    float32 `json:"y"`
-		Srid uint32  `json:"srid"`
-	} `json:"scoordinate"`
-	Smeta struct {
-		StandardName string `json:"standard_name"`
-		Capacity     int32  `json:"capacity"`
-		Municipality string `json:"municipality"`
+	Scode       string
+	Sname       string
+	Sorigin     string
+	Stype       string
+	Scoordinate struct {
+		X    float32
+		Y    float32
+		Srid uint32
+	}
+	Smetadata struct {
+		StandardName string
+		Capacity     int32
+		TotalPlaces  int32 // Bikeparking specific capacity
+		Municipality string
 		Netex        struct {
-			Type             string `json:"type"`
-			VehicleTypes     string `json:"vehicletypes"`
-			Layout           string `json:"layout"`
-			HazardProhibited bool   `json:"hazard_prohibited"`
-			Charging         bool   `json:"charging"`
-			Surveillance     bool   `json:"surveillance"`
+			Type             string
+			VehicleTypes     string
+			Layout           string
+			HazardProhibited bool `json:"hazard_prohibited"`
+			Charging         bool
+			Surveillance     bool
 			Reservation      string `json:"reservation"`
 		} `json:"netex_parking"`
-	} `json:"smetadata"`
+	}
 }
 
 func originList() string {
@@ -103,7 +105,7 @@ func defEmpty(s string, d string) string {
 func originButWithHacks(p OdhParking) string {
 	// There are two different Operators that both have origin FBK (Trento and Rovereto)
 	if p.Sorigin == "FBK" {
-		return fmt.Sprintf("%s-%s", p.Sorigin, p.Smeta.Municipality)
+		return fmt.Sprintf("%s-%s", p.Sorigin, p.Smetadata.Municipality)
 	}
 	return p.Sorigin
 }
@@ -117,27 +119,34 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 
 		p.Id = netex.CreateID("Parking", o.Scode)
 		p.Version = "1"
-		p.Name = o.Smeta.StandardName
 		p.ShortName = o.Sname
 		// p.Centroid.Location.Precision = 1  not sure what this actually does, according to specification not needed?
-		p.Centroid.Location.Longitude = o.Scoord.X
-		p.Centroid.Location.Latitude = o.Scoord.Y
+		p.Centroid.Location.Longitude = o.Scoordinate.X
+		p.Centroid.Location.Latitude = o.Scoordinate.Y
 		p.GmlPolygon = nil
 		op := netex.Cfg.GetOperator(originButWithHacks(o))
 		ops[op.Id] = op
 		p.OperatorRef = netex.MkRef("Operator", op.Id)
 
 		p.Entrances = nil
-		p.ParkingType = defEmpty(o.Smeta.Netex.Type, "undefined")
-		p.ParkingVehicleTypes = o.Smeta.Netex.VehicleTypes
-		p.ParkingLayout = defEmpty(o.Smeta.Netex.Layout, "undefined")
-		p.PrincipalCapacity = o.Smeta.Capacity
-		p.TotalCapacity = o.Smeta.Capacity
-		p.ProhibitedForHazardousMaterials = o.Smeta.Netex.HazardProhibited
-		p.RechargingAvailable = o.Smeta.Netex.Charging
-		p.Secure = o.Smeta.Netex.Surveillance
-		p.ParkingReservation = defEmpty(o.Smeta.Netex.Reservation, "noReservations")
+		p.ParkingType = defEmpty(o.Smetadata.Netex.Type, "undefined")
+		p.ParkingVehicleTypes = o.Smetadata.Netex.VehicleTypes
+		p.ParkingLayout = defEmpty(o.Smetadata.Netex.Layout, "undefined")
+		p.ProhibitedForHazardousMaterials = o.Smetadata.Netex.HazardProhibited
+		p.RechargingAvailable = o.Smetadata.Netex.Charging
+		p.Secure = o.Smetadata.Netex.Surveillance
+		p.ParkingReservation = defEmpty(o.Smetadata.Netex.Reservation, "noReservations")
 		p.ParkingProperties = nil
+
+		if o.Stype == "BikeParking" {
+			p.Name = o.Sname
+			p.PrincipalCapacity = o.Smetadata.TotalPlaces
+			p.TotalCapacity = o.Smetadata.TotalPlaces
+		} else {
+			p.Name = o.Smetadata.StandardName
+			p.PrincipalCapacity = o.Smetadata.Capacity
+			p.TotalCapacity = o.Smetadata.Capacity
+		}
 
 		ps = append(ps, p)
 	}
