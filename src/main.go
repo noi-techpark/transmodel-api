@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"log/slog"
 	"net/http"
+	"opendatahub/sta-nap-export/netex"
 	nParking "opendatahub/sta-nap-export/netex/parking"
 	nSharing "opendatahub/sta-nap-export/netex/sharing"
 	"opendatahub/sta-nap-export/siri"
@@ -19,6 +20,8 @@ import (
 
 func main() {
 	InitLogger()
+	netex.InitConfig()
+
 	r := gin.New()
 
 	if os.Getenv("GIN_LOG") == "PRETTY" {

@@ -35,6 +35,7 @@ func bzCentro() OdhParking {
 }
 
 func TestMapNetex(t *testing.T) {
+	netex.InitConfig()
 	odh := bzCentro()
 
 	ps, os := mapToNetex([]OdhParking{odh})

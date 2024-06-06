@@ -1,0 +1,103 @@
+# SPDX-FileCopyrightText: 2024 NOI Techpark <digital@noi.bz.it>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+- origin: BIKE_SHARING_BOLZANO
+  email: urp@comune.bolzano.it
+  phone: 0471997111
+  url: https://opencity.comune.bolzano.it/Servizi/Bike-Sharing-Bici-Bolzano
+  street: Vicolo Gumer 7
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  
+- origin: BIKE_SHARING_MERANO
+  email: info@comune.merano.bz.it
+  phone: 0473250111
+  url: https://www.comune.merano.bz.it/it/Bikesharing
+  street: Via Portici 192
+  town: Merano
+  postcode: 39012
+  country: Italy
+  
+- origin: BIKE_SHARING_PAPIN
+  email: info@papinsport.com
+  phone: 0474913450
+  url: https://www.papinsport.com/rent-a-bike/
+  street: Via Freising 9
+  town: San Candido
+  postcode: 39038
+  country: Italy
+  
+- origin: HAL-API
+  email: info@carsharing.bz.it
+  phone: 0471061319
+  url: https://www.carsharing.bz.it/it/
+  street: Via Beda Weber 1
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  
+- origin: FAMAS
+  email: urp@comune.bolzano.it
+  phone: 0471997111
+  url: https://opencity.comune.bolzano.it/Documenti-e-dati/Documenti-tecnici-di-supporto/Parcheggiare-in-citta
+  street: Vicolo Gumer 7
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  
+- origin: Municipality Merano
+  email: info@comune.merano.bz.it
+  phone: 0473250111
+  url: https://www.comune.merano.bz.it/it/Parcheggi
+  street: Via Portici 192
+  town: Merano
+  postcode: 39012
+  country: Italy
+  
+- origin: FBK-Trento
+  email: comurp@comune.trento.it
+  phone: 0461884111
+  url: https://www.comune.trento.it/Citta/Come-orientarsi/Parcheggi
+  street: Via Belenzani 19
+  town: Trento
+  postcode: 38122
+  country: Italy
+  
+- origin: FBK-Rovereto
+  email: urp@comune.rovereto.tn.it
+  phone: 0464452111
+  url: https://www.comune.rovereto.tn.it/Servizi/Sosta-e-parcheggi
+  street: Piazza Podestà 11
+  town: Rovereto
+  postcode: 38068
+  country: Italy
+  
+- origin: A22
+  email: a22@autobrennero.it
+  phone: 0461212611
+  url: https://www.autobrennero.it/it/in-viaggio/sosta-e-servizi/aree-di-servizio/
+  street: Via Berlino 10
+  town: Trento
+  postcode: 38121
+  country: Italy
+  
+- origin: skidata
+  email: info@sta.bz.it
+  phone: 0471312888
+  url: https://www.sta.bz.it
+  street: Via dei Conciapelli 60
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  
+- origin: bicincitta
+  email: info@sta.bz.it
+  phone: 0471312888
+  url: https://www.sta.bz.it
+  street: Via dei Conciapelli 60
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  

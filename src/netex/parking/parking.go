@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"strings"
 
 	"golang.org/x/exp/maps"
 )
@@ -70,11 +71,21 @@ type OdhParking struct {
 	} `json:"smetadata"`
 }
 
+func originList() string {
+	origins := netex.Cfg.ParkingOrigins()
+	quoted := []string{}
+	for _, o := range origins {
+		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
+	}
+	return strings.Join(quoted, ",")
+}
+
 func getOdhParking() ([]OdhParking, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
-	req.StationTypes = []string{"ParkingStation"}
+	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParking]
 	err := ninja.StationType(req, &res)
@@ -112,7 +123,7 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 		p.Centroid.Location.Longitude = o.Scoord.X
 		p.Centroid.Location.Latitude = o.Scoord.Y
 		p.GmlPolygon = nil
-		op := netex.GetOperator(originButWithHacks(o))
+		op := netex.Cfg.GetOperator(originButWithHacks(o))
 		ops[op.Id] = op
 		p.OperatorRef = netex.MkRef("Operator", op.Id)
 

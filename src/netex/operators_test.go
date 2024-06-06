@@ -10,17 +10,9 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestReadOps(t *testing.T) {
-	ops := readOps(getCsvPath())
-	if len(ops) == 0 {
-		t.Log("Operators loaded empty")
-		t.Fail()
-	}
-}
-
 func TestOpsContent(t *testing.T) {
-	ops := readOps(getCsvPath())
-	mapped := mapByOrigin(ops)
+	cfg := ReadConfig()
+	mapped := mapByOrigin(cfg.operators)
 
 	bsb := mapped["BIKE_SHARING_BOLZANO"]
 	assert.Equal(t, "urp@comune.bolzano.it", bsb.Email)

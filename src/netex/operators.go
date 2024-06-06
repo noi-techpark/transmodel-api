@@ -6,55 +6,9 @@ package netex
 
 import (
 	"log"
-	"os"
-	"path/filepath"
-	"runtime"
-	"testing"
 
-	"github.com/gocarina/gocsv"
+	"golang.org/x/exp/maps"
 )
-
-type operatorCfg struct {
-	Origin   string `csv:"origin"`
-	Email    string `csv:"email"`
-	Phone    string `csv:"phone"`
-	Url      string `csv:"url"`
-	Street   string `csv:"street"`
-	Town     string `csv:"town"`
-	Postcode string `csv:"postcode"`
-	Country  string `csv:"country"`
-}
-
-func readOps(path string) []operatorCfg {
-	f, err := os.Open(path)
-	if err != nil {
-		wd, _ := os.Getwd()
-		log.Panicln("Cannot open Operators csv.", wd, err)
-	}
-	defer f.Close()
-
-	ops := []operatorCfg{}
-	if err := gocsv.UnmarshalFile(f, &ops); err != nil {
-		log.Panic("Cannot unmarshal Operators csv", err)
-	}
-	return ops
-}
-
-var ops []operatorCfg
-
-func getCsvPath() string {
-	// https://stackoverflow.com/questions/31873396/is-it-possible-to-get-the-current-root-of-package-structure-as-a-string-in-golan
-	// Relative paths are a pain in the butt with unit tests because they always execute from the module they are in
-	// This is a hack to always start from root folder and compose the full "absolute" path
-	if testing.Testing() {
-		_, b, _, _ := runtime.Caller(0)
-		root := filepath.Join(filepath.Dir(b), "../..")
-		return filepath.Join(root, "src", "resources", "operators.csv")
-	}
-
-	cwd, _ := os.Getwd()
-	return filepath.Join(cwd, "resources", "operators.csv")
-}
 
 func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
 	ret := make(map[string]operatorCfg)
@@ -63,17 +17,12 @@ func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
 	}
 	return ret
 }
-func opsByOrigin() map[string]operatorCfg {
-	if ops == nil {
-		ops = readOps(getCsvPath())
-	}
-	return mapByOrigin(ops)
-}
 
-func GetOperator(id string) Operator {
-	cfg, found := opsByOrigin()[id]
+func (c *Config) GetOperator(id string) Operator {
+	mapped := mapByOrigin(c.operators)
+	cfg, found := mapped[id]
 	if !found {
-		log.Panic("Unable to map operator. Probably got some origin that we shouldn't have?")
+		log.Panicln("Unable to map operator. Probably got some origin that we shouldn't have?", id, maps.Keys(mapped))
 	}
 
 	o := Operator{}

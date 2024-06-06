@@ -8,12 +8,11 @@ EXPOSE 8080
 FROM base as build
 WORKDIR app
 COPY src/main main
-COPY src/resources/ resources/
+COPY src/config/ config/
 CMD [ "./main"]
 
 FROM base as dev
 WORKDIR /code
 # Air for auto rebuild on changes
-RUN go install github.com/cosmtrek/air@latest
-RUN air init
-CMD ["air"]
+RUN go install github.com/air-verse/air@latest
+CMD ["air", "-c", ".air.toml"]
