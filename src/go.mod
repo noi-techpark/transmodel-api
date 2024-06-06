@@ -8,8 +8,6 @@ require (
 	gotest.tools/v3 v3.5.1
 )
 
-require github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1 // indirect
-
 require (
 	github.com/bytedance/sonic v1.11.3 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -40,5 +38,5 @@ require (
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1
 )

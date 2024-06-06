@@ -153,11 +153,6 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 	return ps, maps.Values(ops)
 }
 
-func validateXml(p any) error {
-	// TODO: everything
-	return nil
-}
-
 func compFrame(ps []Parking, os []netex.Operator) netex.CompositeFrame {
 	var ret netex.CompositeFrame
 	ret.Defaults()
@@ -189,11 +184,6 @@ func GetParking() (netex.CompositeFrame, error) {
 
 	parkings, operators := mapToNetex(odh)
 	ret = compFrame(parkings, operators)
-
-	err = validateXml(ret)
-	if err != nil {
-		return ret, err
-	}
 
 	return ret, nil
 }
