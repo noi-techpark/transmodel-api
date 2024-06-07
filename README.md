@@ -32,19 +32,22 @@ The application is written in Go with
  - [air](https://github.com/cosmtrek/air) to provide live reloading during development (not mandatory)
 
 ## Domain documentation
-See documentation on the procotols, see the [initial issue](https://github.com/noi-techpark/sta-nap-export/issues/1)
+For documentation on the procotols, see the [initial issue](https://github.com/noi-techpark/sta-nap-export/issues/1)
 
 The documents linked there are also in the [documentation](./documentation/) directory
 
-A subrepo [netex-italian-profile](netex-italian-profile) contains examples and validation xsd files.  
-Note that the Italian profile is an extension of the base NeTEx specification
+The subrepo [netex-italian-profile](netex-italian-profile) tracks the [Italian netex profile repo](https://github.com/5Tsrl/netex-italian-profile) and contains examples and validation xsd files.  
+The Italian profile is an extension of the base NeTEx specification
 
 ## Open Data Hub API calls
 Example calls such as the ones used by this API are provided in [calls.http](calls.http)
 
+## Adding datasets to export
+Filters on which datasets are included are configured via [datasets.yml](src/config/datasets.yml).  
+
 ## XML Validation
 The [validation](./validation) directory has a script to validate the produced XML files against the Italian Profile xsd.  
-`xmllint` is needed to run it locally, but we have also set up a dockerized version.  
+[xmllint](https://xmllint.com/) is needed to run it locally, but we have also set up a dockerized version.  
 
 ```bash
 docker compose --profile validate up --attach validate --abort-on-container-exit
