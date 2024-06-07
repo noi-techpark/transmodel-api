@@ -119,7 +119,8 @@ func (b *BikeBz) get() (SharingData, error) {
 	c := netex.MobilityServiceConstraintZone{}
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
-	c.GmlPolygon.Id = "1"
+	c.GmlPolygon.Id = b.origin
+	c.GmlPolygon.SetPoly(GML_MUNICIPALITY_BZ)
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 

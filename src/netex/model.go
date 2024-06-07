@@ -186,11 +186,23 @@ type VehicleSharingService struct {
 	Fleets            []Ref `xml:"fleets>FleetRef"`
 }
 
+// Some hackery to always get the "gml" namespace prefix for our xmlns
+// The hardcoded polygons use the gml prefix, so we have to bind the namespace to it
+type GmlPolygon struct {
+	XMLName xml.Name `xml:"gml:Polygon"`
+	Id      string   `xml:"gml:id,attr"`
+	Polygon string   `xml:",innerxml"`
+	Xmlns   string   `xml:"xmlns:gml,attr"`
+}
+
+func (g *GmlPolygon) SetPoly(p string) {
+	g.Polygon = p
+	g.Xmlns = "http://www.opengis.net/gml/3.2"
+}
+
 type MobilityServiceConstraintZone struct {
-	Id         string `xml:"id,attr"`
-	Version    string `xml:"version,attr"`
-	GmlPolygon struct {
-		Id string `xml:"http://www.opengis.net/gml/3.2 id,attr"`
-	} `xml:"http://www.opengis.net/gml/3.2 Polygon"`
+	Id                string `xml:"id,attr"`
+	Version           string `xml:"version,attr"`
+	GmlPolygon        GmlPolygon
 	VehicleSharingRef Ref
 }

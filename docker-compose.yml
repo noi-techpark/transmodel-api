@@ -21,6 +21,7 @@ services:
     ports:
       - ${SERVER_PORT}:8080
         
+  # Runs xml validation
   validate:
     depends_on:
       app:
@@ -37,6 +38,8 @@ services:
     working_dir: /val/validation
     volumes:
       - ./:/val
+
+  # Runs unit tests
   test:
     build:
       dockerfile: infrastructure/docker/Dockerfile
