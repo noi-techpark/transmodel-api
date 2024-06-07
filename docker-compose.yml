@@ -37,6 +37,17 @@ services:
     working_dir: /val/validation
     volumes:
       - ./:/val
+  test:
+    build:
+      dockerfile: infrastructure/docker/Dockerfile
+      context: . 
+      target: test
+    profiles: [test]
+    working_dir: /code
+    volumes:
+      - ./src:/code
+      - pkg:/go/pkg/mod
+    tty: true
         
 volumes:
   pkg:

@@ -12,7 +12,6 @@ import (
 )
 
 func TestOdhGetSharing(t *testing.T) {
-	netex.TestOdhGet(t, bzSharing)
 	netex.TestOdhGet(t, bzBike)
 	netex.TestOdhGet(t, meBike)
 	netex.TestOdhGet(t, papingSharing)
@@ -33,7 +32,8 @@ func TestEmptyProvider(t *testing.T) {
 
 func TestBzProvider(t *testing.T) {
 	netex.NinjaTestSetup()
-	_, err := frame([]SharingProvider{&Bz{}})
+	netex.InitConfig()
+	_, err := frame([]SharingProvider{&BikeBz{}})
 	assert.NilError(t, err)
 }
 

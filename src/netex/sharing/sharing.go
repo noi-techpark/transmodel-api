@@ -16,13 +16,6 @@ type Company struct {
 	FullName  string `json:"fullName"`
 }
 
-// type SharingMeta struct {
-// 	Company      Company `json:"company"`
-// 	LicensePlate string  `json:"licensePlate"`
-// 	Electric     bool    `json:"electric"`
-// 	Brand        bool    `json:"brand"`
-// }
-
 type OdhMobility[T any] struct {
 	Scode   string `json:"scode"`
 	Sname   string `json:"sname"`
@@ -78,7 +71,7 @@ type SharingProvider interface {
 }
 
 func GetSharing() (*netex.CompositeFrame, error) {
-	return frame([]SharingProvider{&Bz{}})
+	return frame([]SharingProvider{&BikeBz{}})
 }
 
 func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {

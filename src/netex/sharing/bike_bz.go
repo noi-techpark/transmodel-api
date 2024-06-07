@@ -9,13 +9,11 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-type odhBzShare []OdhMobility[metaAny]
 type odhBzBike []OdhMobility[BzCycleMeta]
 
-type Bz struct {
-	sharing odhBzShare
-	cycles  odhBzBike
-	origin  string
+type BikeBz struct {
+	cycles odhBzBike
+	origin string
 }
 
 type BzCycleMeta struct {
@@ -28,14 +26,8 @@ type BzCycleMeta struct {
 
 const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
 
-func (b *Bz) init() error {
+func (b *BikeBz) init() error {
 	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
-
-	s, err := bzSharing()
-	if err != nil {
-		return err
-	}
-	b.sharing = s
 
 	bk, err := bzBike()
 	if err != nil {
@@ -45,7 +37,7 @@ func (b *Bz) init() error {
 	return nil
 }
 
-func (b *Bz) get() (SharingData, error) {
+func (b *BikeBz) get() (SharingData, error) {
 	ret := SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
@@ -132,10 +124,6 @@ func (b *Bz) get() (SharingData, error) {
 	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil
-}
-
-func bzSharing() (odhBzShare, error) {
-	return odhMob[odhBzShare]("BikesharingStation", ORIGIN_BIKE_SHARING_BOLZANO)
 }
 func bzBike() (odhBzBike, error) {
 	return odhMob[odhBzBike]("Bicycle", ORIGIN_BIKE_SHARING_BOLZANO)

@@ -45,6 +45,10 @@ Example calls such as the ones used by this API are provided in [calls.http](cal
 ## Adding datasets to export
 Filters on which datasets are included are configured via [datasets.yml](src/config/datasets.yml).  
 
+## Running automated tests
+Native: From `/src` folder run `go test ./...`  
+Docker: `docker compose up test`
+
 ## XML Validation
 The [validation](./validation) directory has a script to validate the produced XML files against the Italian Profile xsd.  
 [xmllint](https://xmllint.com/) is needed to run it locally, but we have also set up a dockerized version.  

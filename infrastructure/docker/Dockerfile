@@ -16,3 +16,7 @@ WORKDIR /code
 # Air for auto rebuild on changes
 RUN go install github.com/air-verse/air@latest
 CMD ["air", "-c", ".air.toml"]
+
+FROM base as test
+WORKDIR /code
+CMD ["go", "test", "./..."]

@@ -66,8 +66,7 @@ func fixRelPath(path ...string) string {
 	// This is a hack to always start from root folder and compose the full "absolute" path
 	if testing.Testing() {
 		_, b, _, _ := runtime.Caller(0)
-		root := filepath.Join(filepath.Dir(b), "../..")
-		cwd = filepath.Join(root, "src")
+		cwd = filepath.Join(filepath.Dir(b), "..")
 	}
 
 	return filepath.Join(append([]string{cwd}, path...)...)
