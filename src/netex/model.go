@@ -116,8 +116,26 @@ type Fleet struct {
 	Id           string `xml:"id,attr"`
 	Version      string `xml:"version,attr"`
 	ValidBetween ValidBetween
-	Members      []Ref `xml:"members>VehicleRef"`
+	Members      Members
 	OperatorRef  Ref
+}
+
+// structure is members>VehicleRef[], we need this hack to not render the members tag if vehicleref list is empty
+type Members []Ref
+
+func (m *Members) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(*m) == 0 {
+		return nil
+	}
+	members := xml.StartElement{Name: xml.Name{Local: "members"}}
+	e.EncodeToken(members)
+	for _, r := range *m {
+		if err := e.EncodeElement(r, xml.StartElement{Name: xml.Name{Local: "VehicleRef"}}); err != nil {
+			return err
+		}
+	}
+	e.EncodeToken(members.End())
+	return nil
 }
 
 type Vehicle struct {

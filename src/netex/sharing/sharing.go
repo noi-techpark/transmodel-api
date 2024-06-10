@@ -72,7 +72,11 @@ type SharingProvider interface {
 
 func GetSharing() (*netex.CompositeFrame, error) {
 	// Add new sharing providers here
-	return frame([]SharingProvider{&BikeBz{}, &BikeMe{}})
+	return frame([]SharingProvider{
+		&BikeBz{},
+		&BikeMe{},
+		&BikePapin{},
+	})
 }
 
 func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {

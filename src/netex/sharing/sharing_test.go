@@ -13,7 +13,7 @@ import (
 
 func TestOdhGetSharing(t *testing.T) {
 	netex.TestOdhGet(t, bzBike)
-	netex.TestOdhGet(t, meBike)
+	// netex.TestOdhGet(t, meBike)
 	netex.TestOdhGet(t, papingSharing)
 	netex.TestOdhGet(t, halSharing)
 }

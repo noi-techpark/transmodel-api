@@ -24,17 +24,10 @@ type MeCycleMeta struct {
 	Basket   bool
 }
 
-const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
-
 func (b *BikeMe) init() error {
-	b.origin = ORIGIN_BIKE_SHARING_MERANO
+	b.origin = "BIKE_SHARING_MERANO"
 
-	bk, err := meBike()
-	if err != nil {
-		return err
-	}
-	b.cycles = bk
-	return nil
+	return b.fetch()
 }
 
 func (b *BikeMe) get() (SharingData, error) {
@@ -126,6 +119,8 @@ func (b *BikeMe) get() (SharingData, error) {
 
 	return ret, nil
 }
-func meBike() (odhMeBike, error) {
-	return odhMob[odhMeBike]("Bicycle", ORIGIN_BIKE_SHARING_MERANO)
+func (b *BikeMe) fetch() error {
+	bk, err := odhMob[odhMeBike]("Bicycle", b.origin)
+	b.cycles = bk
+	return err
 }
