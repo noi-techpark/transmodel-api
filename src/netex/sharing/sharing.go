@@ -37,7 +37,7 @@ func (pc *Company) UnmarshalJSON(p []byte) error {
 	}
 	slog.Debug("unmarshalling ", "str", string(p))
 	// Prevent recursion to this method by declaring a new
-	// type with same underlying type as PrimaryContact and
+	// type with same underlying type as Company and
 	// no methods.
 	type x Company
 	return json.Unmarshal(p, (*x)(pc))
@@ -71,7 +71,8 @@ type SharingProvider interface {
 }
 
 func GetSharing() (*netex.CompositeFrame, error) {
-	return frame([]SharingProvider{&BikeBz{}})
+	// Add new sharing providers here
+	return frame([]SharingProvider{&BikeBz{}, &BikeMe{}})
 }
 
 func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {

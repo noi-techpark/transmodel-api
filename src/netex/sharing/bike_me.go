@@ -3,18 +3,30 @@
 
 package sharing
 
-import "opendatahub/sta-nap-export/netex"
+import (
+	"opendatahub/sta-nap-export/netex"
 
-type odhMeBike []OdhMobility[metaAny]
+	"golang.org/x/exp/maps"
+)
 
-type Me struct {
+type odhMeBike []OdhMobility[MeCycleMeta]
+
+type BikeMe struct {
 	cycles odhMeBike
 	origin string
 }
 
+type MeCycleMeta struct {
+	Model    string
+	Electric bool
+	Lamp     bool
+	Lock     bool
+	Basket   bool
+}
+
 const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
-func (b *Me) init() error {
+func (b *BikeMe) init() error {
 	b.origin = ORIGIN_BIKE_SHARING_MERANO
 
 	bk, err := meBike()
@@ -25,22 +37,14 @@ func (b *Me) init() error {
 	return nil
 }
 
-func (b *Me) get() (SharingData, error) {
+func (b *BikeMe) get() (SharingData, error) {
 	ret := SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}
 
 	// Operators
-	o := netex.Operator{}
-	o.Id = netex.CreateID("Operator", b.origin)
-	o.Version = "1"
-	o.PrivateCode = b.origin
-	o.Name = b.origin
-	o.ShortName = b.origin
-	o.LegalName = b.origin
-	o.OrganisationType = "operator"
-	o.Address.Id = netex.CreateID("Address", b.origin)
+	o := netex.Cfg.GetOperator(b.origin)
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
@@ -55,31 +59,38 @@ func (b *Me) get() (SharingData, error) {
 	m.Submodes = append(m.Submodes, sub)
 	ret.Modes = append(ret.Modes, m)
 
-	// Cycle model profile
-	p := netex.CycleModelProfile{}
-	p.Id = netex.CreateID("CycleModelProfile", b.origin, "default")
-	p.Version = "1"
-	p.ChildSeat = "none"
-	p.Battery = true // todo map
-	p.Lamps = true   // todo map
-	p.Pump = false
-	p.Basket = true // todo map
-	p.Lock = false  // true for merano
-	ret.CycleModels = append(ret.CycleModels, p)
+	models := make(map[string]netex.CycleModelProfile)
 
-	// Vehicles
 	for _, c := range b.cycles {
+		p, found := models[c.Smeta.Model]
+		if !found {
+			// Cycle model profile
+			p := netex.CycleModelProfile{}
+			p.Id = netex.CreateID("CycleModelProfile", b.origin, c.Smeta.Model)
+			p.Version = "1"
+			p.ChildSeat = "none"
+			// Assume model and features map correctly, just take the first one we encounter
+			p.Battery = c.Smeta.Electric
+			p.Lamps = c.Smeta.Lamp
+			p.Pump = false
+			p.Basket = c.Smeta.Basket
+			p.Lock = c.Smeta.Lock
+			models[c.Smeta.Model] = p
+		}
+
+		// Vehicles
 		v := netex.Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.origin, c.Sname)
+		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
 		v.Version = "1"
 		v.ValidBetween.AYear()
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
 		v.OperatorRef = netex.MkRef("Operator", o.Id)
-		v.VehicleTypeRef = netex.MkRef("VehicleType", p.Id)
+		v.VehicleTypeRef = netex.MkRef("CycleModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
+	ret.CycleModels = maps.Values(models)
 
 	// Fleets = all Vehicles + operator
 	f := netex.Fleet{}
@@ -108,13 +119,13 @@ func (b *Me) get() (SharingData, error) {
 	c := netex.MobilityServiceConstraintZone{}
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
-	c.GmlPolygon.Id = "1"
+	c.GmlPolygon.Id = b.origin
+	c.GmlPolygon.SetPoly(GML_MUNICIPALITY_ME)
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil
 }
-
 func meBike() (odhMeBike, error) {
 	return odhMob[odhMeBike]("Bicycle", ORIGIN_BIKE_SHARING_MERANO)
 }
