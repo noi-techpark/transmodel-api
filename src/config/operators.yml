@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-- origin: BIKE_SHARING_BOLZANO
+- origin: [BIKE_SHARING_BOLZANO]
+  id: "Municipality of Bolzano bikesharing"
   name: Municipality of Bolzano
   email: urp@comune.bolzano.it
   phone: 0471997111
@@ -12,7 +13,8 @@
   postcode: 39100
   country: Italy
   
-- origin: BIKE_SHARING_MERANO
+- origin: [BIKE_SHARING_MERANO]
+  id: "Municipality of Merano bikesharing"
   name: Municipality of Merano
   email: info@comune.merano.bz.it
   phone: 0473250111
@@ -22,7 +24,8 @@
   postcode: 39012
   country: Italy
   
-- origin: BIKE_SHARING_PAPIN
+- origin: [BIKE_SHARING_PAPIN]
+  id: Papin Sport
   name: Papin Sport
   email: info@papinsport.com
   phone: 0474913450
@@ -32,7 +35,8 @@
   postcode: 39038
   country: Italy
   
-- origin: HAL-API
+- origin: [HAL-API]
+  id: Car Sharing Alto Adige
   name: Car Sharing Alto Adige
   email: info@carsharing.bz.it
   phone: 0471061319
@@ -42,7 +46,8 @@
   postcode: 39100
   country: Italy
   
-- origin: FAMAS
+- origin: [FAMAS]
+  id: "Municipality of Bolzano parking"
   name: Municipality of Bolzano
   email: urp@comune.bolzano.it
   phone: 0471997111
@@ -52,7 +57,8 @@
   postcode: 39100
   country: Italy
   
-- origin: Municipality Merano
+- origin: [Municipality Merano]
+  id: "Municipality of Merano parking"
   name: Municipality of Merano
   email: info@comune.merano.bz.it
   phone: 0473250111
@@ -62,7 +68,8 @@
   postcode: 39012
   country: Italy
   
-- origin: FBK-Trento
+- origin: [FBK-Trento]
+  id: Municipality of Trento
   name: Municipality of Trento
   email: comurp@comune.trento.it
   phone: 0461884111
@@ -72,7 +79,8 @@
   postcode: 38122
   country: Italy
   
-- origin: FBK-Rovereto
+- origin: [FBK-Rovereto]
+  id: Municipality of Rovereto
   name: Municipality of Rovereto
   email: urp@comune.rovereto.tn.it
   phone: 0464452111
@@ -82,7 +90,8 @@
   postcode: 38068
   country: Italy
   
-- origin: A22
+- origin: [A22]
+  id: A22
   name: A22
   email: a22@autobrennero.it
   phone: 0461212611
@@ -92,17 +101,10 @@
   postcode: 38121
   country: Italy
   
-- origin: skidata
-  name: STA
-  email: info@sta.bz.it
-  phone: 0471312888
-  url: https://www.sta.bz.it
-  street: Via dei Conciapelli 60
-  town: Bolzano
-  postcode: 39100
-  country: Italy
-  
-- origin: bicincitta
+- origin: 
+    - bicincitta
+    - skidata
+  id: STA
   name: STA
   email: info@sta.bz.it
   phone: 0471312888

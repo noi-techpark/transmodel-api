@@ -28,7 +28,8 @@ type datasetCfg struct {
 }
 
 type operatorCfg struct {
-	Origin   string
+	Origin   []string
+	Id       string
 	Name     string
 	Email    string
 	Phone    string

@@ -13,7 +13,9 @@ import (
 func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
 	ret := make(map[string]operatorCfg)
 	for _, o := range p {
-		ret[o.Origin] = o
+		for _, origin := range o.Origin {
+			ret[origin] = o
+		}
 	}
 	return ret
 }
@@ -26,9 +28,9 @@ func (c *Config) GetOperator(id string) Operator {
 	}
 
 	o := Operator{}
-	o.Id = CreateID("Operator", id)
+	o.Id = CreateID("Operator", cfg.Id)
 	o.Version = "1"
-	o.PrivateCode = id
+	o.PrivateCode = cfg.Id
 	o.Name = cfg.Name
 	o.ShortName = cfg.Name
 	o.LegalName = cfg.Name
@@ -37,7 +39,7 @@ func (c *Config) GetOperator(id string) Operator {
 	o.ContactDetails.Phone = cfg.Phone
 	o.ContactDetails.Url = cfg.Url
 	o.OrganisationType = "operator"
-	o.Address.Id = CreateID("Address", id)
+	o.Address.Id = CreateID("Address", cfg.Name)
 	o.Address.CountryName = cfg.Country
 	o.Address.Street = cfg.Street
 	o.Address.Town = cfg.Town
