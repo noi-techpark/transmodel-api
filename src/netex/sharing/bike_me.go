@@ -80,7 +80,7 @@ func (b *BikeMe) get() (SharingData, error) {
 
 		// Vehicles
 		v := netex.Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
+		v.Id = netex.CreateID("Vehicle", b.origin, c.Sname)
 		v.Version = "1"
 		v.ValidBetween.AYear()
 		v.Name = c.Sname
