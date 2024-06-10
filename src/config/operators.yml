@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 - origin: BIKE_SHARING_BOLZANO
+  name: Municipality of Bolzano
   email: urp@comune.bolzano.it
   phone: 0471997111
   url: https://opencity.comune.bolzano.it/Servizi/Bike-Sharing-Bici-Bolzano
@@ -12,6 +13,7 @@
   country: Italy
   
 - origin: BIKE_SHARING_MERANO
+  name: Municipality of Merano
   email: info@comune.merano.bz.it
   phone: 0473250111
   url: https://www.comune.merano.bz.it/it/Bikesharing
@@ -21,6 +23,7 @@
   country: Italy
   
 - origin: BIKE_SHARING_PAPIN
+  name: Papin Sport
   email: info@papinsport.com
   phone: 0474913450
   url: https://www.papinsport.com/rent-a-bike/
@@ -30,6 +33,7 @@
   country: Italy
   
 - origin: HAL-API
+  name: Car Sharing Alto Adige
   email: info@carsharing.bz.it
   phone: 0471061319
   url: https://www.carsharing.bz.it/it/
@@ -39,6 +43,7 @@
   country: Italy
   
 - origin: FAMAS
+  name: Municipality of Bolzano
   email: urp@comune.bolzano.it
   phone: 0471997111
   url: https://opencity.comune.bolzano.it/Documenti-e-dati/Documenti-tecnici-di-supporto/Parcheggiare-in-citta
@@ -48,6 +53,7 @@
   country: Italy
   
 - origin: Municipality Merano
+  name: Municipality of Merano
   email: info@comune.merano.bz.it
   phone: 0473250111
   url: https://www.comune.merano.bz.it/it/Parcheggi
@@ -57,6 +63,7 @@
   country: Italy
   
 - origin: FBK-Trento
+  name: Municipality of Trento
   email: comurp@comune.trento.it
   phone: 0461884111
   url: https://www.comune.trento.it/Citta/Come-orientarsi/Parcheggi
@@ -66,6 +73,7 @@
   country: Italy
   
 - origin: FBK-Rovereto
+  name: Municipality of Rovereto
   email: urp@comune.rovereto.tn.it
   phone: 0464452111
   url: https://www.comune.rovereto.tn.it/Servizi/Sosta-e-parcheggi
@@ -75,6 +83,7 @@
   country: Italy
   
 - origin: A22
+  name: A22
   email: a22@autobrennero.it
   phone: 0461212611
   url: https://www.autobrennero.it/it/in-viaggio/sosta-e-servizi/aree-di-servizio/
@@ -84,6 +93,7 @@
   country: Italy
   
 - origin: skidata
+  name: STA
   email: info@sta.bz.it
   phone: 0471312888
   url: https://www.sta.bz.it
@@ -93,6 +103,7 @@
   country: Italy
   
 - origin: bicincitta
+  name: STA
   email: info@sta.bz.it
   phone: 0471312888
   url: https://www.sta.bz.it

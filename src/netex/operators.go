@@ -29,10 +29,10 @@ func (c *Config) GetOperator(id string) Operator {
 	o.Id = CreateID("Operator", id)
 	o.Version = "1"
 	o.PrivateCode = id
-	o.Name = id
-	o.ShortName = id
-	o.LegalName = id
-	o.TradingName = id
+	o.Name = cfg.Name
+	o.ShortName = cfg.Name
+	o.LegalName = cfg.Name
+	o.TradingName = cfg.Name
 	o.ContactDetails.Email = cfg.Email
 	o.ContactDetails.Phone = cfg.Phone
 	o.ContactDetails.Url = cfg.Url
