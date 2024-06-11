@@ -45,7 +45,7 @@ type SiteFrame struct {
 	Id             string   `xml:"id,attr"`
 	Version        string   `xml:"version,attr"`
 	TypeOfFrameRef TypeOfFrameRef
-	Parkings       any `xml:"parkings,omitempty"`
+	Parkings       Parkings `xml:"parkings,omitempty"`
 }
 
 func (c *CompositeFrame) Defaults() {
@@ -223,4 +223,66 @@ type MobilityServiceConstraintZone struct {
 	Version           string `xml:"version,attr"`
 	GmlPolygon        GmlPolygon
 	VehicleSharingRef Ref
+}
+
+type Parkings struct {
+	XMLName  xml.Name `xml:"parkings"`
+	Parkings []Parking
+}
+
+type Parking struct {
+	XMLName   xml.Name `xml:"Parking"`
+	Id        string   `xml:"id,attr"`
+	Version   string   `xml:"version,attr"`
+	Name      string
+	ShortName string
+	Centroid  struct {
+		Location struct {
+			Longitude float32
+			Latitude  float32
+		}
+	}
+	GmlPolygon                      any `xml:"gml:Polygon"`
+	OperatorRef                     Ref
+	Entrances                       any `xml:"entrances"`
+	ParkingType                     string
+	ParkingVehicleTypes             string
+	ParkingLayout                   string
+	PrincipalCapacity               int32
+	TotalCapacity                   int32
+	ProhibitedForHazardousMaterials N[bool]
+	RechargingAvailable             bool
+	Secure                          N[bool]
+	ParkingReservation              string
+	ParkingProperties               any
+}
+
+// Nullable wrapper. If not explicitly set, it doesn't render in xml
+type N[T any] struct {
+	set bool
+	v   *T
+}
+
+// Sets value and makes it render
+func (n *N[t]) Set(v t) {
+	n.set = true
+	n.v = &v
+}
+
+// like set, but if value is nil, don't render
+func (n *N[t]) Maybe(v *t) {
+	n.set = v == nil
+	n.v = v
+}
+
+// Sets value and makes it render
+func (n *N[t]) Ignore() {
+	n.Maybe(nil)
+}
+
+func (n *N[any]) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if n.set {
+		return e.EncodeElement(n.v, start)
+	}
+	return nil
 }

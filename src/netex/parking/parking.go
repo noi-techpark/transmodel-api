@@ -4,7 +4,6 @@
 package parking
 
 import (
-	"encoding/xml"
 	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
@@ -12,39 +11,6 @@ import (
 
 	"golang.org/x/exp/maps"
 )
-
-type Parkings struct {
-	XMLName  xml.Name `xml:"parkings"`
-	Parkings []Parking
-}
-
-type Parking struct {
-	XMLName   xml.Name `xml:"Parking"`
-	Id        string   `xml:"id,attr"`
-	Version   string   `xml:"version,attr"`
-	Name      string
-	ShortName string
-	Centroid  struct {
-		Location struct {
-			Longitude float32
-			Latitude  float32
-			//Precision int8
-		}
-	}
-	GmlPolygon                      any `xml:"gml:Polygon"`
-	OperatorRef                     netex.Ref
-	Entrances                       any `xml:"entrances"`
-	ParkingType                     string
-	ParkingVehicleTypes             string
-	ParkingLayout                   string
-	PrincipalCapacity               int32
-	TotalCapacity                   int32
-	ProhibitedForHazardousMaterials bool
-	RechargingAvailable             bool
-	Secure                          bool
-	ParkingReservation              string
-	ParkingProperties               any
-}
 
 type OdhParking struct {
 	Scode       string
@@ -72,6 +38,20 @@ type OdhParking struct {
 		} `json:"netex_parking"`
 	}
 }
+type OdhEcharging struct {
+	Scode       string
+	Sname       string
+	Sorigin     string
+	Scoordinate struct {
+		X    float32
+		Y    float32
+		Srid uint32
+	}
+	Smetadata struct {
+		State    string
+		Capacity int32
+	}
+}
 
 func originList() string {
 	origins := netex.Cfg.ParkingOrigins()
@@ -93,6 +73,20 @@ func getOdhParking() ([]OdhParking, error) {
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
+func getOdhEcharging() ([]OdhEcharging, error) {
+	req := ninja.DefaultNinjaRequest()
+	req.Limit = -1
+	req.StationTypes = []string{"EchargingStation"}
+	req.Where = "sactive.eq.true"
+	//req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
+	// Rudimentary geographical limit
+	req.Where += fmt.Sprintf(",scoordinate.bbi.(%s)", bboxSouthTyrol)
+	var res ninja.NinjaResponse[[]OdhEcharging]
+	err := ninja.StationType(req, &res)
+	return res.Data, err
+}
+
+const bboxSouthTyrol = "10.368347,46.185535,12.551880,47.088826,4326"
 
 func defEmpty(s string, d string) string {
 	if s == "" {
@@ -110,12 +104,12 @@ func originButWithHacks(p OdhParking) string {
 	return p.Sorigin
 }
 
-func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
+func mapParking(os []OdhParking) ([]netex.Parking, []netex.Operator) {
 	ops := make(map[string]netex.Operator)
 
-	var ps []Parking
+	var ps []netex.Parking
 	for _, o := range os {
-		var p Parking
+		var p netex.Parking
 
 		p.Id = netex.CreateID("Parking", o.Scode)
 		p.Version = "1"
@@ -132,9 +126,9 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 		p.ParkingType = defEmpty(o.Smetadata.Netex.Type, "undefined")
 		p.ParkingVehicleTypes = o.Smetadata.Netex.VehicleTypes
 		p.ParkingLayout = defEmpty(o.Smetadata.Netex.Layout, "undefined")
-		p.ProhibitedForHazardousMaterials = o.Smetadata.Netex.HazardProhibited
+		p.ProhibitedForHazardousMaterials.Set(o.Smetadata.Netex.HazardProhibited)
 		p.RechargingAvailable = o.Smetadata.Netex.Charging
-		p.Secure = o.Smetadata.Netex.Surveillance
+		p.Secure.Set(o.Smetadata.Netex.Surveillance)
 		p.ParkingReservation = defEmpty(o.Smetadata.Netex.Reservation, "noReservations")
 		p.ParkingProperties = nil
 
@@ -152,8 +146,43 @@ func mapToNetex(os []OdhParking) ([]Parking, []netex.Operator) {
 	}
 	return ps, maps.Values(ops)
 }
+func mapEcharging(os []OdhEcharging) ([]netex.Parking, []netex.Operator) {
+	ops := make(map[string]netex.Operator)
 
-func compFrame(ps []Parking, os []netex.Operator) netex.CompositeFrame {
+	var ps []netex.Parking
+	for _, o := range os {
+		var p netex.Parking
+
+		p.Id = netex.CreateID("Parking", o.Scode)
+		p.Version = "1"
+		p.ShortName = o.Sname
+		p.Centroid.Location.Longitude = o.Scoordinate.X
+		p.Centroid.Location.Latitude = o.Scoordinate.Y
+		p.GmlPolygon = nil
+		op := netex.Cfg.GetOperator(o.Sorigin)
+		ops[op.Id] = op
+		p.OperatorRef = netex.MkRef("Operator", op.Id)
+
+		p.Entrances = nil
+		p.ParkingType = "roadside"
+		p.ParkingVehicleTypes = ""
+		p.ParkingLayout = "undefined"
+		p.ProhibitedForHazardousMaterials.Ignore()
+		p.RechargingAvailable = true
+		p.Secure.Ignore()
+		p.ParkingReservation = "reservationAllowed"
+		p.ParkingProperties = nil
+
+		p.Name = o.Sname
+		p.PrincipalCapacity = o.Smetadata.Capacity
+		p.TotalCapacity = o.Smetadata.Capacity
+
+		ps = append(ps, p)
+	}
+	return ps, maps.Values(ops)
+}
+
+func compFrame(ps []netex.Parking, os []netex.Operator) netex.CompositeFrame {
 	var ret netex.CompositeFrame
 	ret.Defaults()
 	ret.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "PARKING", "ita")
@@ -168,7 +197,7 @@ func compFrame(ps []Parking, os []netex.Operator) netex.CompositeFrame {
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
-	site.Parkings = Parkings{Parkings: ps}
+	site.Parkings = netex.Parkings{Parkings: ps}
 	res.Operators = &os
 
 	return ret
@@ -181,8 +210,17 @@ func GetParking() (netex.CompositeFrame, error) {
 	if err != nil {
 		return ret, err
 	}
+	parkings, operators := mapParking(odh)
 
-	parkings, operators := mapToNetex(odh)
+	eodh, err := getOdhEcharging()
+	if err != nil {
+		return ret, err
+	}
+	eparkings, eoperators := mapEcharging(eodh)
+
+	parkings = append(parkings, eparkings...)
+	operators = append(operators, eoperators...)
+
 	ret = compFrame(parkings, operators)
 
 	return ret, nil

@@ -38,7 +38,7 @@ func TestMapNetex(t *testing.T) {
 	netex.InitConfig()
 	odh := bzCentro()
 
-	ps, os := mapToNetex([]OdhParking{odh})
+	ps, os := mapParking([]OdhParking{odh})
 
 	marshall := func(a any) string {
 		r, err := xml.MarshalIndent(a, "", " ")
