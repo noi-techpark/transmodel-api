@@ -11,7 +11,7 @@ import (
 )
 
 func NinjaTestSetup() {
-	ninja.BaseUrl = "https://mobility.api.opendatahub.com"
+	ninja.BaseUrl = "https://mobility.api.opendatahub.testingmachine.eu"
 	ninja.Referer = "sta-nap-export-unit-test"
 }
 

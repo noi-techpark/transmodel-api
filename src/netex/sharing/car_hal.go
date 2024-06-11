@@ -4,6 +4,7 @@
 package sharing
 
 import (
+	"log/slog"
 	"opendatahub/sta-nap-export/netex"
 
 	"golang.org/x/exp/maps"
@@ -81,11 +82,13 @@ func (b *CarHAL) get() (SharingData, error) {
 	models := make(map[string]netex.CarModelProfile)
 
 	for _, c := range b.cars {
-		p, found := models[c.Smeta.Model]
+		modelname := c.Smeta.Brand
+		slog.Debug("Brand " + modelname)
+		p, found := models[modelname]
 		if !found {
 			// Car model profile
-			p := netex.CarModelProfile{}
-			p.Id = netex.CreateID("CarModelProfile", b.provider, c.Smeta.Brand)
+			p = netex.CarModelProfile{}
+			p.Id = netex.CreateID("CarModelProfile", b.provider, modelname)
 			p.Version = "1"
 			p.ChildSeat = c.Smeta.Features.Childseat
 			p.Seats = c.Smeta.Features.Seats
@@ -102,7 +105,7 @@ func (b *CarHAL) get() (SharingData, error) {
 			p.RoofRack = c.Smeta.Features.Roofrack
 			p.CycleRack = c.Smeta.Features.Cyclerack
 			p.SkiRack = c.Smeta.Features.Skirack
-			models[c.Smeta.Model] = p
+			models[modelname] = p
 		}
 
 		// Vehicles
@@ -115,7 +118,7 @@ func (b *CarHAL) get() (SharingData, error) {
 		v.PrivateCode = c.Scode
 		v.RegistrationNumber = c.Smeta.LicensePlate
 		v.OperatorRef = netex.MkRef("Operator", o.Id)
-		v.VehicleTypeRef = netex.MkRef("CycleModelProfile", p.Id)
+		v.VehicleTypeRef = netex.MkRef("CarModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
 	ret.CarModels = maps.Values(models)

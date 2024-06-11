@@ -58,7 +58,7 @@ func (b *BikeMe) get() (SharingData, error) {
 		p, found := models[c.Smeta.Model]
 		if !found {
 			// Cycle model profile
-			p := netex.CycleModelProfile{}
+			p = netex.CycleModelProfile{}
 			p.Id = netex.CreateID("CycleModelProfile", b.origin, c.Smeta.Model)
 			p.Version = "1"
 			p.ChildSeat = "none"
