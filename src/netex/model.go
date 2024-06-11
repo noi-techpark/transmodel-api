@@ -167,14 +167,14 @@ type CarModelProfile struct {
 	Id              string `xml:"id,attr"`
 	Version         string `xml:"version,attr"`
 	ChildSeat       string
-	Seats           uint16
-	Doors           uint16
+	Seats           uint8
+	Doors           uint8
 	Transmission    string
 	CruiseControl   bool
 	SatNav          bool
 	AirConditioning bool
 	Convertible     bool
-	UsbPowerSocket  bool
+	UsbPowerSockets bool
 	WinterTyres     bool
 	Chains          bool
 	TrailerHitch    bool

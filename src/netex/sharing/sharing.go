@@ -76,6 +76,7 @@ func GetSharing() (*netex.CompositeFrame, error) {
 		&BikeBz{},
 		&BikeMe{},
 		&BikePapin{},
+		&CarHAL{},
 	})
 }
 
