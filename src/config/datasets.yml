@@ -10,3 +10,8 @@ parking:
     #- skidata not implemented necessary metadata yet
     - FAMAS
     - bicincitta
+
+    # echarging providers mapped as parking
+    - ALPERIA
+    - route220
+    - DRIWE

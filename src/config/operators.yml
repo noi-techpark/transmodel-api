@@ -114,19 +114,35 @@
   postcode: 39100
   country: Italy
   
-- origin:
-    - "1ucCQzAVGmvyRpeq-lIPffALQaWcG4LfPakc2mjt79fY"
-    - ALPERIA
-    - DRIWE
-    - IIT
-    - route220
-  id: dummy-echarging
-  name: dummy-echarging
-  email: info@opendatahub.com
-  phone: 12345667
-  url: https://opendatahub.com
-  street: Via The Mars Volta
+- origin: [ALPERIA]
+  id: Neogy
+  name: Neogy
+  email: info@neogy.it
+  phone: 800832855
+  url: https://www.neogy.it
+  street: Via Dodiciville 8
   town: Bolzano
   postcode: 39100
   country: Italy
   
+- origin: [DRIWE]
+  id: DRIWE
+  name: DRIWE
+  email: info@driwe.eu
+  phone: 04451620036
+  url: https://www.driwe.eu/
+  street: Contrà Progresso 1/H
+  town: Schio
+  postcode: 36015
+  country: Italy
+
+- origin: [route220]
+  id: evway / Route220
+  name: evway / Route220
+  email: info@route220.it
+  phone: 0260060220
+  url: https://evway.net
+  street: Via Carducci, 12
+  town: Milano
+  postcode: 20123
+  country: Italy

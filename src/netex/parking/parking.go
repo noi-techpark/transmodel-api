@@ -78,15 +78,13 @@ func getOdhEcharging() ([]OdhEcharging, error) {
 	req.Limit = -1
 	req.StationTypes = []string{"EChargingStation"}
 	req.Where = "sactive.eq.true"
-	//req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
 	// Rudimentary geographical limit
-	req.Where += fmt.Sprintf(",scoordinate.bbi.(%s)", bboxSouthTyrol)
+	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
 	var res ninja.NinjaResponse[[]OdhEcharging]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
-
-const bboxSouthTyrol = "10.368347,46.185535,12.551880,47.088826,4326"
 
 func defEmpty(s string, d string) string {
 	if s == "" {
