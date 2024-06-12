@@ -6,7 +6,6 @@ on:
       - "src/**"
       - "infrastructure/**"
       - ".reuse/**"
-      - ".reuse/**"
       - ".github/workflows/main.yml"
   pull_request:
     paths:
