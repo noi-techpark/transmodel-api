@@ -2,7 +2,18 @@ name: CI/CD
 
 on:
   push:
+    paths:
+      - "src/**"
+      - "infrastructure/**"
+      - ".reuse/**"
+      - ".reuse/**"
+      - ".github/workflows/main.yml"
   pull_request:
+    paths:
+      - "src/**"
+      - "infrastructure/**"
+      - ".reuse/**"
+      - ".github/workflows/main.yml"
 
 env:
   PROJECT_NAME: sta-nap-export
