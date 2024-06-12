@@ -26,6 +26,9 @@ GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation
 ### Car sharing HAL single cars
 GET https://mobility.api.opendatahub.com/v2/flat/CarsharingCar
 ?where=sorigin.eq.HAL-API,sactive.eq.true
+### parking station Echarging
+GET https://mobility.api.opendatahub.com/v2/flat/EChargingStation
+?where=sactive.eq.true,scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)
 ### parking station realtime
 GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation/free,occupied/latest
 ?where=scode.eq."115"

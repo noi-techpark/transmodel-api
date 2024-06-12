@@ -13,6 +13,19 @@ import (
 
 func TestGetOdhData(t *testing.T) {
 	netex.TestOdhGet(t, getOdhParking)
+	netex.TestOdhGet(t, getOdhEcharging)
+}
+
+func TestCallFull(t *testing.T) {
+	netex.InitConfig()
+	netex.NinjaTestSetup()
+
+	f, err := GetParking()
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+	t.Log(f)
 }
 
 func bzCentro() OdhParking {
@@ -33,12 +46,45 @@ func bzCentro() OdhParking {
 	o.Smetadata.Netex.Reservation = "noReservations"
 	return o
 }
+func echargingPk() OdhEcharging {
+	var o OdhEcharging
+	o.Scode = "bolzano-centro"
+	o.Sname = "Bolzano Centro"
+	o.Sorigin = "skidata"
+	o.Scoordinate.X = 11.123123
+	o.Scoordinate.Y = 46.432132
+	o.Smetadata.Capacity = 10
+	return o
+}
 
-func TestMapNetex(t *testing.T) {
+func TestMapParking(t *testing.T) {
 	netex.InitConfig()
+	netex.NinjaTestSetup()
 	odh := bzCentro()
 
 	ps, os := mapParking([]OdhParking{odh})
+
+	marshall := func(a any) string {
+		r, err := xml.MarshalIndent(a, "", " ")
+		if err != nil {
+			t.Log(err)
+			t.Fail()
+		}
+		return string(r)
+	}
+
+	s := marshall(ps)
+	t.Log(s)
+
+	s = marshall(os)
+	t.Log(s)
+
+}
+func TestMapEcharging(t *testing.T) {
+	netex.InitConfig()
+	odh := echargingPk()
+
+	ps, os := mapEcharging([]OdhEcharging{odh})
 
 	marshall := func(a any) string {
 		r, err := xml.MarshalIndent(a, "", " ")

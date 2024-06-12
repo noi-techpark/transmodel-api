@@ -114,3 +114,19 @@
   postcode: 39100
   country: Italy
   
+- origin:
+    - "1ucCQzAVGmvyRpeq-lIPffALQaWcG4LfPakc2mjt79fY"
+    - ALPERIA
+    - DRIWE
+    - IIT
+    - route220
+  id: dummy-echarging
+  name: dummy-echarging
+  email: info@opendatahub.com
+  phone: 12345667
+  url: https://opendatahub.com
+  street: Via The Mars Volta
+  town: Bolzano
+  postcode: 39100
+  country: Italy
+  

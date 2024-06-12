@@ -76,7 +76,7 @@ func getOdhParking() ([]OdhParking, error) {
 func getOdhEcharging() ([]OdhEcharging, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
-	req.StationTypes = []string{"EchargingStation"}
+	req.StationTypes = []string{"EChargingStation"}
 	req.Where = "sactive.eq.true"
 	//req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
 	// Rudimentary geographical limit
