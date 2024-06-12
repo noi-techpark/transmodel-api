@@ -4,3 +4,6 @@
 [submodule "netex-italian-profile"]
 	path = netex-italian-profile
 	url = git@github.com:5Tsrl/netex-italian-profile.git
+[submodule "siri-italian-profile"]
+	path = siri-italian-profile
+	url = git@github.com:5Tsrl/siri-italian-profile.git
