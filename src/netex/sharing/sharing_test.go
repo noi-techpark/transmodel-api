@@ -26,14 +26,14 @@ func halSharing() ([]OdhMobility[metaAny], error) {
 }
 
 func TestEmptyProvider(t *testing.T) {
-	_, err := frame([]SharingProvider{})
+	_, err := compBikeSharing([]SharingProvider{})
 	assert.NilError(t, err)
 }
 
 func TestBzProvider(t *testing.T) {
 	netex.NinjaTestSetup()
 	netex.InitConfig()
-	_, err := frame([]SharingProvider{&BikeBz{}})
+	_, err := compBikeSharing([]SharingProvider{&BikeBz{}})
 	assert.NilError(t, err)
 }
 

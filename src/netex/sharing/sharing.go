@@ -70,24 +70,31 @@ type SharingProvider interface {
 	get() (SharingData, error)
 }
 
-func GetSharing() (*netex.CompositeFrame, error) {
-	// Add new sharing providers here
-	return frame([]SharingProvider{
-		&BikeBz{},
-		&BikeMe{},
-		&BikePapin{},
-		&CarHAL{},
-	})
-}
+func GetSharing() ([]*netex.CompositeFrame, error) {
+	cs := []*netex.CompositeFrame{}
 
-func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
+	c, err := compBikeSharing([]SharingProvider{&BikeBz{}, &BikeMe{}, &BikePapin{}})
+	if err != nil {
+		return nil, err
+	}
+	cs = append(cs, c)
+
+	c, err = compCarSharing([]SharingProvider{&CarHAL{}})
+	if err != nil {
+		return nil, err
+	}
+	cs = append(cs, c)
+
+	return cs, nil
+}
+func compBikeSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	mob := netex.MobilityServiceFrame{}
-	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "BikeSharing", "ita")
+	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "BikeSharing")
 	mob.Version = "1"
 	mob.FrameDefaults.DefaultCurrency = "EUR"
 
 	res := netex.ResourceFrame{}
-	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_COMMON", "ita")
+	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_COMMON", "BikeSharing")
 	res.Version = "1"
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 
@@ -110,7 +117,44 @@ func frame(ps []SharingProvider) (*netex.CompositeFrame, error) {
 
 	comp := netex.CompositeFrame{}
 	comp.Defaults()
-	comp.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", "ita")
+	comp.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", "BikeSharing")
+	comp.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
+
+	return &comp, nil
+}
+
+func compCarSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
+	mob := netex.MobilityServiceFrame{}
+	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "CarSharing")
+	mob.Version = "1"
+	mob.FrameDefaults.DefaultCurrency = "EUR"
+
+	res := netex.ResourceFrame{}
+	res.Id = netex.CreateFrameId("ResourceFrame_EU_PI_COMMON", "CarSharing")
+	res.Version = "1"
+	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
+
+	for _, p := range ps {
+		d, err := p.get()
+		if err != nil {
+			return nil, err
+		}
+
+		mob.Fleets = append(mob.Fleets, d.Fleets...)
+		mob.ModesOfOperation = append(mob.ModesOfOperation, d.Modes...)
+		mob.MobilityServices = append(mob.MobilityServices, d.Services...)
+		mob.MobilityServiceConstraintZones = append(mob.MobilityServiceConstraintZones, d.Constraints...)
+
+		res.Vehicles = netex.AppendSafe(res.Vehicles, d.Vehicles...)
+		res.CarModels = netex.AppendSafe(res.CarModels, d.CarModels...)
+		res.CycleModels = netex.AppendSafe(res.CycleModels, d.CycleModels...)
+		res.Operators = netex.AppendSafe(res.Operators, d.Operators...)
+	}
+
+	comp := netex.CompositeFrame{}
+	comp.Defaults()
+	comp.Id = netex.CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", "CarSharing")
 	comp.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
 

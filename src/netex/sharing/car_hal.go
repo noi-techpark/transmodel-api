@@ -4,7 +4,6 @@
 package sharing
 
 import (
-	"log/slog"
 	"opendatahub/sta-nap-export/netex"
 
 	"golang.org/x/exp/maps"
@@ -83,7 +82,6 @@ func (b *CarHAL) get() (SharingData, error) {
 
 	for _, c := range b.cars {
 		modelname := c.Smeta.Brand
-		slog.Debug("Brand " + modelname)
 		p, found := models[modelname]
 		if !found {
 			// Car model profile
