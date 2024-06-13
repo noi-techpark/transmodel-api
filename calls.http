@@ -30,9 +30,9 @@ GET https://mobility.api.opendatahub.com/v2/flat/CarsharingCar
 GET https://mobility.api.opendatahub.com/v2/flat/EChargingStation
 ?where=sactive.eq.true,scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)
 ### parking station realtime
-GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation/free,occupied/latest
-?where=scode.eq."115"
-&select=tname,mperiod,mvalue,mvalidtime,scode
+GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation,BikeParking/free/latest
+?where=sorigin.in.(FBK,A22,Municipality Merano,FAMAS,bicincitta)
+&select=mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces
 ### Sharing station realtime
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation/availability,free-bays/latest
 ?where=scode.eq."BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--33150e8ef8c952030277c63eec20b5e9ea6c76d3",mperiod.eq.300

@@ -7,106 +7,77 @@ import (
 	"fmt"
 	"log/slog"
 	"opendatahub/sta-nap-export/netex"
+	"opendatahub/sta-nap-export/netex/parking"
 	"opendatahub/sta-nap-export/ninja"
-	"sync"
 	"time"
 )
 
 type Siri struct {
-	ResponseTimeStamp         string
-	ProducerRef               string
-	ResponseMessageIdentifier uint64
-	SubscriberRef             string
-	SubscriptionRef           string
+	Siri struct {
+		Version         string
+		ServiceDelivery ServiceDelivery
+	}
 }
 
-type SiriFM struct {
-	Siri
+type DeliveryThingy struct {
+	ResponseTimestamp string
+	ProducerRef       string
+}
+type ServiceDelivery struct {
+	DeliveryThingy
+	FacilityMonitoringDelivery FacilityMonitoringDelivery
+}
+
+type FacilityMonitoringDelivery struct {
+	DeliveryThingy
+	FacilityCondition []FacilityCondition
+}
+
+type FacilityCondition struct {
 	FacilityRef    string
 	FacilityStatus struct {
 		Status string
 	}
 	MonitoredCounting struct {
-		CountingType          string
-		CountedFeatureUnit    string `xml:"countedFeatureUnit"`
-		TypeOfCountedFeatures struct {
-			TypeOfValueCode string
-			NameOfClass     string
-		}
-		Count uint16
-	}
-	FacilityUpdatedPosition struct {
-		Longitude *float32
-		Latitude  *float32
+		CountingType       string
+		CountedFeatureUnit string `xml:"countedFeatureUnit"`
+		Count              int
 	}
 }
 
 type OdhLatest struct {
-	TName      string          `json:"tname"`
-	MPeriod    uint32          `json:"mperiod"`
-	MValidTime ninja.NinjaTime `json:"mvalidtime"`
-	MValue     uint16          `json:"mvalue"`
+	MPeriod     int             `json:"mperiod"`
+	MValidTime  ninja.NinjaTime `json:"mvalidtime"`
+	MValue      int             `json:"mvalue"`
+	Scode       string          `json:"scode"`
+	Stype       string          `json:"stype"`
+	Capacity    int             `json:"smetadata.capacity"`
+	TotalPlaces int             `json:"smetadata.totalPlaces"`
 }
 
-func Fm(id string) {
-	// parse ID format, determine type
-	// get parking or get sharing, depending on type
-}
-
-func odhParkingState(scode string) ([]OdhLatest, error) {
+func odhParkingState() ([]OdhLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = 10
+	req.Limit = -1
 	req.Repr = ninja.FlatNode
-	req.StationTypes = []string{"ParkingStation"}
-	req.DataTypes = []string{"free", "occupied"}
-	req.Select = "tname,mperiod,mvalue,mvalidtime,scode"
-	req.Where = fmt.Sprintf("scode.eq.\"%s\"", scode)
+	req.StationTypes = []string{"ParkingStation", "BikeParking"}
+	req.DataTypes = []string{"free"}
+	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces"
+	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", parking.ParkingOrigins())
 	var res ninja.NinjaResponse[[]OdhLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {
-		slog.Error("Error retrieving parking state", "scode", scode, "err", err)
+		slog.Error("Error retrieving parking state", "err", err)
 	}
 	return res.Data, err
 }
 
-func odhSharingState(scode string) ([]OdhLatest, error) {
-	req := ninja.DefaultNinjaRequest()
-	req.Limit = 10
-	req.Repr = ninja.FlatNode
-	req.StationTypes = []string{"BicycleSharing"}
-	req.DataTypes = []string{"free", "occupied"}
-	req.Select = "tname,mperiod,mvalue,mvalidtime,scode"
-	req.Where = fmt.Sprintf("scode.eq.\"%s\"", scode)
-	var res ninja.NinjaResponse[[]OdhLatest]
-	err := ninja.Latest(req, &res)
-	if err != nil {
-		slog.Error("Error retrieving parking state", "scode", scode, "err", err)
-	}
-	return res.Data, err
-}
-
-type id struct {
-	id uint64
-	m  sync.Mutex
-}
-
-var responseId id
-
-func (r *id) next() uint64 {
-	// TODO: Must persist between sessions?
-	r.m.Lock()
-	defer r.m.Unlock()
-	r.id++
-	return r.id
-}
-
-func (s *SiriFM) defaults() {
-	s.ResponseTimeStamp = time.Now().Format(time.RFC3339)
+func (s *DeliveryThingy) defaults() {
+	s.ResponseTimestamp = time.Now().Format(time.RFC3339)
 	s.ProducerRef = "RAP Alto Adige - Open Data Hub"
-	s.ResponseMessageIdentifier = responseId.next()
 }
 
-func mapParkingStatus(free uint16) string {
+func mapParkingStatus(free int) string {
 	switch {
 	case free == 0:
 		return "notAvailable"
@@ -117,58 +88,34 @@ func mapParkingStatus(free uint16) string {
 	}
 }
 
-func Parking(scode string) (SiriFM, error) {
-	os, err := odhParkingState(scode)
+func Parking() (Siri, error) {
+	siri := Siri{}
+	siri.Siri.Version = "2"
+	sd := &siri.Siri.ServiceDelivery
+	sd.defaults()
+	sd.FacilityMonitoringDelivery.defaults()
+
+	os, err := odhParkingState()
 	if err != nil {
-		return SiriFM{}, err
+		return siri, err
 	}
-	var free, occupied OdhLatest
+
 	for _, o := range os {
-		switch o.TName {
-		case "free":
-			free = o
-		case "occupied":
-			occupied = o
+		fc := FacilityCondition{}
+		fc.FacilityRef = netex.CreateID("Parking", o.Scode)
+		fc.FacilityStatus.Status = mapParkingStatus(o.MValue)
+		fc.MonitoredCounting.CountingType = "presentCount"
+
+		if o.Stype == "BikeParking" {
+			fc.MonitoredCounting.CountedFeatureUnit = "otherSpaces"
+			fc.MonitoredCounting.Count = o.TotalPlaces - o.MValue
+		} else {
+			fc.MonitoredCounting.CountedFeatureUnit = "bays"
+			fc.MonitoredCounting.Count = o.Capacity - o.MValue
 		}
+
+		sd.FacilityMonitoringDelivery.FacilityCondition = append(sd.FacilityMonitoringDelivery.FacilityCondition, fc)
 	}
 
-	s := SiriFM{}
-	s.defaults()
-	s.FacilityRef = netex.CreateID("Parking", scode)
-	s.FacilityStatus.Status = mapParkingStatus(free.MValue)
-	s.MonitoredCounting.CountingType = "presentCount"
-	s.MonitoredCounting.CountedFeatureUnit = "vehicles"
-	s.MonitoredCounting.TypeOfCountedFeatures.TypeOfValueCode = "car"
-	s.MonitoredCounting.TypeOfCountedFeatures.NameOfClass = "car"
-	s.MonitoredCounting.Count = occupied.MValue
-
-	return s, nil
-}
-
-func sharing(scode string) (SiriFM, error) {
-	os, err := odhParkingState(scode)
-	if err != nil {
-		return SiriFM{}, err
-	}
-	var free, occupied OdhLatest
-	for _, o := range os {
-		switch o.TName {
-		case "free":
-			free = o
-		case "occupied":
-			occupied = o
-		}
-	}
-
-	s := SiriFM{}
-	s.defaults()
-	s.FacilityRef = netex.CreateID("Parking", scode)
-	s.FacilityStatus.Status = mapParkingStatus(free.MValue)
-	s.MonitoredCounting.CountingType = "presentCount"
-	s.MonitoredCounting.CountedFeatureUnit = "vehicles"
-	s.MonitoredCounting.TypeOfCountedFeatures.TypeOfValueCode = "car"
-	s.MonitoredCounting.TypeOfCountedFeatures.NameOfClass = "car"
-	s.MonitoredCounting.Count = occupied.MValue
-
-	return s, nil
+	return siri, nil
 }

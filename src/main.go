@@ -34,37 +34,39 @@ func main() {
 
 	r.Use(gin.Recovery())
 
-	r.GET("/netex/parking", parking)
-	r.GET("/netex/sharing", sharing)
-	r.GET("/siri/fm/:id", realtime)
+	r.GET("/netex/parking", netexPark)
+	r.GET("/netex/sharing", netexSharing)
+	r.GET("/siri/fm/parking", siriParking)
+
 	r.GET("/health", health)
 	r.Run()
 }
 func health(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
-func parking(c *gin.Context) {
+
+func netexPark(c *gin.Context) {
 	res, err := nParking.GetParking()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 	prettyXML(c, http.StatusOK, res)
 }
-func sharing(c *gin.Context) {
+
+func netexSharing(c *gin.Context) {
 	res, err := nSharing.GetSharing()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-
 	prettyXML(c, http.StatusOK, res)
 }
-func realtime(c *gin.Context) {
-	scode := c.Param("id")
-	res, err := siri.Parking(scode)
+
+func siriParking(c *gin.Context) {
+	res, err := siri.Parking()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-	prettyXML(c, http.StatusOK, res)
+	c.JSONP(http.StatusOK, res)
 }
 
 func prettyXML(c *gin.Context, code int, object any) {

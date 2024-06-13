@@ -53,7 +53,7 @@ type OdhEcharging struct {
 	}
 }
 
-func originList() string {
+func ParkingOrigins() string {
 	origins := netex.Cfg.ParkingOrigins()
 	quoted := []string{}
 	for _, o := range origins {
@@ -67,7 +67,7 @@ func getOdhParking() ([]OdhParking, error) {
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", ParkingOrigins())
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParking]
 	err := ninja.StationType(req, &res)
@@ -80,7 +80,7 @@ func getOdhEcharging() ([]OdhEcharging, error) {
 	req.Where = "sactive.eq.true"
 	// Rudimentary geographical limit
 	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", originList())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", ParkingOrigins())
 	var res ninja.NinjaResponse[[]OdhEcharging]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
