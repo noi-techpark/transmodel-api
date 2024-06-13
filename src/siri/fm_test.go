@@ -12,13 +12,7 @@ import (
 
 func TestGetOdhParkingState(t *testing.T) {
 	netex.NinjaTestSetup()
-	res, err := odhParkingState("115")
+	res, err := odhParkingState()
 	assert.NilError(t, err)
 	t.Log(res)
-}
-
-func TestResponseId(t *testing.T) {
-	i := responseId.next()
-	i2 := responseId.next()
-	assert.Equal(t, i+1, i2)
 }
