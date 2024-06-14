@@ -13,7 +13,7 @@ function vUrl () {
     content=""
     for arg in "$@"
     do
-        content+=`curl $arg`
+        content+=`curl $arg | xmllint --xpath "//*[local-name()='CompositeFrame']" -`
     done
 
     xmllint --format - <<<"${template//PLACEHOLDER/$content}" > $tmpfile

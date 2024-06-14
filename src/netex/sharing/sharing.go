@@ -70,24 +70,24 @@ type SharingProvider interface {
 	get() (SharingData, error)
 }
 
-func GetSharing() ([]*netex.CompositeFrame, error) {
-	cs := []*netex.CompositeFrame{}
+func GetSharing() (netex.Root, error) {
+	var ret netex.Root
 
 	c, err := compBikeSharing([]SharingProvider{&BikeBz{}, &BikeMe{}, &BikePapin{}})
 	if err != nil {
-		return nil, err
+		return ret, err
 	}
-	cs = append(cs, c)
+	ret.CompositeFrame = append(ret.CompositeFrame, c)
 
 	c, err = compCarSharing([]SharingProvider{&CarHAL{}})
 	if err != nil {
-		return nil, err
+		return ret, err
 	}
-	cs = append(cs, c)
+	ret.CompositeFrame = append(ret.CompositeFrame, c)
 
-	return cs, nil
+	return ret, nil
 }
-func compBikeSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
+func compBikeSharing(ps []SharingProvider) (netex.CompositeFrame, error) {
 	mob := netex.MobilityServiceFrame{}
 	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "BikeSharing")
 	mob.Version = "1"
@@ -101,7 +101,7 @@ func compBikeSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	for _, p := range ps {
 		d, err := p.get()
 		if err != nil {
-			return nil, err
+			return netex.CompositeFrame{}, err
 		}
 
 		mob.Fleets = append(mob.Fleets, d.Fleets...)
@@ -121,10 +121,10 @@ func compBikeSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	comp.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
 
-	return &comp, nil
+	return comp, nil
 }
 
-func compCarSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
+func compCarSharing(ps []SharingProvider) (netex.CompositeFrame, error) {
 	mob := netex.MobilityServiceFrame{}
 	mob.Id = netex.CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", "CarSharing")
 	mob.Version = "1"
@@ -138,7 +138,7 @@ func compCarSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	for _, p := range ps {
 		d, err := p.get()
 		if err != nil {
-			return nil, err
+			return netex.CompositeFrame{}, err
 		}
 
 		mob.Fleets = append(mob.Fleets, d.Fleets...)
@@ -158,5 +158,5 @@ func compCarSharing(ps []SharingProvider) (*netex.CompositeFrame, error) {
 	comp.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
 
-	return &comp, nil
+	return comp, nil
 }

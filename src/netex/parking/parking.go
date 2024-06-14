@@ -201,8 +201,8 @@ func compFrame(ps []netex.Parking, os []netex.Operator) netex.CompositeFrame {
 	return ret
 }
 
-func GetParking() (netex.CompositeFrame, error) {
-	var ret netex.CompositeFrame
+func GetParking() (netex.Root, error) {
+	var ret netex.Root
 
 	odh, err := getOdhParking()
 	if err != nil {
@@ -219,7 +219,7 @@ func GetParking() (netex.CompositeFrame, error) {
 	parkings = append(parkings, eparkings...)
 	operators = append(operators, eoperators...)
 
-	ret = compFrame(parkings, operators)
+	ret.CompositeFrame = append(ret.CompositeFrame, compFrame(parkings, operators))
 
 	return ret, nil
 }

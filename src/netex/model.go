@@ -7,10 +7,13 @@ import (
 	"time"
 )
 
+type Root struct {
+	XMLName        xml.Name         `xml:"root"`
+	CompositeFrame []CompositeFrame `xml:"CompositeFrame"`
+}
 type CompositeFrame struct {
-	XMLName        xml.Name `xml:"CompositeFrame"`
-	Id             string   `xml:"id,attr"`
-	Version        string   `xml:"version,attr"`
+	Id             string `xml:"id,attr"`
+	Version        string `xml:"version,attr"`
 	ValidBetween   ValidBetween
 	TypeOfFrameRef TypeOfFrameRef
 	Codespaces     struct {
