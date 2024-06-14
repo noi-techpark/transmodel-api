@@ -59,8 +59,8 @@ func odhParkingState() ([]OdhLatest, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.Repr = ninja.FlatNode
-	req.StationTypes = []string{"ParkingStation", "BikeParking"}
-	req.DataTypes = []string{"free"}
+	req.StationTypes = []string{"ParkingStation", "BikeParking", "EChargingStation"}
+	req.DataTypes = []string{"free", "number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.in.(%s)", parking.ParkingOrigins())
@@ -77,11 +77,11 @@ func (s *DeliveryThingy) defaults() {
 	s.ProducerRef = "RAP Alto Adige - Open Data Hub"
 }
 
-func mapParkingStatus(free int) string {
+func mapParkingStatus(free int, partialThreshold int) string {
 	switch {
 	case free == 0:
 		return "notAvailable"
-	case free <= 10:
+	case free <= partialThreshold:
 		return "partiallyAvailable"
 	default:
 		return "available"
@@ -99,23 +99,36 @@ func Parking() (Siri, error) {
 	if err != nil {
 		return siri, err
 	}
+	sd.FacilityMonitoringDelivery.FacilityCondition = append(sd.FacilityMonitoringDelivery.FacilityCondition, odh2Siri(os)...)
 
-	for _, o := range os {
+	return siri, nil
+}
+
+func odh2Siri(latest []OdhLatest) []FacilityCondition {
+	ret := []FacilityCondition{}
+
+	for _, o := range latest {
 		fc := FacilityCondition{}
 		fc.FacilityRef = netex.CreateID("Parking", o.Scode)
-		fc.FacilityStatus.Status = mapParkingStatus(o.MValue)
 		fc.MonitoredCounting.CountingType = "presentCount"
 
-		if o.Stype == "BikeParking" {
+		switch o.Stype {
+		case "BikeParking":
+			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 10)
 			fc.MonitoredCounting.CountedFeatureUnit = "otherSpaces"
 			fc.MonitoredCounting.Count = o.TotalPlaces - o.MValue
-		} else {
+		case "EChargingStation":
+			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 1)
+			fc.MonitoredCounting.CountedFeatureUnit = "bays"
+			fc.MonitoredCounting.Count = o.Capacity - o.MValue
+		case "ParkingStation":
+			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 10)
 			fc.MonitoredCounting.CountedFeatureUnit = "bays"
 			fc.MonitoredCounting.Count = o.Capacity - o.MValue
 		}
 
-		sd.FacilityMonitoringDelivery.FacilityCondition = append(sd.FacilityMonitoringDelivery.FacilityCondition, fc)
+		ret = append(ret, fc)
 	}
 
-	return siri, nil
+	return ret
 }
