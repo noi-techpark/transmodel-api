@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
-package sharing
+package config
 
 // Polygons for service constraint zones.
 // As per Netex spec they are in WGS84/EPSG4326

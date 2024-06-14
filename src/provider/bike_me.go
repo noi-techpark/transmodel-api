@@ -1,22 +1,25 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package sharing
+package provider
 
 import (
+	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
+	"opendatahub/sta-nap-export/netex/sharing"
+	"opendatahub/sta-nap-export/ninja"
 
 	"golang.org/x/exp/maps"
 )
 
-type odhBzBike []OdhMobility[BzCycleMeta]
+type odhMeBike []ninja.OdhStation[MeCycleMeta]
 
-type BikeBz struct {
-	cycles odhBzBike
+type BikeMe struct {
+	cycles odhMeBike
 	origin string
 }
 
-type BzCycleMeta struct {
+type MeCycleMeta struct {
 	Model    string
 	Electric bool
 	Lamp     bool
@@ -24,27 +27,22 @@ type BzCycleMeta struct {
 	Basket   bool
 }
 
-const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
+const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
-func (b *BikeBz) init() error {
-	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
+func (b *BikeMe) init() error {
+	b.origin = ORIGIN_BIKE_SHARING_MERANO
 
-	bk, err := bzBike()
-	if err != nil {
-		return err
-	}
-	b.cycles = bk
-	return nil
+	return b.fetch()
 }
 
-func (b *BikeBz) get() (SharingData, error) {
-	ret := SharingData{}
+func (b *BikeMe) Get() (sharing.SharingData, error) {
+	ret := sharing.SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}
 
 	// Operators
-	o := netex.Cfg.GetOperator(ORIGIN_BIKE_SHARING_BOLZANO)
+	o := netex.Cfg.GetOperator(b.origin)
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
@@ -74,13 +72,13 @@ func (b *BikeBz) get() (SharingData, error) {
 			p.Lamps = c.Smeta.Lamp
 			p.Pump = false
 			p.Basket = c.Smeta.Basket
-			p.Lock = false
+			p.Lock = c.Smeta.Lock
 			models[c.Smeta.Model] = p
 		}
 
 		// Vehicles
 		v := netex.Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.origin, c.Scode)
+		v.Id = netex.CreateID("Vehicle", b.origin, c.Sname)
 		v.Version = "1"
 		v.ValidBetween.AYear()
 		v.Name = c.Sname
@@ -120,12 +118,14 @@ func (b *BikeBz) get() (SharingData, error) {
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.origin
-	c.GmlPolygon.SetPoly(GML_MUNICIPALITY_BZ)
+	c.GmlPolygon.SetPoly(config.GML_MUNICIPALITY_ME)
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil
 }
-func bzBike() (odhBzBike, error) {
-	return odhMob[odhBzBike]("Bicycle", ORIGIN_BIKE_SHARING_BOLZANO)
+func (b *BikeMe) fetch() error {
+	bk, err := odhMob[odhMeBike]("Bicycle", b.origin)
+	b.cycles = bk
+	return err
 }

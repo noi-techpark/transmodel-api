@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package sharing
+package provider
 
 import (
 	"opendatahub/sta-nap-export/netex"
+	"opendatahub/sta-nap-export/netex/sharing"
+	"opendatahub/sta-nap-export/ninja"
 )
 
-type odhPapinBike []OdhMobility[any]
+type odhPapinBike []ninja.OdhStation[any]
 
 type BikePapin struct {
 	cycles odhPapinBike
@@ -22,8 +24,8 @@ func (b *BikePapin) init() error {
 	return b.fetch()
 }
 
-func (b *BikePapin) get() (SharingData, error) {
-	ret := SharingData{}
+func (b *BikePapin) Get() (sharing.SharingData, error) {
+	ret := sharing.SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}

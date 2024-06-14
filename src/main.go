@@ -10,6 +10,7 @@ import (
 	"opendatahub/sta-nap-export/netex"
 	nParking "opendatahub/sta-nap-export/netex/parking"
 	nSharing "opendatahub/sta-nap-export/netex/sharing"
+	"opendatahub/sta-nap-export/provider"
 	"opendatahub/sta-nap-export/siri"
 	"os"
 
@@ -54,7 +55,9 @@ func netexPark(c *gin.Context) {
 }
 
 func netexSharing(c *gin.Context) {
-	res, err := nSharing.GetSharing()
+	bikeProviders := []nSharing.SharingProvider{&provider.BikeBz{}, &provider.BikeMe{}, &provider.BikePapin{}}
+	carProviders := []nSharing.SharingProvider{&provider.CarHAL{}}
+	res, err := nSharing.GetSharing(bikeProviders, carProviders)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

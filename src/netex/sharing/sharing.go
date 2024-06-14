@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/ninja"
 )
 
 type Company struct {
@@ -15,20 +14,6 @@ type Company struct {
 	ShortName string `json:"shortName"`
 	FullName  string `json:"fullName"`
 }
-
-type OdhMobility[T any] struct {
-	Scode   string
-	Sname   string
-	Sorigin string
-	Scoord  struct {
-		X    float32
-		Y    float32
-		Srid uint32
-	} `json:"scoordinate"`
-	Smeta T `json:"smetadata"`
-}
-
-type metaAny map[string]any
 
 func (pc *Company) UnmarshalJSON(p []byte) error {
 	if string(p) == "" {
@@ -41,16 +26,6 @@ func (pc *Company) UnmarshalJSON(p []byte) error {
 	// no methods.
 	type x Company
 	return json.Unmarshal(p, (*x)(pc))
-}
-
-func odhMob[T any](tp string, origin string) (T, error) {
-	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
-	req.StationTypes = []string{tp}
-	req.Where = `sorigin.eq.` + origin + `,sactive.eq.true`
-	var res ninja.NinjaResponse[T]
-	err := ninja.StationType(req, &res)
-	return res.Data, err
 }
 
 type SharingData struct {
@@ -67,19 +42,19 @@ type SharingData struct {
 }
 
 type SharingProvider interface {
-	get() (SharingData, error)
+	Get() (SharingData, error)
 }
 
-func GetSharing() (netex.Root, error) {
+func GetSharing(bikeProviders []SharingProvider, carProviders []SharingProvider) (netex.Root, error) {
 	var ret netex.Root
 
-	c, err := compBikeSharing([]SharingProvider{&BikeBz{}, &BikeMe{}, &BikePapin{}})
+	c, err := compBikeSharing(bikeProviders)
 	if err != nil {
 		return ret, err
 	}
 	ret.CompositeFrame = append(ret.CompositeFrame, c)
 
-	c, err = compCarSharing([]SharingProvider{&CarHAL{}})
+	c, err = compCarSharing(carProviders)
 	if err != nil {
 		return ret, err
 	}
@@ -99,7 +74,7 @@ func compBikeSharing(ps []SharingProvider) (netex.CompositeFrame, error) {
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 
 	for _, p := range ps {
-		d, err := p.get()
+		d, err := p.Get()
 		if err != nil {
 			return netex.CompositeFrame{}, err
 		}
@@ -136,7 +111,7 @@ func compCarSharing(ps []SharingProvider) (netex.CompositeFrame, error) {
 	res.TypeOfFrameRef = netex.MkTypeOfFrameRef("EU_PI_COMMON")
 
 	for _, p := range ps {
-		d, err := p.get()
+		d, err := p.Get()
 		if err != nil {
 			return netex.CompositeFrame{}, err
 		}

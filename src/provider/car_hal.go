@@ -1,16 +1,19 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package sharing
+package provider
 
 import (
+	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
+	"opendatahub/sta-nap-export/netex/sharing"
+	"opendatahub/sta-nap-export/ninja"
 
 	"golang.org/x/exp/maps"
 )
 
 type odhHALCar []struct {
-	OdhMobility[HALCarMeta]
+	ninja.OdhStation[HALCarMeta]
 	Pmetadata struct {
 		Company struct {
 			Uid       string
@@ -58,8 +61,8 @@ func (b *CarHAL) init() error {
 	return nil
 }
 
-func (b *CarHAL) get() (SharingData, error) {
-	ret := SharingData{}
+func (b *CarHAL) Get() (sharing.SharingData, error) {
+	ret := sharing.SharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}
@@ -150,7 +153,7 @@ func (b *CarHAL) get() (SharingData, error) {
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.provider)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.provider
-	c.GmlPolygon.SetPoly(GML_PROVINCE_BZ)
+	c.GmlPolygon.SetPoly(config.GML_PROVINCE_BZ)
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
