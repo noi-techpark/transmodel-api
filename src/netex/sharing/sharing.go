@@ -17,13 +17,13 @@ type Company struct {
 }
 
 type OdhMobility[T any] struct {
-	Scode   string `json:"scode"`
-	Sname   string `json:"sname"`
-	Sorigin string `json:"sorigin"`
+	Scode   string
+	Sname   string
+	Sorigin string
 	Scoord  struct {
-		X    float32 `json:"x"`
-		Y    float32 `json:"y"`
-		Srid uint32  `json:"srid"`
+		X    float32
+		Y    float32
+		Srid uint32
 	} `json:"scoordinate"`
 	Smeta T `json:"smetadata"`
 }

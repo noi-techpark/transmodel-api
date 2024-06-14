@@ -38,6 +38,7 @@ type OdhParking struct {
 		} `json:"netex_parking"`
 	}
 }
+
 type OdhEcharging struct {
 	Scode       string
 	Sname       string

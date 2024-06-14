@@ -19,10 +19,30 @@ type Siri struct {
 	}
 }
 
+func (s *Siri) appencFcs(fcs []FacilityCondition) {
+	s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition = append(s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition, fcs...)
+}
+
+func newSiri() Siri {
+	siri := Siri{}
+	siri.Siri.Version = "2"
+	sd := &siri.Siri.ServiceDelivery
+	sd.defaults()
+	sd.FacilityMonitoringDelivery.defaults()
+
+	return siri
+}
+
 type DeliveryThingy struct {
 	ResponseTimestamp string
 	ProducerRef       string
 }
+
+func (s *DeliveryThingy) defaults() {
+	s.ResponseTimestamp = time.Now().Format(time.RFC3339)
+	s.ProducerRef = "RAP Alto Adige - Open Data Hub"
+}
+
 type ServiceDelivery struct {
 	DeliveryThingy
 	FacilityMonitoringDelivery FacilityMonitoringDelivery
@@ -72,12 +92,7 @@ func odhParkingState() ([]OdhLatest, error) {
 	return res.Data, err
 }
 
-func (s *DeliveryThingy) defaults() {
-	s.ResponseTimestamp = time.Now().Format(time.RFC3339)
-	s.ProducerRef = "RAP Alto Adige - Open Data Hub"
-}
-
-func mapParkingStatus(free int, partialThreshold int) string {
+func mapStatus(free int, partialThreshold int) string {
 	switch {
 	case free == 0:
 		return "notAvailable"
@@ -89,22 +104,18 @@ func mapParkingStatus(free int, partialThreshold int) string {
 }
 
 func Parking() (Siri, error) {
-	siri := Siri{}
-	siri.Siri.Version = "2"
-	sd := &siri.Siri.ServiceDelivery
-	sd.defaults()
-	sd.FacilityMonitoringDelivery.defaults()
+	siri := newSiri()
 
 	os, err := odhParkingState()
 	if err != nil {
 		return siri, err
 	}
-	sd.FacilityMonitoringDelivery.FacilityCondition = append(sd.FacilityMonitoringDelivery.FacilityCondition, odh2Siri(os)...)
+	siri.appencFcs(mapParking(os))
 
 	return siri, nil
 }
 
-func odh2Siri(latest []OdhLatest) []FacilityCondition {
+func mapParking(latest []OdhLatest) []FacilityCondition {
 	ret := []FacilityCondition{}
 
 	for _, o := range latest {
@@ -114,15 +125,15 @@ func odh2Siri(latest []OdhLatest) []FacilityCondition {
 
 		switch o.Stype {
 		case "BikeParking":
-			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 10)
+			fc.FacilityStatus.Status = mapStatus(o.MValue, 10)
 			fc.MonitoredCounting.CountedFeatureUnit = "otherSpaces"
 			fc.MonitoredCounting.Count = o.TotalPlaces - o.MValue
 		case "EChargingStation":
-			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 1)
+			fc.FacilityStatus.Status = mapStatus(o.MValue, 1)
 			fc.MonitoredCounting.CountedFeatureUnit = "bays"
 			fc.MonitoredCounting.Count = o.Capacity - o.MValue
 		case "ParkingStation":
-			fc.FacilityStatus.Status = mapParkingStatus(o.MValue, 10)
+			fc.FacilityStatus.Status = mapStatus(o.MValue, 10)
 			fc.MonitoredCounting.CountedFeatureUnit = "bays"
 			fc.MonitoredCounting.Count = o.Capacity - o.MValue
 		}
@@ -131,4 +142,13 @@ func odh2Siri(latest []OdhLatest) []FacilityCondition {
 	}
 
 	return ret
+}
+
+func Sharing() (Siri, error) {
+	// station based bike
+	// free floating bike
+	// car sharing
+	siri := newSiri()
+
+	return siri, nil
 }

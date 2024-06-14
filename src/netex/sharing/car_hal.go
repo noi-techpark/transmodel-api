@@ -47,8 +47,10 @@ type HALCarMeta struct {
 	}
 }
 
+const ORIGIN_CAR_SHARING_HAL_API = "HAL-API"
+
 func (b *CarHAL) init() error {
-	b.origin = "HAL-API"
+	b.origin = ORIGIN_CAR_SHARING_HAL_API
 	if err := b.fetch(); err != nil {
 		return err
 	}

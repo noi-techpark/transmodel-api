@@ -14,8 +14,10 @@ type BikePapin struct {
 	origin string
 }
 
+const ORIGIN_BIKE_SHARING_PAPIN = "BIKE_SHARING_PAPIN"
+
 func (b *BikePapin) init() error {
-	b.origin = "BIKE_SHARING_PAPIN"
+	b.origin = ORIGIN_BIKE_SHARING_PAPIN
 
 	return b.fetch()
 }
