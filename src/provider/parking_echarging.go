@@ -5,14 +5,16 @@ package provider
 
 import (
 	"fmt"
+	"log/slog"
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 
 	"golang.org/x/exp/maps"
 )
 
-type OdhEcharging struct {
+type OdhParkingEcharging struct {
 	Scode       string
 	Sname       string
 	Sorigin     string
@@ -27,10 +29,9 @@ type OdhEcharging struct {
 	}
 }
 
-type ParkingEcharging struct {
-}
+type ParkingEcharging struct{}
 
-func getOdhEcharging() ([]OdhEcharging, error) {
+func (ParkingEcharging) odhStatic() ([]OdhParkingEcharging, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"EChargingStation"}
@@ -38,12 +39,12 @@ func getOdhEcharging() ([]OdhEcharging, error) {
 	// Rudimentary geographical limit
 	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
 	req.Where += fmt.Sprintf(",sorigin.in.(%s)", parkingOrigins())
-	var res ninja.NinjaResponse[[]OdhEcharging]
+	var res ninja.NinjaResponse[[]OdhParkingEcharging]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
 
-func mapEcharging(os []OdhEcharging) ([]netex.Parking, []netex.Operator) {
+func (ParkingEcharging) mapNetex(os []OdhParkingEcharging) ([]netex.Parking, []netex.Operator) {
 	ops := make(map[string]netex.Operator)
 
 	var ps []netex.Parking
@@ -79,11 +80,56 @@ func mapEcharging(os []OdhEcharging) ([]netex.Parking, []netex.Operator) {
 	return ps, maps.Values(ops)
 }
 
-func (p *ParkingEcharging) StParking() (netex.StParkingData, error) {
-	odh, err := getOdhEcharging()
+func (p ParkingEcharging) StParking() (netex.StParkingData, error) {
+	odh, err := p.odhStatic()
 	if err != nil {
 		return netex.StParkingData{}, err
 	}
-	parkings, operators := mapEcharging(odh)
+	parkings, operators := p.mapNetex(odh)
 	return netex.StParkingData{Parkings: parkings, Operators: operators}, nil
+}
+
+func (p ParkingEcharging) odhLatest() ([]OdhParkingLatest, error) {
+	req := ninja.DefaultNinjaRequest()
+	req.Limit = -1
+	req.Repr = ninja.FlatNode
+	req.StationTypes = []string{"EChargingStation"}
+	req.DataTypes = []string{"number-available"}
+	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity"
+	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", netex.ParkingOrigins())
+	var res ninja.NinjaResponse[[]OdhParkingLatest]
+	err := ninja.Latest(req, &res)
+	if err != nil {
+		slog.Error("Error retrieving parking state", "err", err)
+	}
+	return res.Data, err
+}
+
+func (p ParkingEcharging) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondition {
+	ret := []siri.FacilityCondition{}
+
+	for _, o := range latest {
+		fc := siri.FacilityCondition{}
+		fc.FacilityRef = netex.CreateID("Parking", o.Scode)
+		fc.MonitoredCounting.CountingType = "presentCount"
+
+		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 1)
+		fc.MonitoredCounting.CountedFeatureUnit = "devices"
+		fc.MonitoredCounting.Count = o.Capacity - o.MValue
+
+		ret = append(ret, fc)
+	}
+
+	return ret
+}
+
+func (p ParkingEcharging) RtSharing() (siri.RtFMData, error) {
+	ret := siri.RtFMData{}
+	l, err := p.odhLatest()
+	if err != nil {
+		return ret, err
+	}
+	ret.Conditions = p.mapSiri(l)
+	return ret, nil
 }

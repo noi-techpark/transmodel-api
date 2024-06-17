@@ -11,10 +11,3 @@ func Sharing() (Siri, error) {
 
 	return siri, nil
 }
-
-type RtSharingData struct {
-	Conditions []FacilityCondition
-}
-type RtSharing interface {
-	RtSharing() (RtSharing, error)
-}

@@ -64,7 +64,7 @@ func netexSharing(c *gin.Context) {
 }
 
 func siriParking(c *gin.Context) {
-	res, err := siri.Parking()
+	res, err := siri.FM([]siri.RtFMProvider{provider.ParkingGeneric{}, provider.ParkingEcharging{}})
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
