@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 package provider
 
-import "opendatahub/sta-nap-export/ninja"
+import (
+	"opendatahub/sta-nap-export/ninja"
+)
 
 func odhMob[T any](tp string, origin string) (T, error) {
 	req := ninja.DefaultNinjaRequest()
