@@ -6,12 +6,13 @@ package netex
 
 import (
 	"log"
+	"opendatahub/sta-nap-export/config"
 
 	"golang.org/x/exp/maps"
 )
 
-func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
-	ret := make(map[string]operatorCfg)
+func mapByOrigin(p []config.OperatorCfg) map[string]config.OperatorCfg {
+	ret := make(map[string]config.OperatorCfg)
 	for _, o := range p {
 		for _, origin := range o.Origin {
 			ret[origin] = o
@@ -20,8 +21,8 @@ func mapByOrigin(p []operatorCfg) map[string]operatorCfg {
 	return ret
 }
 
-func (c *Config) GetOperator(id string) Operator {
-	mapped := mapByOrigin(c.operators)
+func GetOperator(c *config.Config, id string) Operator {
+	mapped := mapByOrigin(c.Operators)
 	cfg, found := mapped[id]
 	if !found {
 		log.Panicln("Unable to map operator. Probably got some origin that we shouldn't have?", id, maps.Keys(mapped))

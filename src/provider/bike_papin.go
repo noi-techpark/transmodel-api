@@ -4,6 +4,7 @@
 package provider
 
 import (
+	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 )
@@ -30,7 +31,7 @@ func (b *BikePapin) StSharing() (netex.StSharingData, error) {
 	}
 
 	// Operators
-	o := netex.Cfg.GetOperator(b.origin)
+	o := netex.GetOperator(&config.Cfg, b.origin)
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation

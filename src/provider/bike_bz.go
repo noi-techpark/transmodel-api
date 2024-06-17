@@ -46,7 +46,7 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	}
 
 	// Operators
-	o := netex.Cfg.GetOperator(ORIGIN_BIKE_SHARING_BOLZANO)
+	o := netex.GetOperator(&config.Cfg, ORIGIN_BIKE_SHARING_BOLZANO)
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation

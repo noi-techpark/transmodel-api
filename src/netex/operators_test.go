@@ -5,14 +5,15 @@
 package netex
 
 import (
+	"opendatahub/sta-nap-export/config"
 	"testing"
 
 	"gotest.tools/v3/assert"
 )
 
 func TestOpsContent(t *testing.T) {
-	cfg := ReadConfig()
-	mapped := mapByOrigin(cfg.operators)
+	cfg := config.ReadConfig()
+	mapped := mapByOrigin(cfg.Operators)
 
 	bsb := mapped["BIKE_SHARING_BOLZANO"]
 	assert.Equal(t, "urp@comune.bolzano.it", bsb.Email)

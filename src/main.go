@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"log/slog"
 	"net/http"
+	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/provider"
 	"opendatahub/sta-nap-export/siri"
@@ -19,7 +20,7 @@ import (
 
 func main() {
 	InitLogger()
-	netex.InitConfig()
+	config.InitConfig()
 
 	r := gin.New()
 
