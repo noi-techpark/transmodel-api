@@ -3,11 +3,11 @@
 
 package siri
 
-type RtFMData struct {
+type FMData struct {
 	Conditions []FacilityCondition
 }
-type RtFMProvider interface {
-	RtSharing() (RtFMData, error)
+type FMProvider interface {
+	RtSharing() (FMData, error)
 }
 
 func MapFacilityStatus(available int, partialThreshold int) string {
@@ -21,7 +21,7 @@ func MapFacilityStatus(available int, partialThreshold int) string {
 	}
 }
 
-func FM(ps []RtFMProvider) (Siri, error) {
+func FM(ps []FMProvider) (Siri, error) {
 	siri := newSiri()
 
 	for _, p := range ps {

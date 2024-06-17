@@ -186,8 +186,8 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 	return ret
 }
 
-func (p ParkingGeneric) RtSharing() (siri.RtFMData, error) {
-	ret := siri.RtFMData{}
+func (p ParkingGeneric) RtSharing() (siri.FMData, error) {
+	ret := siri.FMData{}
 	l, err := p.odhLatest()
 	if err != nil {
 		return ret, err
