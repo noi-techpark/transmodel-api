@@ -46,7 +46,7 @@ func health(c *gin.Context) {
 }
 
 func netexPark(c *gin.Context) {
-	res, err := netex.GetParking()
+	res, err := netex.GetParking([]netex.StParking{&provider.ParkingGeneric{}, &provider.ParkingEcharging{}})
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
