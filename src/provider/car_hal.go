@@ -6,7 +6,6 @@ package provider
 import (
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/netex/sharing"
 	"opendatahub/sta-nap-export/ninja"
 
 	"golang.org/x/exp/maps"
@@ -61,8 +60,8 @@ func (b *CarHAL) init() error {
 	return nil
 }
 
-func (b *CarHAL) Get() (sharing.SharingData, error) {
-	ret := sharing.SharingData{}
+func (b *CarHAL) StSharing() (netex.StSharingData, error) {
+	ret := netex.StSharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}

@@ -5,7 +5,6 @@ package provider
 
 import (
 	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/netex/sharing"
 	"opendatahub/sta-nap-export/ninja"
 )
 
@@ -24,8 +23,8 @@ func (b *BikePapin) init() error {
 	return b.fetch()
 }
 
-func (b *BikePapin) Get() (sharing.SharingData, error) {
-	ret := sharing.SharingData{}
+func (b *BikePapin) StSharing() (netex.StSharingData, error) {
+	ret := netex.StSharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}

@@ -6,7 +6,6 @@ package provider
 import (
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/netex/sharing"
 	"opendatahub/sta-nap-export/ninja"
 
 	"golang.org/x/exp/maps"
@@ -35,8 +34,8 @@ func (b *BikeMe) init() error {
 	return b.fetch()
 }
 
-func (b *BikeMe) Get() (sharing.SharingData, error) {
-	ret := sharing.SharingData{}
+func (b *BikeMe) StSharing() (netex.StSharingData, error) {
+	ret := netex.StSharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}
