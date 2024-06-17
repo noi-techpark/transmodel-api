@@ -135,13 +135,9 @@ func (p ParkingGeneric) StParking() (netex.StParkingData, error) {
 }
 
 type OdhParkingLatest struct {
-	MPeriod     int             `json:"mperiod"`
-	MValidTime  ninja.NinjaTime `json:"mvalidtime"`
-	MValue      int             `json:"mvalue"`
-	Scode       string          `json:"scode"`
-	Stype       string          `json:"stype"`
-	Capacity    int             `json:"smetadata.capacity"`
-	TotalPlaces int             `json:"smetadata.totalPlaces"`
+	ninja.OdhLatest
+	Capacity    int `json:"smetadata.capacity"`
+	TotalPlaces int `json:"smetadata.totalPlaces"`
 }
 
 func (p ParkingGeneric) odhLatest() ([]OdhParkingLatest, error) {

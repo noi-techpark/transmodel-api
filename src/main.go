@@ -37,6 +37,7 @@ func main() {
 	r.GET("/netex/parking", netexPark)
 	r.GET("/netex/sharing", netexSharing)
 	r.GET("/siri/fm/parking", siriParking)
+	r.GET("/siri/fm/sharing", siriSharing)
 
 	r.GET("/health", health)
 	r.Run()
@@ -71,7 +72,7 @@ func siriParking(c *gin.Context) {
 	c.JSONP(http.StatusOK, res)
 }
 func siriSharing(c *gin.Context) {
-	res, err := siri.FM([]siri.FMProvider{})
+	res, err := siri.FM([]siri.FMProvider{provider.NewBikeBz()})
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

@@ -17,3 +17,12 @@ type OdhStation[T any] struct {
 }
 
 type MetaAny map[string]any
+
+type OdhLatest struct {
+	MPeriod    int       `json:"mperiod"`
+	MValidTime NinjaTime `json:"mvalidtime"`
+	MValue     int       `json:"mvalue"`
+	Scode      string    `json:"scode"`
+	Stype      string    `json:"stype"`
+	Tname      string    `json:"tname"`
+}

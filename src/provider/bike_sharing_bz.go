@@ -4,9 +4,12 @@
 package provider
 
 import (
+	"fmt"
+	"log/slog"
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 
 	"golang.org/x/exp/maps"
 )
@@ -131,7 +134,7 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	}
 	for _, s := range ss {
 		p := netex.Parking{}
-		p.Id = netex.CreateID("Parking", s.Scode)
+		p.Id = netex.CreateID("Parking", s.Sname)
 		p.Version = "1"
 		p.ShortName = s.Sname
 		p.Centroid.Location.Longitude = s.Scoord.X
@@ -154,5 +157,77 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 		ret.Parkings = append(ret.Parkings, p)
 	}
 
+	return ret, nil
+}
+
+type OdhBzSharingLatest struct {
+	ninja.OdhLatest
+	Sname string
+}
+
+func (p BikeBz) odhLatest() ([]OdhBzSharingLatest, error) {
+	req := ninja.DefaultNinjaRequest()
+	req.Limit = -1
+	req.Repr = ninja.FlatNode
+	req.StationTypes = []string{"BikesharingStation"}
+	req.DataTypes = []string{"free-bays,number-available"}
+	req.Select = "mperiod,mvalue,mvalidtime,scode"
+	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	var res ninja.NinjaResponse[[]OdhBzSharingLatest]
+	err := ninja.Latest(req, &res)
+	if err != nil {
+		slog.Error("Error retrieving parking state", "err", err)
+	}
+	return res.Data, err
+}
+
+func (p BikeBz) mapSiri(latest []OdhBzSharingLatest) []siri.FacilityCondition {
+	ret := []siri.FacilityCondition{}
+
+	type station struct {
+		name      string
+		free      int
+		available int
+	}
+
+	stations := map[string]station{}
+
+	// group data types by station
+	for _, l := range latest {
+		s, found := stations[l.Scode]
+		if !found {
+			s = station{name: l.Sname}
+		}
+		switch l.Tname {
+		case "free-bays":
+			s.free = l.MValue
+		case "number-available":
+			s.available = l.MValue
+		}
+		stations[l.Scode] = s
+	}
+
+	for _, o := range stations {
+		fc := siri.FacilityCondition{}
+		fc.FacilityRef = netex.CreateID("Parking", o.name)
+		fc.MonitoredCounting.CountingType = "presentCount"
+
+		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.free, 1)
+		fc.MonitoredCounting.CountedFeatureUnit = "otherSpaces"
+		fc.MonitoredCounting.Count = o.available
+
+		ret = append(ret, fc)
+	}
+
+	return ret
+}
+func (p BikeBz) RtSharing() (siri.FMData, error) {
+	ret := siri.FMData{}
+	l, err := p.odhLatest()
+	if err != nil {
+		return ret, err
+	}
+	ret.Conditions = p.mapSiri(l)
 	return ret, nil
 }
