@@ -11,14 +11,11 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-type odhBzBike []ninja.OdhStation[BzCycleMeta]
-
 type BikeBz struct {
-	cycles odhBzBike
 	origin string
 }
 
-type BzCycleMeta struct {
+type bzCycleMeta struct {
 	Model    string
 	Electric bool
 	Lamp     bool
@@ -26,24 +23,21 @@ type BzCycleMeta struct {
 	Basket   bool
 }
 
+type bzSharingMeta struct {
+	Address   string
+	TotalBays int `json:"total-bays"`
+}
+
 const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
 
-func (b *BikeBz) init() error {
+func NewBikeBz() *BikeBz {
+	b := BikeBz{}
 	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
-
-	bk, err := bzBike()
-	if err != nil {
-		return err
-	}
-	b.cycles = bk
-	return nil
+	return &b
 }
 
 func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
-	if err := b.init(); err != nil {
-		return ret, err
-	}
 
 	// Operators
 	o := netex.GetOperator(&config.Cfg, ORIGIN_BIKE_SHARING_BOLZANO)
@@ -63,7 +57,12 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 
 	models := make(map[string]netex.CycleModelProfile)
 
-	for _, c := range b.cycles {
+	cycles, err := odhMob[[]ninja.OdhStation[bzCycleMeta]]("Bicycle", b.origin)
+	if err != nil {
+		return ret, err
+	}
+
+	for _, c := range cycles {
 		p, found := models[c.Smeta.Model]
 		if !found {
 			// Cycle model profile
@@ -106,7 +105,6 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
-
 	s := netex.VehicleSharingService{}
 	s.Id = netex.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
@@ -126,8 +124,35 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
+	// Sharing ss as Parking (for SIRI reference)
+	ss, err := odhMob[[]ninja.OdhStation[bzSharingMeta]]("BikesharingStation", b.origin)
+	if err != nil {
+		return ret, err
+	}
+	for _, s := range ss {
+		p := netex.Parking{}
+		p.Id = netex.CreateID("Parking", s.Scode)
+		p.Version = "1"
+		p.ShortName = s.Sname
+		p.Centroid.Location.Longitude = s.Scoord.X
+		p.Centroid.Location.Latitude = s.Scoord.Y
+		p.OperatorRef = netex.MkRef("Operator", o.Id)
+		p.GmlPolygon = nil
+		p.Entrances = nil
+		p.ParkingType = "cycleRental"
+		p.ParkingVehicleTypes = "cycle"
+		p.ParkingLayout = "cycleHire"
+		p.ProhibitedForHazardousMaterials.Ignore()
+		p.RechargingAvailable = true
+		p.Secure.Set(false)
+		p.ParkingReservation = "registrationRequired"
+		p.ParkingProperties = nil
+
+		p.Name = s.Sname
+		p.PrincipalCapacity = int32(s.Smeta.TotalBays)
+		p.TotalCapacity = int32(s.Smeta.TotalBays)
+		ret.Parkings = append(ret.Parkings, p)
+	}
+
 	return ret, nil
-}
-func bzBike() (odhBzBike, error) {
-	return odhMob[odhBzBike]("Bicycle", ORIGIN_BIKE_SHARING_BOLZANO)
 }

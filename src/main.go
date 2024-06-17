@@ -54,7 +54,7 @@ func netexPark(c *gin.Context) {
 }
 
 func netexSharing(c *gin.Context) {
-	bikeProviders := []netex.StSharing{&provider.BikeBz{}, &provider.BikeMe{}, &provider.BikePapin{}}
+	bikeProviders := []netex.StSharing{provider.NewBikeBz(), &provider.BikeMe{}, &provider.BikePapin{}}
 	carProviders := []netex.StSharing{&provider.CarHAL{}}
 	res, err := netex.GetSharing(bikeProviders, carProviders)
 	if err != nil {
@@ -65,6 +65,13 @@ func netexSharing(c *gin.Context) {
 
 func siriParking(c *gin.Context) {
 	res, err := siri.FM([]siri.FMProvider{provider.ParkingGeneric{}, provider.ParkingEcharging{}})
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	c.JSONP(http.StatusOK, res)
+}
+func siriSharing(c *gin.Context) {
+	res, err := siri.FM([]siri.FMProvider{})
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
