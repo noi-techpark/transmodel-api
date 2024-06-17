@@ -130,7 +130,7 @@ func mapParking(latest []OdhLatest) []FacilityCondition {
 			fc.MonitoredCounting.Count = o.TotalPlaces - o.MValue
 		case "EChargingStation":
 			fc.FacilityStatus.Status = mapStatus(o.MValue, 1)
-			fc.MonitoredCounting.CountedFeatureUnit = "bays"
+			fc.MonitoredCounting.CountedFeatureUnit = "devices"
 			fc.MonitoredCounting.Count = o.Capacity - o.MValue
 		case "ParkingStation":
 			fc.FacilityStatus.Status = mapStatus(o.MValue, 10)
