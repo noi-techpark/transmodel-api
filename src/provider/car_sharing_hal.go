@@ -4,15 +4,18 @@
 package provider
 
 import (
+	"fmt"
+	"log/slog"
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 
 	"golang.org/x/exp/maps"
 )
 
 type odhHALCar []struct {
-	ninja.OdhStation[HALCarMeta]
+	ninja.OdhStation[halCarMeta]
 	Pmetadata struct {
 		Company struct {
 			Uid       string
@@ -28,7 +31,7 @@ type CarHAL struct {
 	provider string
 }
 
-type HALCarMeta struct {
+type halCarMeta struct {
 	Brand        string
 	Model        string
 	LicensePlate string
@@ -49,22 +52,32 @@ type HALCarMeta struct {
 	}
 }
 
+type halSharingMeta struct {
+	Company struct {
+		Uid       string
+		ShortName string
+		FullName  string
+	}
+	Bookahead         bool
+	FixedParking      bool
+	Spontaneously     bool
+	AvailableVehicles int
+}
+
 const ORIGIN_CAR_SHARING_HAL_API = "HAL-API"
 
-func (b *CarHAL) init() error {
+func NewCarSharingHal() *CarHAL {
+	b := CarHAL{}
 	b.origin = ORIGIN_CAR_SHARING_HAL_API
-	if err := b.fetch(); err != nil {
-		return err
-	}
-	b.provider = b.cars[0].Pmetadata.Company.ShortName // As soon as there is more than one, we have to change some more stuff anyways
-	return nil
+	return &b
 }
 
 func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
-	if err := b.init(); err != nil {
+	if err := b.fetch(); err != nil {
 		return ret, err
 	}
+	b.provider = b.cars[0].Pmetadata.Company.ShortName // As soon as there is more than one, we have to change some more stuff anyways
 
 	// Operators
 	o := netex.GetOperator(&config.Cfg, b.origin)
@@ -156,6 +169,36 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
+	// Sharing as Parking (for SIRI reference)
+	ss, err := odhMob[[]ninja.OdhStation[halSharingMeta]]("CarsharingStation", b.origin)
+	if err != nil {
+		return ret, err
+	}
+	for _, s := range ss {
+		p := netex.Parking{}
+		p.Id = netex.CreateID("Parking", s.Smeta.Company.ShortName, s.Scode)
+		p.Version = "1"
+		p.ShortName = s.Sname
+		p.Centroid.Location.Longitude = s.Scoord.X
+		p.Centroid.Location.Latitude = s.Scoord.Y
+		p.OperatorRef = netex.MkRef("Operator", o.Id)
+		p.GmlPolygon = nil
+		p.Entrances = nil
+		p.ParkingType = "rentalCarParking"
+		p.ParkingVehicleTypes = "car"
+		p.ParkingLayout = "undefined"
+		p.ProhibitedForHazardousMaterials.Set(true)
+		p.RechargingAvailable.Ignore()
+		p.Secure.Ignore()
+		p.ParkingReservation = "reservationRequired"
+		p.ParkingProperties = nil
+
+		p.Name = s.Sname
+		p.PrincipalCapacity = int32(s.Smeta.AvailableVehicles)
+		p.TotalCapacity = int32(s.Smeta.AvailableVehicles)
+		ret.Parkings = append(ret.Parkings, p)
+	}
+
 	return ret, nil
 }
 
@@ -163,4 +206,54 @@ func (b *CarHAL) fetch() error {
 	cs, err := odhMob[odhHALCar]("CarsharingCar", b.origin)
 	b.cars = cs
 	return err
+}
+
+type OdhHalSharingLatest struct {
+	ninja.OdhLatest
+	Sname    string
+	Provider string `json:"smetadata.company.shortName"`
+}
+
+func (p CarHAL) odhLatest() ([]OdhHalSharingLatest, error) {
+	req := ninja.DefaultNinjaRequest()
+	req.Limit = -1
+	req.Repr = ninja.FlatNode
+	req.StationTypes = []string{"CarsharingStation"}
+	req.DataTypes = []string{"number-available"}
+	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.Company.ShortName"
+	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
+	err := ninja.Latest(req, &res)
+	if err != nil {
+		slog.Error("Error retrieving parking state", "err", err)
+	}
+	return res.Data, err
+}
+
+func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
+	ret := []siri.FacilityCondition{}
+
+	for _, o := range latest {
+		fc := siri.FacilityCondition{}
+		fc.FacilityRef = netex.CreateID("Parking", o.Provider, o.Scode)
+		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 1)
+		fc.MonitoredCounting = &siri.MonitoredCounting{}
+		fc.MonitoredCounting.CountingType = "availabilityCount"
+		fc.MonitoredCounting.CountedFeatureUnit = "bays"
+		fc.MonitoredCounting.Count = o.MValue
+
+		ret = append(ret, fc)
+	}
+
+	return ret
+}
+func (p CarHAL) RtSharing() (siri.FMData, error) {
+	ret := siri.FMData{}
+	l, err := p.odhLatest()
+	if err != nil {
+		return ret, err
+	}
+	ret.Conditions = p.mapSiri(l)
+	return ret, nil
 }

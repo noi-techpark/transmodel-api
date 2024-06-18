@@ -66,7 +66,7 @@ func (ParkingEcharging) mapNetex(os []OdhParkingEcharging) ([]netex.Parking, []n
 		p.ParkingVehicleTypes = ""
 		p.ParkingLayout = "undefined"
 		p.ProhibitedForHazardousMaterials.Ignore()
-		p.RechargingAvailable = true
+		p.RechargingAvailable.Set(true)
 		p.Secure.Ignore()
 		p.ParkingReservation = "reservationAllowed"
 		p.ParkingProperties = nil

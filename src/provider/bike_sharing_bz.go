@@ -146,7 +146,7 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 		p.ParkingVehicleTypes = "cycle"
 		p.ParkingLayout = "cycleHire"
 		p.ProhibitedForHazardousMaterials.Ignore()
-		p.RechargingAvailable = true
+		p.RechargingAvailable.Set(true)
 		p.Secure.Set(false)
 		p.ParkingReservation = "registrationRequired"
 		p.ParkingProperties = nil
@@ -213,7 +213,7 @@ func (p BikeBz) mapSiri(latest []OdhBzSharingLatest) []siri.FacilityCondition {
 		fc.FacilityRef = netex.CreateID("Parking", p.origin, o.name)
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.free, 1)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
-		fc.MonitoredCounting.CountingType = "presentCount"
+		fc.MonitoredCounting.CountingType = "availabilityCount"
 		fc.MonitoredCounting.CountedFeatureUnit = "otherSpaces"
 		fc.MonitoredCounting.Count = o.available
 

@@ -78,7 +78,7 @@ func parking() ([]netex.CompositeFrame, error) {
 }
 func sharing() ([]netex.CompositeFrame, error) {
 	bikeProviders := []netex.StSharing{provider.NewBikeBz(), provider.NewBikeMe(), &provider.BikePapin{}}
-	carProviders := []netex.StSharing{&provider.CarHAL{}}
+	carProviders := []netex.StSharing{provider.NewCarSharingHal()}
 	return netex.GetSharing(bikeProviders, carProviders)
 }
 
@@ -90,7 +90,7 @@ func siriParking(c *gin.Context) {
 	c.JSONP(http.StatusOK, res)
 }
 func siriSharing(c *gin.Context) {
-	res, err := siri.FM([]siri.FMProvider{provider.NewBikeBz(), provider.NewBikeMe()})
+	res, err := siri.FM([]siri.FMProvider{provider.NewBikeBz(), provider.NewBikeMe(), provider.NewCarSharingHal()})
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

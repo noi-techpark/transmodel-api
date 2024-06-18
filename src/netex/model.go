@@ -284,7 +284,7 @@ type Parking struct {
 	PrincipalCapacity               int32
 	TotalCapacity                   int32
 	ProhibitedForHazardousMaterials N[bool]
-	RechargingAvailable             bool
+	RechargingAvailable             N[bool]
 	Secure                          N[bool]
 	ParkingReservation              string
 	ParkingProperties               any

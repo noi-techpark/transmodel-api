@@ -115,6 +115,11 @@ func compCarSharing(ps []StSharing) (CompositeFrame, error) {
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
 
+	site := SiteFrame{}
+	site.Id = CreateFrameId("SiteFrame_EU_PI_STOP", "CarSharing")
+	site.Version = "1"
+	site.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_STOP")
+
 	for _, p := range ps {
 		d, err := p.StSharing()
 		if err != nil {
@@ -130,13 +135,15 @@ func compCarSharing(ps []StSharing) (CompositeFrame, error) {
 		res.CarModels = AppendSafe(res.CarModels, d.CarModels...)
 		res.CycleModels = AppendSafe(res.CycleModels, d.CycleModels...)
 		res.Operators = AppendSafe(res.Operators, d.Operators...)
+
+		site.Parkings.Parkings = append(site.Parkings.Parkings, d.Parkings...)
 	}
 
 	comp := CompositeFrame{}
 	comp.Defaults()
 	comp.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", "CarSharing")
 	comp.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
-	comp.Frames.Frames = append(comp.Frames.Frames, mob, res)
+	comp.Frames.Frames = append(comp.Frames.Frames, mob, res, site)
 
 	return comp, nil
 }

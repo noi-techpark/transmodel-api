@@ -105,7 +105,7 @@ func (pg ParkingGeneric) mapNetex(os []OdhParkingGeneric) ([]netex.Parking, []ne
 		p.ParkingVehicleTypes = o.Smetadata.Netex.VehicleTypes
 		p.ParkingLayout = defEmpty(o.Smetadata.Netex.Layout, "undefined")
 		p.ProhibitedForHazardousMaterials.Set(o.Smetadata.Netex.HazardProhibited)
-		p.RechargingAvailable = o.Smetadata.Netex.Charging
+		p.RechargingAvailable.Set(o.Smetadata.Netex.Charging)
 		p.Secure.Set(o.Smetadata.Netex.Surveillance)
 		p.ParkingReservation = defEmpty(o.Smetadata.Netex.Reservation, "noReservations")
 		p.ParkingProperties = nil
