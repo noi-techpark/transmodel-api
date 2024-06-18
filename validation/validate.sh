@@ -4,7 +4,6 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-template=$(<delivery_container.xml)
 endpoint="${ENDPOINT:-localhost:8000}"
 
 tmpfile="${TMPFILE:-validate.xml}"
