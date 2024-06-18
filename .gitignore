@@ -39,7 +39,7 @@ src/tmp
 go.work
 
 # output file of validation script
-validation/validate.xml
+test/validate.xml
 
 # Libreoffice lock files
 .~lock.*

@@ -33,9 +33,9 @@ services:
         RUN apk add --no-cache bash curl libxml2-utils
     environment:
       ENDPOINT: app:8080
-      TMPFILE: /val/validation/validate.xml
+      TMPFILE: /val/test/validate.xml
     entrypoint: ./validate.sh
-    working_dir: /val/validation
+    working_dir: /val/test
     volumes:
       - ./:/val
 
