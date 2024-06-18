@@ -3,7 +3,9 @@
 package provider
 
 import (
+	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 )
 
 func odhMob[T any](tp string, origin string) (T, error) {
@@ -15,3 +17,9 @@ func odhMob[T any](tp string, origin string) (T, error) {
 	err := ninja.StationType(req, &res)
 	return res.Data, err
 }
+
+var ParkingStatic = []netex.StParking{&ParkingGeneric{}, ParkingEcharging{}}
+var ParkingRt = []siri.FMProvider{&ParkingGeneric{}, ParkingEcharging{}}
+var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
+var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
+var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}

@@ -222,7 +222,7 @@ func (p BikeBz) mapSiri(latest []OdhBzSharingLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p BikeBz) RtSharing() (siri.FMData, error) {
+func (p BikeBz) SiriFM() (siri.FMData, error) {
 	ret := siri.FMData{}
 	l, err := p.odhLatest()
 	if err != nil {

@@ -7,7 +7,7 @@ type FMData struct {
 	Conditions []FacilityCondition
 }
 type FMProvider interface {
-	RtSharing() (FMData, error)
+	SiriFM() (FMData, error)
 }
 
 func MapFacilityStatus(available int, partialThreshold int) string {
@@ -22,14 +22,14 @@ func MapFacilityStatus(available int, partialThreshold int) string {
 }
 
 func FM(ps []FMProvider) (Siri, error) {
-	siri := newSiri()
+	siri := NewSiri()
 
 	for _, p := range ps {
-		dt, err := p.RtSharing()
+		dt, err := p.SiriFM()
 		if err != nil {
 			return siri, err
 		}
-		siri.appencFcs(dt.Conditions)
+		siri.AppencFcs(dt.Conditions)
 	}
 
 	return siri, nil

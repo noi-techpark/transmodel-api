@@ -168,6 +168,7 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
 		fc.FacilityRef = netex.CreateID("Parking", o.Scode)
+		fc.MonitoredCounting = &siri.MonitoredCounting{}
 		fc.MonitoredCounting.CountingType = "presentCount"
 
 		switch o.Stype {
@@ -187,7 +188,7 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 	return ret
 }
 
-func (p ParkingGeneric) RtSharing() (siri.FMData, error) {
+func (p ParkingGeneric) SiriFM() (siri.FMData, error) {
 	ret := siri.FMData{}
 	l, err := p.odhLatest()
 	if err != nil {

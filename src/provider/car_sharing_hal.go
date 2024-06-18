@@ -248,7 +248,7 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p CarHAL) RtSharing() (siri.FMData, error) {
+func (p CarHAL) SiriFM() (siri.FMData, error) {
 	ret := siri.FMData{}
 	l, err := p.odhLatest()
 	if err != nil {

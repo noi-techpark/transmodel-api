@@ -14,11 +14,11 @@ type Siri struct {
 	}
 }
 
-func (s *Siri) appencFcs(fcs []FacilityCondition) {
+func (s *Siri) AppencFcs(fcs []FacilityCondition) {
 	s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition = append(s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition, fcs...)
 }
 
-func newSiri() Siri {
+func NewSiri() Siri {
 	siri := Siri{}
 	siri.Siri.Version = "2"
 	sd := &siri.Siri.ServiceDelivery

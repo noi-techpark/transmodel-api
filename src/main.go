@@ -34,11 +34,12 @@ func main() {
 
 	r.Use(gin.Recovery())
 
-	r.GET("/netex", netexEndpoint(full))
-	r.GET("/netex/parking", netexEndpoint(parking))
-	r.GET("/netex/sharing", netexEndpoint(sharing))
-	r.GET("/siri/fm/parking", siriParking)
-	r.GET("/siri/fm/sharing", siriSharing)
+	r.GET("/netex", netexEndpoint(netexAll))
+	r.GET("/netex/parking", netexEndpoint(netexParking))
+	r.GET("/netex/sharing", netexEndpoint(netexSharing))
+	r.GET("/siri/fm", siriEndpoint(siriFM))
+	r.GET("/siri/fm/parking", siriEndpoint(siriFMParking))
+	r.GET("/siri/fm/sharing", siriEndpoint(siriFMSharing))
 
 	r.GET("/health", health)
 	r.Run()
@@ -61,9 +62,9 @@ func netexEndpoint(fn netexFn) func(*gin.Context) {
 	}
 }
 
-func full() ([]netex.CompositeFrame, error) {
+func netexAll() ([]netex.CompositeFrame, error) {
 	ret := []netex.CompositeFrame{}
-	for _, s := range []netexFn{parking, sharing} {
+	for _, s := range []netexFn{netexParking, netexSharing} {
 		sr, err := s()
 		if err != nil {
 			return ret, err
@@ -73,28 +74,33 @@ func full() ([]netex.CompositeFrame, error) {
 	return ret, nil
 }
 
-func parking() ([]netex.CompositeFrame, error) {
-	return netex.GetParking([]netex.StParking{&provider.ParkingGeneric{}, &provider.ParkingEcharging{}})
+func netexParking() ([]netex.CompositeFrame, error) {
+	return netex.GetParking(provider.ParkingStatic)
 }
-func sharing() ([]netex.CompositeFrame, error) {
-	bikeProviders := []netex.StSharing{provider.NewBikeBz(), provider.NewBikeMe(), &provider.BikePapin{}}
-	carProviders := []netex.StSharing{provider.NewCarSharingHal()}
-	return netex.GetSharing(bikeProviders, carProviders)
+func netexSharing() ([]netex.CompositeFrame, error) {
+	return netex.GetSharing(provider.SharingBikesStatic, provider.SharingCarsStatic)
 }
 
-func siriParking(c *gin.Context) {
-	res, err := siri.FM([]siri.FMProvider{provider.ParkingGeneric{}, provider.ParkingEcharging{}})
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+type siriFn func() (siri.Siri, error)
+
+func siriEndpoint(fn siriFn) func(*gin.Context) {
+	return func(c *gin.Context) {
+		res, err := fn()
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
+		c.JSONP(http.StatusOK, res)
 	}
-	c.JSONP(http.StatusOK, res)
 }
-func siriSharing(c *gin.Context) {
-	res, err := siri.FM([]siri.FMProvider{provider.NewBikeBz(), provider.NewBikeMe(), provider.NewCarSharingHal()})
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
-	c.JSONP(http.StatusOK, res)
+func siriFM() (siri.Siri, error) {
+	return siri.FM(append(provider.ParkingRt, provider.SharingRt...))
+}
+
+func siriFMParking() (siri.Siri, error) {
+	return siri.FM(provider.ParkingRt)
+}
+func siriFMSharing() (siri.Siri, error) {
+	return siri.FM(provider.SharingRt)
 }
 
 func prettyXML(c *gin.Context, code int, object any) {
