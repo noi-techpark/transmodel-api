@@ -45,8 +45,13 @@ type OdhParkingGeneric struct {
 type ParkingGeneric struct {
 }
 
-func parkingOrigins() string {
-	origins := config.Cfg.ParkingOrigins()
+func (ParkingGeneric) origins() string {
+	origins := []string{"FBK",
+		"A22",
+		"Municipality Merano",
+		"FAMAS",
+		"bicincitta",
+	}
 	quoted := []string{}
 	for _, o := range origins {
 		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
@@ -59,7 +64,7 @@ func (p ParkingGeneric) odhStatic() ([]OdhParkingGeneric, error) {
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", parkingOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParkingGeneric]
 	err := ninja.StationType(req, &res)
@@ -148,7 +153,7 @@ func (p ParkingGeneric) odhLatest() ([]OdhParkingLatest, error) {
 	req.DataTypes = []string{"free", "number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces"
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", netex.ParkingOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {

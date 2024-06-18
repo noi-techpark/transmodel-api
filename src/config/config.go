@@ -16,16 +16,9 @@ import (
 
 type Config struct {
 	Operators []OperatorCfg
-	Dataset   DatasetCfg
 }
 
 var Cfg Config
-
-type DatasetCfg struct {
-	Parking struct {
-		Origins []string
-	}
-}
 
 type OperatorCfg struct {
 	Origin   []string
@@ -46,7 +39,6 @@ func InitConfig() {
 func ReadConfig() *Config {
 	cfg := Config{}
 	readYaml(fixRelPath("config", "operators.yml"), &cfg.Operators)
-	readYaml(fixRelPath("config", "datasets.yml"), &cfg.Dataset)
 	return &cfg
 }
 
@@ -72,8 +64,4 @@ func fixRelPath(path ...string) string {
 	}
 
 	return filepath.Join(append([]string{cwd}, path...)...)
-}
-
-func (c *Config) ParkingOrigins() []string {
-	return c.Dataset.Parking.Origins
 }

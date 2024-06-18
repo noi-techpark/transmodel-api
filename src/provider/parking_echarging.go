@@ -10,6 +10,7 @@ import (
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
+	"strings"
 
 	"golang.org/x/exp/maps"
 )
@@ -31,14 +32,27 @@ type OdhParkingEcharging struct {
 
 type ParkingEcharging struct{}
 
-func (ParkingEcharging) odhStatic() ([]OdhParkingEcharging, error) {
+func (ParkingEcharging) origins() string {
+	origins := []string{
+		"ALPERIA",
+		"route220",
+		"DRIWE",
+	}
+	quoted := []string{}
+	for _, o := range origins {
+		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
+	}
+	return strings.Join(quoted, ",")
+}
+
+func (p ParkingEcharging) odhStatic() ([]OdhParkingEcharging, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"EChargingStation"}
 	req.Where = "sactive.eq.true"
 	// Rudimentary geographical limit
 	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", parkingOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
 	var res ninja.NinjaResponse[[]OdhParkingEcharging]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
@@ -97,7 +111,7 @@ func (p ParkingEcharging) odhLatest() ([]OdhParkingLatest, error) {
 	req.DataTypes = []string{"number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity"
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", netex.ParkingOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {

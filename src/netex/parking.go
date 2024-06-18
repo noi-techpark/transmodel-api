@@ -3,12 +3,6 @@
 
 package netex
 
-import (
-	"fmt"
-	"opendatahub/sta-nap-export/config"
-	"strings"
-)
-
 type OdhEcharging struct {
 	Scode       string
 	Sname       string
@@ -22,15 +16,6 @@ type OdhEcharging struct {
 		State    string
 		Capacity int32
 	}
-}
-
-func ParkingOrigins() string {
-	origins := config.Cfg.ParkingOrigins()
-	quoted := []string{}
-	for _, o := range origins {
-		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
-	}
-	return strings.Join(quoted, ",")
 }
 
 func compFrame(pd StParkingData) CompositeFrame {
