@@ -8,9 +8,9 @@ SPDX-License-Identifier: CC0-1.0
 
 [![REUSE Compliance](https://github.com/noi-techpark/java-boilerplate/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 
-This API provides data from the Open Data Hub in the standard formats NeTEx (Italian Profile) and SIRI FM.
+This API provides data from the Open Data Hub in the standard formats NeTEx (Italian Profile) and SIRI-LITE FM (JSON).
 
-It acts as a wrapper and has no internal data.
+It acts as a wrapper of the Open Data Hub API and has no internal data storage.
 
 ## Getting started
 
@@ -37,13 +37,16 @@ For documentation on the procotols, see the [initial issue](https://github.com/n
 The documents linked there are also in the [documentation](./documentation/) directory
 
 The subrepo [netex-italian-profile](netex-italian-profile) tracks the [Italian netex profile repo](https://github.com/5Tsrl/netex-italian-profile) and contains examples and validation xsd files.  
-The Italian profile is an extension of the base NeTEx specification
+Analogously, the subrepo [siri-italian-profile](siri-italian-profile) tracks the [Italian siri profile repo](https://github.com/5Tsrl/siri-italian-profile)
+
+The Italian profiles are an extension of the base NeTEx/SIRI specifications by CEN
 
 ## Open Data Hub API calls
 Example calls such as the ones used by this API are provided in [calls.http](calls.http)
 
 ## Adding datasets to export
-Filters on which datasets are included are configured via [datasets.yml](src/config/datasets.yml).  
+New data sources are implemented as [providers](src/provider/), implementing one or more of the relevant interfaces (see other provider).
+The provider must then be added to the endpoint calls in [src/main.go](src/main.go)
 
 ## Running automated tests
 Native: From `/src` folder run `go test ./...`  
