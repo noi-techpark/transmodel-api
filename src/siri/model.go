@@ -48,14 +48,21 @@ type FacilityMonitoringDelivery struct {
 	FacilityCondition []FacilityCondition
 }
 
+type MonitoredCounting struct {
+	CountingType       string
+	CountedFeatureUnit string
+	Count              int
+}
+type FacilityUpdatedPosition struct {
+	Longitude float32
+	Latitude  float32
+}
+
 type FacilityCondition struct {
 	FacilityRef    string
 	FacilityStatus struct {
 		Status string
 	}
-	MonitoredCounting struct {
-		CountingType       string
-		CountedFeatureUnit string `xml:"countedFeatureUnit"`
-		Count              int
-	}
+	MonitoredCounting       *MonitoredCounting       `json:",omitempty"`
+	FacilityUpdatedPosition *FacilityUpdatedPosition `json:",omitempty"`
 }

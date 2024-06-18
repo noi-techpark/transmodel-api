@@ -4,9 +4,12 @@
 package provider
 
 import (
+	"fmt"
+	"log/slog"
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 
 	"golang.org/x/exp/maps"
 )
@@ -26,17 +29,17 @@ type MeCycleMeta struct {
 	Basket   bool
 }
 
-const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
-
-func (b *BikeMe) init() error {
+func NewBikeMe() *BikeMe {
+	b := BikeMe{}
 	b.origin = ORIGIN_BIKE_SHARING_MERANO
-
-	return b.fetch()
+	return &b
 }
+
+const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
 func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
-	if err := b.init(); err != nil {
+	if err := b.fetch(); err != nil {
 		return ret, err
 	}
 
@@ -127,4 +130,52 @@ func (b *BikeMe) fetch() error {
 	bk, err := odhMob[odhMeBike]("Bicycle", b.origin)
 	b.cycles = bk
 	return err
+}
+
+type OdhBikeMeLatest struct {
+	ninja.OdhLatest
+	Sname       string
+	Scoordinate ninja.OdhCoord
+}
+
+func (p BikeMe) odhLatest() ([]OdhBikeMeLatest, error) {
+	req := ninja.DefaultNinjaRequest()
+	req.Limit = -1
+	req.Repr = ninja.FlatNode
+	req.StationTypes = []string{"Bicycle"}
+	req.DataTypes = []string{"availability"}
+	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,scoordinate"
+	req.Where = "sactive.eq.true"
+	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	var res ninja.NinjaResponse[[]OdhBikeMeLatest]
+	err := ninja.Latest(req, &res)
+	if err != nil {
+		slog.Error("Error retrieving parking state", "err", err)
+	}
+	return res.Data, err
+}
+
+func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
+	ret := []siri.FacilityCondition{}
+	for _, o := range latest {
+		fc := siri.FacilityCondition{}
+		fc.FacilityRef = netex.CreateID("Parking", p.origin, o.Sname)
+		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 0)
+		fc.FacilityUpdatedPosition = &siri.FacilityUpdatedPosition{}
+		fc.FacilityUpdatedPosition.Longitude = o.Scoordinate.X
+		fc.FacilityUpdatedPosition.Latitude = o.Scoordinate.Y
+
+		ret = append(ret, fc)
+	}
+
+	return ret
+}
+func (p BikeMe) RtSharing() (siri.FMData, error) {
+	ret := siri.FMData{}
+	l, err := p.odhLatest()
+	if err != nil {
+		return ret, err
+	}
+	ret.Conditions = p.mapSiri(l)
+	return ret, nil
 }
