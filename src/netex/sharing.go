@@ -43,20 +43,20 @@ type StSharing interface {
 	StSharing() (StSharingData, error)
 }
 
-func GetSharing(bikeProviders []StSharing, carProviders []StSharing) (Root, error) {
-	var ret Root
+func GetSharing(bikeProviders []StSharing, carProviders []StSharing) ([]CompositeFrame, error) {
+	ret := []CompositeFrame{}
 
 	c, err := compBikeSharing(bikeProviders)
 	if err != nil {
 		return ret, err
 	}
-	ret.CompositeFrame = append(ret.CompositeFrame, c)
+	ret = append(ret, c)
 
 	c, err = compCarSharing(carProviders)
 	if err != nil {
 		return ret, err
 	}
-	ret.CompositeFrame = append(ret.CompositeFrame, c)
+	ret = append(ret, c)
 
 	return ret, nil
 }

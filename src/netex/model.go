@@ -7,6 +7,36 @@ import (
 	"time"
 )
 
+type NetexFrame struct {
+	XMLName              xml.Name `xml:"PublicationDelivery"`
+	Version              string   `xml:"version"`
+	NsGml                string   `xml:"xmlns:gml,attr"`
+	NsSiri               string   `xml:"xmlns:siri,attr"`
+	NsNetex              string   `xml:"xmlns,attr"`
+	NsXsi                string   `xml:"xmlns:xsi,attr"`
+	XsiSchemaLocation    string   `xml:"xsi:schemaLocation,attr"`
+	PublicationTimestamp time.Time
+	ParticipantRef       string
+	Description          string
+	DataObjects          struct {
+		Frames []CompositeFrame `xml:"CompositeFrame"`
+	} `xml:"dataObjects"`
+}
+
+func NewNetexFrame() NetexFrame {
+	n := NetexFrame{}
+	n.Version = "1.0"
+	n.NsGml = "http://www.opengis.net/gml/3.2"
+	n.NsSiri = "http://www.siri.org.uk/siri"
+	n.NsNetex = "http://www.netex.org.uk/netex"
+	n.NsXsi = "http://www.w3.org/2001/XMLSchema-instance"
+	n.XsiSchemaLocation = "http://www.netex.org.uk/netex https://raw.githubusercontent.com/5Tsrl/netex-italian-profile/main/xsd/NeTEx_publication_Lev4.xsd"
+	n.PublicationTimestamp = time.Now()
+	n.ParticipantRef = "RAP"
+	n.Description = "Open Data Hub Netex export"
+	return n
+}
+
 type Root struct {
 	XMLName        xml.Name         `xml:"root"`
 	CompositeFrame []CompositeFrame `xml:"CompositeFrame"`

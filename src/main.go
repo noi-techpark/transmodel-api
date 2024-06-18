@@ -34,8 +34,9 @@ func main() {
 
 	r.Use(gin.Recovery())
 
-	r.GET("/netex/parking", netexPark)
-	r.GET("/netex/sharing", netexSharing)
+	r.GET("/netex", netexEndpoint(full))
+	r.GET("/netex/parking", netexEndpoint(parking))
+	r.GET("/netex/sharing", netexEndpoint(sharing))
 	r.GET("/siri/fm/parking", siriParking)
 	r.GET("/siri/fm/sharing", siriSharing)
 
@@ -46,22 +47,39 @@ func health(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func netexPark(c *gin.Context) {
-	res, err := netex.GetParking([]netex.StParking{&provider.ParkingGeneric{}, &provider.ParkingEcharging{}})
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+type netexFn func() ([]netex.CompositeFrame, error)
+
+func netexEndpoint(fn netexFn) func(*gin.Context) {
+	return func(c *gin.Context) {
+		comp, err := fn()
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
+		n := netex.NewNetexFrame()
+		n.DataObjects.Frames = append(n.DataObjects.Frames, comp...)
+		prettyXML(c, http.StatusOK, n)
 	}
-	prettyXML(c, http.StatusOK, res)
 }
 
-func netexSharing(c *gin.Context) {
+func full() ([]netex.CompositeFrame, error) {
+	ret := []netex.CompositeFrame{}
+	for _, s := range []netexFn{parking, sharing} {
+		sr, err := s()
+		if err != nil {
+			return ret, err
+		}
+		ret = append(ret, sr...)
+	}
+	return ret, nil
+}
+
+func parking() ([]netex.CompositeFrame, error) {
+	return netex.GetParking([]netex.StParking{&provider.ParkingGeneric{}, &provider.ParkingEcharging{}})
+}
+func sharing() ([]netex.CompositeFrame, error) {
 	bikeProviders := []netex.StSharing{provider.NewBikeBz(), &provider.BikeMe{}, &provider.BikePapin{}}
 	carProviders := []netex.StSharing{&provider.CarHAL{}}
-	res, err := netex.GetSharing(bikeProviders, carProviders)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
-	prettyXML(c, http.StatusOK, res)
+	return netex.GetSharing(bikeProviders, carProviders)
 }
 
 func siriParking(c *gin.Context) {

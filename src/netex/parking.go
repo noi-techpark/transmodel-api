@@ -6,10 +6,7 @@ package netex
 import (
 	"fmt"
 	"opendatahub/sta-nap-export/config"
-	"opendatahub/sta-nap-export/ninja"
 	"strings"
-
-	"golang.org/x/exp/maps"
 )
 
 type OdhEcharging struct {
@@ -34,62 +31,6 @@ func ParkingOrigins() string {
 		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
 	}
 	return strings.Join(quoted, ",")
-}
-func getOdhEcharging() ([]OdhEcharging, error) {
-	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
-	req.StationTypes = []string{"EChargingStation"}
-	req.Where = "sactive.eq.true"
-	// Rudimentary geographical limit
-	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", ParkingOrigins())
-	var res ninja.NinjaResponse[[]OdhEcharging]
-	err := ninja.StationType(req, &res)
-	return res.Data, err
-}
-
-func defEmpty(s string, d string) string {
-	if s == "" {
-		return d
-	} else {
-		return s
-	}
-}
-
-func mapEcharging(os []OdhEcharging) ([]Parking, []Operator) {
-	ops := make(map[string]Operator)
-
-	var ps []Parking
-	for _, o := range os {
-		var p Parking
-
-		p.Id = CreateID("Parking", o.Scode)
-		p.Version = "1"
-		p.ShortName = o.Sname
-		p.Centroid.Location.Longitude = o.Scoordinate.X
-		p.Centroid.Location.Latitude = o.Scoordinate.Y
-		p.GmlPolygon = nil
-		op := GetOperator(&config.Cfg, o.Sorigin)
-		ops[op.Id] = op
-		p.OperatorRef = MkRef("Operator", op.Id)
-
-		p.Entrances = nil
-		p.ParkingType = "roadside"
-		p.ParkingVehicleTypes = ""
-		p.ParkingLayout = "undefined"
-		p.ProhibitedForHazardousMaterials.Ignore()
-		p.RechargingAvailable = true
-		p.Secure.Ignore()
-		p.ParkingReservation = "reservationAllowed"
-		p.ParkingProperties = nil
-
-		p.Name = o.Sname
-		p.PrincipalCapacity = o.Smetadata.Capacity
-		p.TotalCapacity = o.Smetadata.Capacity
-
-		ps = append(ps, p)
-	}
-	return ps, maps.Values(ops)
 }
 
 func compFrame(pd StParkingData) CompositeFrame {
@@ -122,8 +63,8 @@ type StParking interface {
 	StParking() (StParkingData, error)
 }
 
-func GetParking(ps []StParking) (Root, error) {
-	var ret Root
+func GetParking(ps []StParking) ([]CompositeFrame, error) {
+	ret := []CompositeFrame{}
 
 	apd := StParkingData{}
 
@@ -136,7 +77,7 @@ func GetParking(ps []StParking) (Root, error) {
 		apd.Operators = append(apd.Operators, pd.Operators...)
 	}
 
-	ret.CompositeFrame = append(ret.CompositeFrame, compFrame(apd))
+	ret = append(ret, compFrame(apd))
 
 	return ret, nil
 }

@@ -171,7 +171,7 @@ func (p BikeBz) odhLatest() ([]OdhBzSharingLatest, error) {
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"BikesharingStation"}
 	req.DataTypes = []string{"free-bays,number-available"}
-	req.Select = "mperiod,mvalue,mvalidtime,scode"
+	req.Select = "mperiod,mvalue,mvalidtime,scode,sname"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
 	var res ninja.NinjaResponse[[]OdhBzSharingLatest]
