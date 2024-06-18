@@ -20,6 +20,6 @@ func TestOpsContent(t *testing.T) {
 	assert.Equal(t, "0471997111", bsb.Phone)
 
 	hal := mapped["HAL-API"]
-	assert.Equal(t, "https://www.carnetex.bz.it/it/", hal.Url)
+	assert.Equal(t, "https://www.carsharing.bz.it/it/", hal.Url)
 	assert.Equal(t, "Via Beda Weber 1", hal.Street)
 }
