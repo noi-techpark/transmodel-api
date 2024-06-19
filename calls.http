@@ -8,10 +8,10 @@ GET {{host}}/netex/sharing
 ### SIRI-FM real time parking availability. Station ID as a parameter
 GET {{host}}/siri/fm/115
 ### Bike sharing bolzano sharing service
-GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation
+GET https://mobility.api.opendatahub.testingmachine.eu/v2/flat/BikesharingStation
 ?where=sorigin.eq.BIKE_SHARING_BOLZANO,sactive.eq.true
 ### Bike sharing bolzano single bicycles
-GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
+GET https://mobility.api.opendatahub.testingmachine.eu/v2/flat/Bicycle
 ?where=sorigin.eq.BIKE_SHARING_BOLZANO,sactive.eq.true
 &limit=-1
 ### Bike sharing merano

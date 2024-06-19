@@ -5,6 +5,7 @@ package provider
 
 import (
 	"opendatahub/sta-nap-export/config"
+	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"testing"
 
@@ -37,4 +38,22 @@ func TestMapping(t *testing.T) {
 	assert.Equal(t, len(nt.Vehicles), len(cycles.Data))
 	assert.Equal(t, len(nt.Parkings), len(sharings.Data))
 
+	var c52 *netex.Vehicle
+	for _, v := range nt.Vehicles {
+		if v.Id == "IT:ITH10:Vehicle:BIKE_SHARING_BOLZANO:City_52M" {
+			c52 = &v
+			break
+		}
+	}
+	assert.Assert(t, c52 != nil)
+	assert.Equal(t, c52.Name, "Sunrise")
+	assert.Equal(t, c52.ShortName, "Sunrise")
+	assert.Equal(t, c52.RegistrationNumber, "")
+	assert.Equal(t, c52.OperationalNumber, "")
+	assert.Equal(t, c52.PrivateCode, "City 52M")
+
+	assert.Equal(t, c52.OperatorRef.Ref, "IT:ITH10:Operator:Municipality_of_Bolzano_bikesharing")
+	o := netex.GetOperator(&config.Cfg, b.origin)
+	assert.Equal(t, o.Id, c52.OperatorRef.Ref)
+	assert.Equal(t, c52.VehicleTypeRef.Ref, "IT:ITH10:CycleModelProfile:BIKE_SHARING_BOLZANO:muscular")
 }
