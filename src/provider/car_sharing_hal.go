@@ -170,7 +170,7 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	ret.Constraints = append(ret.Constraints, c)
 
 	// Sharing as Parking (for SIRI reference)
-	ss, err := odhMob[[]ninja.OdhStation[halSharingMeta]]("CarsharingStation", b.origin)
+	ss, err := FetchOdhStations[[]ninja.OdhStation[halSharingMeta]]("CarsharingStation", b.origin)
 	if err != nil {
 		return ret, err
 	}
@@ -203,7 +203,7 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 }
 
 func (b *CarHAL) fetch() error {
-	cs, err := odhMob[odhHALCar]("CarsharingCar", b.origin)
+	cs, err := FetchOdhStations[odhHALCar]("CarsharingCar", b.origin)
 	b.cars = cs
 	return err
 }

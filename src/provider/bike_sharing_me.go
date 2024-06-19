@@ -127,7 +127,7 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 	return ret, nil
 }
 func (b *BikeMe) fetch() error {
-	bk, err := odhMob[odhMeBike]("Bicycle", b.origin)
+	bk, err := FetchOdhStations[odhMeBike]("Bicycle", b.origin)
 	b.cycles = bk
 	return err
 }

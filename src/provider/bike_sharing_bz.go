@@ -14,10 +14,6 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-type BikeBz struct {
-	origin string
-}
-
 type bzCycleMeta struct {
 	Model    string
 	Electric bool
@@ -31,11 +27,22 @@ type bzSharingMeta struct {
 	TotalBays int `json:"total-bays"`
 }
 
+type bikeBzCycles []ninja.OdhStation[bzCycleMeta]
+type bikeBzSharing []ninja.OdhStation[bzSharingMeta]
+
+type BikeBz struct {
+	origin  string
+	cycles  func(string) (bikeBzCycles, error)
+	sharing func(string) (bikeBzSharing, error)
+}
+
 const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
 
 func NewBikeBz() *BikeBz {
 	b := BikeBz{}
 	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
+	b.cycles = func(o string) (bikeBzCycles, error) { return FetchOdhStations[bikeBzCycles]("Bicycle", o) }
+	b.sharing = func(o string) (bikeBzSharing, error) { return FetchOdhStations[bikeBzSharing]("BikesharingStation", o) }
 	return &b
 }
 
@@ -60,7 +67,7 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 
 	models := make(map[string]netex.CycleModelProfile)
 
-	cycles, err := odhMob[[]ninja.OdhStation[bzCycleMeta]]("Bicycle", b.origin)
+	cycles, err := b.cycles(b.origin)
 	if err != nil {
 		return ret, err
 	}
@@ -128,7 +135,7 @@ func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	ret.Constraints = append(ret.Constraints, c)
 
 	// Sharing ss as Parking (for SIRI reference)
-	ss, err := odhMob[[]ninja.OdhStation[bzSharingMeta]]("BikesharingStation", b.origin)
+	ss, err := b.sharing(b.origin)
 	if err != nil {
 		return ret, err
 	}

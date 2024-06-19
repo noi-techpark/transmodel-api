@@ -8,7 +8,7 @@ import (
 	"opendatahub/sta-nap-export/siri"
 )
 
-func odhMob[T any](tp string, origin string) (T, error) {
+func FetchOdhStations[T any](tp string, origin string) (T, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{tp}

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"strconv"
 )
 
@@ -76,34 +77,49 @@ func makeQuery(req *NinjaRequest) *url.Values {
 	return query
 }
 
+var TestReqHook func(*NinjaRequest) (*NinjaResponse[any], error)
+
+func runReqHook(req *NinjaRequest, result any) error {
+	r, err := TestReqHook(req)
+	if err != nil {
+		return err
+	}
+	// unholy memcpy: sets the memory at p to the value of pv. Obviously they have to be the same type
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(r).Elem())
+	return nil
+}
+
 func getPath[T any](path string, req *NinjaRequest, result *NinjaResponse[T]) error {
+	if TestReqHook != nil {
+		return runReqHook(req, result)
+	}
 	u, err := url.Parse(BaseUrl)
 	if err != nil {
 		return fmt.Errorf("unable to parse Base URL from config: %w", err)
 	}
 	u.Path += path
 	u.RawQuery = makeQuery(req).Encode()
-	return requestUrl[T](u, result)
+	return requestUrl(u, result)
 }
 
 func StationType[T any](req *NinjaRequest, res *NinjaResponse[T]) error {
-	return getPath[T](makeStationTypePath(req), req, res)
+	return getPath(makeStationTypePath(req), req, res)
 }
 
 func History[T any](req *NinjaRequest, res *NinjaResponse[T]) error {
-	return getPath[T](makeHistoryPath(req), req, res)
+	return getPath(makeHistoryPath(req), req, res)
 }
 
 func Latest[T any](req *NinjaRequest, res *NinjaResponse[T]) error {
-	return getPath[T](makeLatestPath(req), req, res)
+	return getPath(makeLatestPath(req), req, res)
 }
 
 func Get[T any](query string, result *NinjaResponse[T]) error {
 	url, _ := url.Parse(BaseUrl + query)
-	return requestUrl[T](url, result)
+	return requestUrl(url, result)
 }
 
-func requestUrl[T any](reqUrl *url.URL, result *NinjaResponse[T]) error {
+func requestUrl(reqUrl *url.URL, result any) error {
 	slog.Debug("Ninja request with URL: " + reqUrl.String())
 
 	req, err := http.NewRequest(http.MethodGet, reqUrl.String(), nil)
