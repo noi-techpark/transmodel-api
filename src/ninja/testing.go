@@ -19,6 +19,8 @@ func runReqHook(req *NinjaRequest, result any) error {
 		return err
 	}
 	// unholy memcpy: sets the memory at p to the value of pv. Obviously they have to be the same type
+	// Has to be this way because golang does not allow for variables to hold parametrized functions.
+	// So we have to use 'any' and hack around it with reflection. The golang.json lib does the same
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(r).Elem())
 	return nil
 }
@@ -32,9 +34,3 @@ func LoadJsonFile[T any](f string) (*NinjaResponse[T], error) {
 	json.Unmarshal(b, r)
 	return r, nil
 }
-
-// func fixRelPath(path string) string {
-// 	_, b, _, _ := runtime.Caller(0)
-// 	cwd := filepath.Join(filepath.Dir(b), "..")
-// 	return filepath.Join(cwd, path)
-// }
