@@ -7,6 +7,7 @@ import (
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/sta-nap-export/siri"
 	"slices"
 	"testing"
 
@@ -86,6 +87,12 @@ func TestNetex(t *testing.T) {
 	assert.Equal(t, park.TotalCapacity, int32(12))
 }
 
+func findSiriStation(fcs []siri.FacilityCondition, id string) siri.FacilityCondition {
+	return fcs[slices.IndexFunc(fcs, func(m siri.FacilityCondition) bool {
+		return m.FacilityRef == id
+	})]
+}
+
 func TestSiri(t *testing.T) {
 	b := NewBikeBz()
 	config.InitConfig()
@@ -95,6 +102,18 @@ func TestSiri(t *testing.T) {
 
 	fcs := b.mapSiri(latest.Data)
 
+	// Divide by 2, because we're requesting and merging two datatypes
 	assert.Equal(t, len(latest.Data)/2, len(fcs))
 
+	st := findSiriStation(fcs, "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Viale_Europa")
+	assert.Equal(t, st.FacilityStatus.Status, "available")
+	assert.Equal(t, st.MonitoredCounting.Count, 0)
+	assert.Assert(t, st.FacilityUpdatedPosition == nil)
+
+	st = findSiriStation(fcs, "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Piazza_Matteotti_-_Matteotti_Platz")
+	assert.Equal(t, st.FacilityStatus.Status, "notAvailable")
+	assert.Equal(t, st.MonitoredCounting.Count, 1)
+
+	st = findSiriStation(fcs, "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Funivia_del_Colle")
+	assert.Equal(t, st.FacilityStatus.Status, "partiallyAvailable")
 }
