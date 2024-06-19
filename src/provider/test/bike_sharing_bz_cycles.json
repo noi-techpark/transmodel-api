@@ -1,0 +1,932 @@
+
+{
+    "offset": 0,
+    "data": [
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Casanova:1",
+        "pcoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Casanova:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 52M",
+        "scoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.4809014,
+          "lng": 11.312432917,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Casanova:2",
+        "pcoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Casanova:2",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 17",
+        "scoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.4809014,
+          "lng": 11.312432917,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Casanova:3",
+        "pcoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Casanova:3",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_85M",
+        "scoordinate": {
+          "x": 11.312433,
+          "y": 46.480901,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.4809014,
+          "lng": 11.312432917,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Claudia Augusta:1",
+        "pcoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Claudia Augusta:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 16",
+        "scoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.483579,
+          "lng": 11.343183,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Claudia Augusta:3",
+        "pcoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Claudia Augusta:3",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_78M",
+        "scoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.483579,
+          "lng": 11.343183,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Claudia Augusta:4",
+        "pcoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Claudia Augusta:4",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 66M",
+        "scoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.483579,
+          "lng": 11.343183,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Claudia Augusta:5",
+        "pcoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Claudia Augusta:5",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 60M",
+        "scoordinate": {
+          "x": 11.343183,
+          "y": 46.483579,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.483579,
+          "lng": 11.343183,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Fiera - Messe:2",
+        "pcoordinate": {
+          "x": 11.325996,
+          "y": 46.473876,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Fiera - Messe:2",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 68M",
+        "scoordinate": {
+          "x": 11.325996,
+          "y": 46.473876,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.473876,
+          "lng": 11.325996,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Funivia del Colle:1",
+        "pcoordinate": {
+          "x": 11.366321,
+          "y": 46.490933,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Funivia del Colle:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 65M",
+        "scoordinate": {
+          "x": 11.366321,
+          "y": 46.490933,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.490933,
+          "lng": 11.366321317,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Ospedale - Krankenhaus:1",
+        "pcoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Ospedale - Krankenhaus:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_82M",
+        "scoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.499597,
+          "lng": 11.308948,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Ospedale - Krankenhaus:2",
+        "pcoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Ospedale - Krankenhaus:2",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 51M",
+        "scoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.499597,
+          "lng": 11.308948,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Ospedale - Krankenhaus:6",
+        "pcoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Ospedale - Krankenhaus:6",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_93",
+        "scoordinate": {
+          "x": 11.308948,
+          "y": 46.499597,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.499597,
+          "lng": 11.308948,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Palasport - Stadthalle:1",
+        "pcoordinate": {
+          "x": 11.316234,
+          "y": 46.491091,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Palasport - Stadthalle:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_75M",
+        "scoordinate": {
+          "x": 11.316234,
+          "y": 46.491091,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.491091,
+          "lng": 11.316234,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Palasport - Stadthalle:6",
+        "pcoordinate": {
+          "x": 11.316234,
+          "y": 46.491091,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Palasport - Stadthalle:6",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 11",
+        "scoordinate": {
+          "x": 11.316234,
+          "y": 46.491091,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.491091,
+          "lng": 11.316234,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Piazza Matteotti - Matteotti Platz:4",
+        "pcoordinate": {
+          "x": 11.337135,
+          "y": 46.490211,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Piazza Matteotti - Matteotti Platz:4",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 25M",
+        "scoordinate": {
+          "x": 11.337135,
+          "y": 46.490211,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.490211,
+          "lng": 11.337135,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Piazza Ziller:5",
+        "pcoordinate": {
+          "x": 11.340822,
+          "y": 46.493185,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Piazza Ziller:5",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_72M",
+        "scoordinate": {
+          "x": 11.340822,
+          "y": 46.493185,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.493185,
+          "lng": 11.340822,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Piazza Ziller:7",
+        "pcoordinate": {
+          "x": 11.340822,
+          "y": 46.493185,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Piazza Ziller:7",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_80M",
+        "scoordinate": {
+          "x": 11.340822,
+          "y": 46.493185,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.493185,
+          "lng": 11.340822,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Ponte Talvera:7",
+        "pcoordinate": {
+          "x": 11.345923,
+          "y": 46.500313,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Ponte Talvera:7",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_97",
+        "scoordinate": {
+          "x": 11.345923,
+          "y": 46.500313,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.500313,
+          "lng": 11.345922519,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Via Galilei - Galilei-Strasse:1",
+        "pcoordinate": {
+          "x": 11.335918,
+          "y": 46.485846,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Via Galilei - Galilei-Strasse:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_96",
+        "scoordinate": {
+          "x": 11.335918,
+          "y": 46.485846,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.485846,
+          "lng": 11.335918,
+          "electric": true
+        },
+        "sname": "Sunshine",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:1",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:1",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City_69M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:2",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:2",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 64M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:3",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:3",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 59M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:4",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:4",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 30M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:5",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:5",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 35M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Viale della Stazione - Bahnhofsallee:7",
+        "pcoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Viale della Stazione - Bahnhofsallee:7",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 23M",
+        "scoordinate": {
+          "x": 11.355516,
+          "y": 46.497459,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.497459,
+          "lng": 11.355516,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Via Maso della Pieve - Pfarrhofstrasse:10",
+        "pcoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Via Maso della Pieve - Pfarrhofstrasse:10",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 24M",
+        "scoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.46461,
+          "lng": 11.333071,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Via Maso della Pieve - Pfarrhofstrasse:12",
+        "pcoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Via Maso della Pieve - Pfarrhofstrasse:12",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 18",
+        "scoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.46461,
+          "lng": 11.333071,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      },
+      {
+        "pactive": true,
+        "pavailable": true,
+        "pcode": "Via Maso della Pieve - Pfarrhofstrasse:8",
+        "pcoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "pmetadata": {
+          "use": "SHARING",
+          "charger": true
+        },
+        "pname": "Via Maso della Pieve - Pfarrhofstrasse:8",
+        "porigin": "BIKE_SHARING_BOLZANO",
+        "ptype": "Bicyclestationbay",
+        "sactive": true,
+        "savailable": true,
+        "scode": "City 70M",
+        "scoordinate": {
+          "x": 11.333071,
+          "y": 46.46461,
+          "srid": 4326
+        },
+        "smetadata": {
+          "lat": 46.46461,
+          "lng": 11.333071,
+          "electric": false
+        },
+        "sname": "Sunrise",
+        "sorigin": "BIKE_SHARING_BOLZANO",
+        "stype": "Bicycle"
+      }
+    ],
+    "limit": -1
+  }
+  

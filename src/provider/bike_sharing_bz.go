@@ -41,8 +41,12 @@ const ORIGIN_BIKE_SHARING_BOLZANO = "BIKE_SHARING_BOLZANO"
 func NewBikeBz() *BikeBz {
 	b := BikeBz{}
 	b.origin = ORIGIN_BIKE_SHARING_BOLZANO
-	b.cycles = func(o string) (bikeBzCycles, error) { return FetchOdhStations[bikeBzCycles]("Bicycle", o) }
-	b.sharing = func(o string) (bikeBzSharing, error) { return FetchOdhStations[bikeBzSharing]("BikesharingStation", o) }
+	b.cycles = func(origin string) (bikeBzCycles, error) {
+		return FetchOdhStations[bikeBzCycles]("Bicycle", origin)
+	}
+	b.sharing = func(origin string) (bikeBzSharing, error) {
+		return FetchOdhStations[bikeBzSharing]("BikesharingStation", origin)
+	}
 	return &b
 }
 

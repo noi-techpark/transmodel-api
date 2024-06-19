@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"reflect"
 	"strconv"
 )
 
@@ -75,18 +74,6 @@ func makeQuery(req *NinjaRequest) *url.Values {
 	makeQueryParam(query, "distinct", req.Distinct, true)
 	makeQueryParam(query, "timezone", req.Timezone, "")
 	return query
-}
-
-var TestReqHook func(*NinjaRequest) (*NinjaResponse[any], error)
-
-func runReqHook(req *NinjaRequest, result any) error {
-	r, err := TestReqHook(req)
-	if err != nil {
-		return err
-	}
-	// unholy memcpy: sets the memory at p to the value of pv. Obviously they have to be the same type
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(r).Elem())
-	return nil
 }
 
 func getPath[T any](path string, req *NinjaRequest, result *NinjaResponse[T]) error {
