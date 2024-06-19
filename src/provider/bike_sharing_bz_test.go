@@ -13,7 +13,7 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestMapping(t *testing.T) {
+func TestNetex(t *testing.T) {
 	sharings, err := ninja.LoadJsonFile[bikeBzSharing]("test/bike_sharing_bz_sharing.json")
 	assert.NilError(t, err, "Failed to load JSON")
 
@@ -84,4 +84,17 @@ func TestMapping(t *testing.T) {
 
 	park := nt.Parkings[slices.IndexFunc(nt.Parkings, func(m netex.Parking) bool { return m.ShortName == "Viale Europa" })]
 	assert.Equal(t, park.TotalCapacity, int32(12))
+}
+
+func TestSiri(t *testing.T) {
+	b := NewBikeBz()
+	config.InitConfig()
+
+	latest, err := ninja.LoadJsonFile[[]OdhBzSharingLatest]("test/bike_sharing_bz_latest.json")
+	assert.NilError(t, err, "Failed to load JSON")
+
+	fcs := b.mapSiri(latest.Data)
+
+	assert.Equal(t, len(latest.Data)/2, len(fcs))
+
 }

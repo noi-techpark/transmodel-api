@@ -1,0 +1,295 @@
+
+{
+    "offset": 0,
+    "data": [
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 0,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQxNz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--78b09f10f7e8c0905a6dad4c9589f784b8fe96aa",
+        "sname": "Piazza Matteotti - Matteotti Platz"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 3,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--ddc69afa031263d58526f56a5d60574abb2b8c70",
+        "sname": "Piazza Ziller"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 5,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--2f7728b855652d2f1d57e07c5524a0742097aff3",
+        "sname": "Funivia del Colle"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 6,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Nz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--c4e26e1fd97da55bd1a1fe7ccf67f1b70c69453a",
+        "sname": "Palasport - Stadthalle"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 6,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzM0ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--c21564daa3fde7db6ac067e1f567a4847ed9c060",
+        "sname": "NOI Techpark Alto Adige"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 7,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--33150e8ef8c952030277c63eec20b5e9ea6c76d3",
+        "sname": "Viale della Stazione - Bahnhofsallee"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 7,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Mz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b8901538dd95a269182c83802f18772f9e4fe6eb",
+        "sname": "Ponte Talvera"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 8,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--3008cf824e352d9854585d3731568fe6e0a042d2",
+        "sname": "Claudia Augusta"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 9,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--3242fbb9d66046deac446c8b89768cd1b6fc9c9f",
+        "sname": "Via Maso della Pieve - Pfarrhofstrasse"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 9,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5OD9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--9bc94cf15edb94fdc76de38a15033eba707d96bd",
+        "sname": "Ospedale - Krankenhaus"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 9,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Nj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b905857549d86e30377f204a5fd744c144e0eb31",
+        "sname": "Casanova"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 11,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Nj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--1b380c7315ed00d73a49269e2feab2e5b0452a00",
+        "sname": "Via Galilei - Galilei-Strasse"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 11,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5NT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--845248b808d1bf6c6115e471e41ccdca99f09743",
+        "sname": "Fiera - Messe"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 12,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5OT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--1bd9304bdb17a53ff75a7080179f84c9d2776825",
+        "sname": "Piazza Gries - Grieserplatz"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 12,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2NT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--bc328b4da961b3abf1e86643a210909746cf640a",
+        "sname": "Viale Europa"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "free-bays",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 12,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQxNj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b8e1095924315dc7089c54cc36abf07595b1a123",
+        "sname": "Don Bosco"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 0,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5OT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--1bd9304bdb17a53ff75a7080179f84c9d2776825",
+        "sname": "Piazza Gries - Grieserplatz"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 0,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzM0ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--c21564daa3fde7db6ac067e1f567a4847ed9c060",
+        "sname": "NOI Techpark Alto Adige"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 0,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2NT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--bc328b4da961b3abf1e86643a210909746cf640a",
+        "sname": "Viale Europa"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 0,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQxNj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b8e1095924315dc7089c54cc36abf07595b1a123",
+        "sname": "Don Bosco"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 1,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Nj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--1b380c7315ed00d73a49269e2feab2e5b0452a00",
+        "sname": "Via Galilei - Galilei-Strasse"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 1,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5NT9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--845248b808d1bf6c6115e471e41ccdca99f09743",
+        "sname": "Fiera - Messe"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 1,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--2f7728b855652d2f1d57e07c5524a0742097aff3",
+        "sname": "Funivia del Colle"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 1,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Mz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b8901538dd95a269182c83802f18772f9e4fe6eb",
+        "sname": "Ponte Talvera"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 1,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQxNz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--78b09f10f7e8c0905a6dad4c9589f784b8fe96aa",
+        "sname": "Piazza Matteotti - Matteotti Platz"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 2,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--ddc69afa031263d58526f56a5d60574abb2b8c70",
+        "sname": "Piazza Ziller"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 3,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5ND9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--3242fbb9d66046deac446c8b89768cd1b6fc9c9f",
+        "sname": "Via Maso della Pieve - Pfarrhofstrasse"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 3,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Nz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--c4e26e1fd97da55bd1a1fe7ccf67f1b70c69453a",
+        "sname": "Palasport - Stadthalle"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 3,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5OD9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--9bc94cf15edb94fdc76de38a15033eba707d96bd",
+        "sname": "Ospedale - Krankenhaus"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 3,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzQ2Nj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--b905857549d86e30377f204a5fd744c144e0eb31",
+        "sname": "Casanova"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 4,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mz9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--3008cf824e352d9854585d3731568fe6e0a042d2",
+        "sname": "Claudia Augusta"
+      },
+      {
+        "_timestamp": "2024-06-19 14:20:00.001+0000",
+        "tname": "number-available",
+        "mperiod": 300,
+        "mvalidtime": "2024-06-19 14:20:00.001+0000",
+        "mvalue": 5,
+        "scode": "BAh7CEkiCGdpZAY6BkVUSSIsZ2lkOi8vYmt3L1NoYXJpbmdTdGF0aW9uLzE5Mj9leHBpcmVzX2luBjsAVEkiDHB1cnBvc2UGOwBUSSIMZGVmYXVsdAY7AFRJIg9leHBpcmVzX2F0BjsAVDA=--33150e8ef8c952030277c63eec20b5e9ea6c76d3",
+        "sname": "Viale della Stazione - Bahnhofsallee"
+      }
+    ],
+    "limit": 200
+  }
