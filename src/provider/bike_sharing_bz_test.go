@@ -81,4 +81,7 @@ func TestMapping(t *testing.T) {
 	assert.Equal(t, mus.Lamps, true)
 	assert.Equal(t, mus.Lock, false)
 	assert.Equal(t, mus.Pump, false)
+
+	park := nt.Parkings[slices.IndexFunc(nt.Parkings, func(m netex.Parking) bool { return m.ShortName == "Viale Europa" })]
+	assert.Equal(t, park.TotalCapacity, int32(12))
 }
