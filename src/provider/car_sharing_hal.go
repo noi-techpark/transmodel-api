@@ -220,7 +220,7 @@ func (p CarHAL) odhLatest() ([]OdhHalSharingLatest, error) {
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"CarsharingStation"}
 	req.DataTypes = []string{"number-available"}
-	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.Company.ShortName"
+	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.company.shortName"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
 	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
