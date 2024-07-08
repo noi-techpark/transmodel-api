@@ -31,14 +31,14 @@ type OdhParkingGeneric struct {
 		TotalPlaces  int32 // Bikeparking specific capacity
 		Municipality string
 		Netex        struct {
-			Type             string
-			VehicleTypes     string
-			Layout           string
-			HazardProhibited bool `json:"hazard_prohibited"`
-			Charging         bool
-			Surveillance     bool
+			Type             string `json:"type"`
+			Vehicletypes     string `json:"vehicletypes"`
+			Layout           string `json:"layout"`
+			HazardProhibited bool   `json:"hazard_prohibited"`
+			Charging         bool   `json:"charging"`
+			Surveillance     bool   `json:"surveillance"`
 			Reservation      string `json:"reservation"`
-		} `json:"parking"`
+		} `json:"netex_parking"`
 	}
 }
 
@@ -107,7 +107,7 @@ func (pg ParkingGeneric) mapNetex(os []OdhParkingGeneric) ([]netex.Parking, []ne
 
 		p.Entrances = nil
 		p.ParkingType = defEmpty(o.Smetadata.Netex.Type, "undefined")
-		p.ParkingVehicleTypes = o.Smetadata.Netex.VehicleTypes
+		p.ParkingVehicleTypes = o.Smetadata.Netex.Vehicletypes
 		p.ParkingLayout = defEmpty(o.Smetadata.Netex.Layout, "undefined")
 		p.ProhibitedForHazardousMaterials.Set(o.Smetadata.Netex.HazardProhibited)
 		p.RechargingAvailable.Set(o.Smetadata.Netex.Charging)

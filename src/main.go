@@ -37,9 +37,9 @@ func main() {
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
 	r.GET("/netex/sharing", netexEndpoint(netexSharing))
-	r.GET("/siri/fm", siriEndpoint(siriFM))
-	r.GET("/siri/fm/parking", siriEndpoint(siriFMParking))
-	r.GET("/siri/fm/sharing", siriEndpoint(siriFMSharing))
+	r.GET("/siri-lite/fm", siriEndpoint(siriFM))
+	r.GET("/siri-lite/fm/parking", siriEndpoint(siriFMParking))
+	r.GET("/siri-lite/fm/sharing", siriEndpoint(siriFMSharing))
 
 	r.GET("/health", health)
 	r.Run()
