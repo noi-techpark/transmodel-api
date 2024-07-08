@@ -12,6 +12,7 @@ import (
 	"opendatahub/sta-nap-export/provider"
 	"opendatahub/sta-nap-export/siri"
 	"os"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
@@ -40,9 +41,6 @@ func main() {
 	r.GET("/siri-lite/fm", siriLite(siriFM))
 	r.GET("/siri-lite/fm/parking", siriLite(siriFMParking))
 	r.GET("/siri-lite/fm/sharing", siriLite(siriFMSharing))
-	r.GET("/siri/fm", siriXML(siriFM))
-	r.GET("/siri/fm/parking", siriXML(siriFMParking))
-	r.GET("/siri/fm/sharing", siriXML(siriFMSharing))
 
 	r.GET("/health", health)
 	r.Run()
@@ -92,18 +90,22 @@ func siriLite(fn siriFn) func(*gin.Context) {
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
-		c.JSONP(http.StatusOK, struct{ Siri siri.Siri }{Siri: res}) // wrap root level
-	}
-}
-func siriXML(fn siriFn) func(*gin.Context) {
-	return func(c *gin.Context) {
-		res, err := fn()
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+		if isXml(c) {
+			prettyXML(c, http.StatusOK, res)
+
+		} else {
+			c.JSONP(http.StatusOK, struct{ Siri siri.Siri }{Siri: res}) // wrap root level
 		}
-		prettyXML(c, http.StatusOK, res)
 	}
 }
+
+func isXml(c *gin.Context) bool {
+	accept := c.Request.Header.Values("Accept")
+	return (slices.Contains(accept, "application/xml") &&
+		!slices.Contains(accept, "application/json")) ||
+		c.Query("format") == "xml"
+}
+
 func siriFM() (siri.Siri, error) {
 	return siri.FM(append(provider.ParkingRt, provider.SharingRt...))
 }
