@@ -37,9 +37,12 @@ func main() {
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
 	r.GET("/netex/sharing", netexEndpoint(netexSharing))
-	r.GET("/siri-lite/fm", siriEndpoint(siriFM))
-	r.GET("/siri-lite/fm/parking", siriEndpoint(siriFMParking))
-	r.GET("/siri-lite/fm/sharing", siriEndpoint(siriFMSharing))
+	r.GET("/siri-lite/fm", siriLite(siriFM))
+	r.GET("/siri-lite/fm/parking", siriLite(siriFMParking))
+	r.GET("/siri-lite/fm/sharing", siriLite(siriFMSharing))
+	r.GET("/siri/fm", siriXML(siriFM))
+	r.GET("/siri/fm/parking", siriXML(siriFMParking))
+	r.GET("/siri/fm/sharing", siriXML(siriFMSharing))
 
 	r.GET("/health", health)
 	r.Run()
@@ -83,13 +86,22 @@ func netexSharing() ([]netex.CompositeFrame, error) {
 
 type siriFn func() (siri.Siri, error)
 
-func siriEndpoint(fn siriFn) func(*gin.Context) {
+func siriLite(fn siriFn) func(*gin.Context) {
 	return func(c *gin.Context) {
 		res, err := fn()
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
-		c.JSONP(http.StatusOK, res)
+		c.JSONP(http.StatusOK, struct{ Siri siri.Siri }{Siri: res}) // wrap root level
+	}
+}
+func siriXML(fn siriFn) func(*gin.Context) {
+	return func(c *gin.Context) {
+		res, err := fn()
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
+		prettyXML(c, http.StatusOK, res)
 	}
 }
 func siriFM() (siri.Siri, error) {

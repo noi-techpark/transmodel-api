@@ -9,7 +9,7 @@ import (
 
 type NetexFrame struct {
 	XMLName              xml.Name `xml:"PublicationDelivery"`
-	Version              string   `xml:"version"`
+	Version              string   `xml:"version,attr"`
 	NsGml                string   `xml:"xmlns:gml,attr"`
 	NsSiri               string   `xml:"xmlns:siri,attr"`
 	NsNetex              string   `xml:"xmlns,attr"`

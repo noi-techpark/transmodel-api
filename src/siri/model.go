@@ -4,24 +4,30 @@
 package siri
 
 import (
+	"encoding/xml"
 	"time"
 )
 
 type Siri struct {
-	Siri struct {
-		Version         string
-		ServiceDelivery ServiceDelivery
-	}
+	Version           string `xml:"version,attr"`
+	ServiceDelivery   ServiceDelivery
+	XMLName           xml.Name `json:"-" xml:"Siri"`
+	NsNetex           string   `json:"-" xml:"xmlns,attr"`
+	NsXsi             string   `json:"-" xml:"xmlns:xsi,attr"`
+	XsiSchemaLocation string   `json:"-" xml:"xsi:schemaLocation,attr"`
 }
 
 func (s *Siri) AppencFcs(fcs []FacilityCondition) {
-	s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition = append(s.Siri.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition, fcs...)
+	s.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition = append(s.ServiceDelivery.FacilityMonitoringDelivery.FacilityCondition, fcs...)
 }
 
 func NewSiri() Siri {
 	siri := Siri{}
-	siri.Siri.Version = "2"
-	sd := &siri.Siri.ServiceDelivery
+	siri.Version = "2.1"
+	siri.NsNetex = "http://www.siri.org.uk/siri"
+	siri.NsXsi = "http://www.w3.org/2001/XMLSchema-instance"
+	siri.XsiSchemaLocation = "http://www.siri.org.uk/siri"
+	sd := &siri.ServiceDelivery
 	sd.defaults()
 	sd.FacilityMonitoringDelivery.defaults()
 
