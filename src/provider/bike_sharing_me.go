@@ -159,11 +159,15 @@ func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
 	ret := []siri.FacilityCondition{}
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
-		fc.FacilityRef = netex.CreateID("Parking", p.origin, o.Sname)
+		fc.FacilityRef = netex.CreateID("Vehicle", p.origin, o.Sname)
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 0)
 		fc.FacilityUpdatedPosition = &siri.FacilityUpdatedPosition{}
 		fc.FacilityUpdatedPosition.Longitude = o.Scoordinate.X
 		fc.FacilityUpdatedPosition.Latitude = o.Scoordinate.Y
+		fc.Facility = &siri.Facility{}
+		fc.Facility.FacilityClass = "vehicle"
+		fc.Facility.FacilityLocation.VehicleRef = netex.CreateID("Vehicle", p.origin, o.Sname)
+		fc.Facility.FacilityLocation.OperatorRef = netex.GetOperator(&config.Cfg, p.origin).Id
 
 		ret = append(ret, fc)
 	}

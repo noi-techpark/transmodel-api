@@ -71,4 +71,13 @@ type FacilityCondition struct {
 	}
 	MonitoredCounting       *MonitoredCounting       `json:",omitempty"`
 	FacilityUpdatedPosition *FacilityUpdatedPosition `json:",omitempty"`
+	Facility                *Facility                `json:",omitempty"`
+}
+
+type Facility struct {
+	FacilityClass    string
+	FacilityLocation struct {
+		VehicleRef  string
+		OperatorRef string
+	}
 }
