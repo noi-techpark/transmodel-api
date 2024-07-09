@@ -3,11 +3,15 @@
 
 package siri
 
+import (
+	"strconv"
+)
+
 type FMData struct {
 	Conditions []FacilityCondition
 }
 type FMProvider interface {
-	SiriFM() (FMData, error)
+	SiriFM(query Query) (FMData, error)
 }
 
 func MapFacilityStatus(available int, partialThreshold int) string {
@@ -21,15 +25,53 @@ func MapFacilityStatus(available int, partialThreshold int) string {
 	}
 }
 
-func FM(ps []FMProvider) (Siri, error) {
+type Query map[string][]string
+
+func WrapQuery(src map[string][]string) Query {
+	q := Query{}
+	for k, v := range src {
+		q[k] = v
+	}
+	return q
+}
+
+func (q Query) MaxSize() int {
+	is := q["maxSize"]
+	if len(is) > 0 {
+		i, _ := strconv.Atoi(is[0])
+		return i
+	}
+	return -1
+}
+
+func (q Query) DatasetIds() []string {
+	return q["datasetId"]
+}
+func (q Query) FacilityRef() []string {
+	return q["facilityRef"]
+}
+
+func FM(ps []FMProvider, query Query) (Siri, error) {
 	siri := NewSiri()
+	maxSize := query.MaxSize()
+	cnt := 0
 
 	for _, p := range ps {
-		dt, err := p.SiriFM()
+		dt, err := p.SiriFM(query)
 		if err != nil {
 			return siri, err
 		}
+		if maxSize > 0 {
+			query["maxSize"] = []string{strconv.Itoa(maxSize - cnt)}
+			current := len(dt.Conditions)
+			cnt += current
+			if cnt >= maxSize {
+				siri.AppencFcs(dt.Conditions[:current-(cnt-maxSize)])
+				break
+			}
+		}
 		siri.AppencFcs(dt.Conditions)
+
 	}
 
 	return siri, nil

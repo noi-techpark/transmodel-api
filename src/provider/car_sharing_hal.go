@@ -214,15 +214,16 @@ type OdhHalSharingLatest struct {
 	Provider string `json:"smetadata.company.shortName"`
 }
 
-func (p CarHAL) odhLatest() ([]OdhHalSharingLatest, error) {
+func (p CarHAL) odhLatest(q siri.Query) ([]OdhHalSharingLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
+	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"CarsharingStation"}
 	req.DataTypes = []string{"number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.company.shortName"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += filterIDs(q.FacilityRef(), netex.CreateID("Parking", p.provider), "scode")
 	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {
@@ -248,9 +249,9 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p CarHAL) SiriFM() (siri.FMData, error) {
+func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	l, err := p.odhLatest()
+	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}

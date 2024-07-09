@@ -82,39 +82,40 @@ func netexSharing() ([]netex.CompositeFrame, error) {
 	return netex.GetSharing(provider.SharingBikesStatic, provider.SharingCarsStatic)
 }
 
-type siriFn func() (siri.Siri, error)
+type siriFn func(siri.Query) (siri.Siri, error)
 
 func siriLite(fn siriFn) func(*gin.Context) {
 	return func(c *gin.Context) {
-		res, err := fn()
+		query := siri.WrapQuery(c.Request.URL.Query())
+		res, err := fn(query)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
-		if isXml(c) {
-			prettyXML(c, http.StatusOK, res)
 
+		if wantsXml(c) {
+			prettyXML(c, http.StatusOK, res)
 		} else {
 			c.JSONP(http.StatusOK, struct{ Siri siri.Siri }{Siri: res}) // wrap root level
 		}
 	}
 }
 
-func isXml(c *gin.Context) bool {
+func wantsXml(c *gin.Context) bool {
 	accept := c.Request.Header.Values("Accept")
 	return (slices.Contains(accept, "application/xml") &&
 		!slices.Contains(accept, "application/json")) ||
 		c.Query("format") == "xml"
 }
 
-func siriFM() (siri.Siri, error) {
-	return siri.FM(append(provider.ParkingRt, provider.SharingRt...))
+func siriFM(query siri.Query) (siri.Siri, error) {
+	return siri.FM(append(provider.ParkingRt, provider.SharingRt...), query)
 }
 
-func siriFMParking() (siri.Siri, error) {
-	return siri.FM(provider.ParkingRt)
+func siriFMParking(query siri.Query) (siri.Siri, error) {
+	return siri.FM(provider.ParkingRt, query)
 }
-func siriFMSharing() (siri.Siri, error) {
-	return siri.FM(provider.SharingRt)
+func siriFMSharing(query siri.Query) (siri.Siri, error) {
+	return siri.FM(provider.SharingRt, query)
 }
 
 func prettyXML(c *gin.Context, code int, object any) {

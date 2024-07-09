@@ -145,9 +145,9 @@ type OdhParkingLatest struct {
 	TotalPlaces int `json:"smetadata.totalPlaces"`
 }
 
-func (p ParkingGeneric) odhLatest() ([]OdhParkingLatest, error) {
+func (p ParkingGeneric) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
+	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.DataTypes = []string{"free", "number-available"}
@@ -188,9 +188,9 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 	return ret
 }
 
-func (p ParkingGeneric) SiriFM() (siri.FMData, error) {
+func (p ParkingGeneric) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	l, err := p.odhLatest()
+	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}

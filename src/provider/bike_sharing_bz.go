@@ -176,15 +176,17 @@ type OdhBzSharingLatest struct {
 	Sname string
 }
 
-func (p BikeBz) odhLatest() ([]OdhBzSharingLatest, error) {
+func (p BikeBz) odhLatest(q siri.Query) ([]OdhBzSharingLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
+	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"BikesharingStation"}
 	req.DataTypes = []string{"free-bays,number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,tname"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += filterIDs(q.FacilityRef(), netex.CreateID("Parking", p.origin), "sname")
+
 	var res ninja.NinjaResponse[[]OdhBzSharingLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {
@@ -233,9 +235,10 @@ func (p BikeBz) mapSiri(latest []OdhBzSharingLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p BikeBz) SiriFM() (siri.FMData, error) {
+
+func (p BikeBz) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	l, err := p.odhLatest()
+	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}

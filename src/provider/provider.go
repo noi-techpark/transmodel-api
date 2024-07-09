@@ -3,6 +3,7 @@
 package provider
 
 import (
+	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
@@ -23,3 +24,15 @@ var ParkingRt = []siri.FMProvider{&ParkingGeneric{}, ParkingEcharging{}}
 var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
+
+func filterIDs(ids []string, idPrefix string, odhField string) string {
+	ret := ""
+	for _, f := range ids {
+		var scode string
+		_, err := fmt.Sscanf(f, fmt.Sprintf("%s:%%s", idPrefix), &scode)
+		if err == nil {
+			ret += fmt.Sprintf(",%s.eq.\"%s\"", odhField, scode)
+		}
+	}
+	return ret
+}

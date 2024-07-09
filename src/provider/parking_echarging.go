@@ -103,15 +103,16 @@ func (p ParkingEcharging) StParking() (netex.StParkingData, error) {
 	return netex.StParkingData{Parkings: parkings, Operators: operators}, nil
 }
 
-func (p ParkingEcharging) odhLatest() ([]OdhParkingLatest, error) {
+func (p ParkingEcharging) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
+	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"EChargingStation"}
 	req.DataTypes = []string{"number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
+	req.Where += filterIDs(q.FacilityRef(), netex.CreateID("Parking"), "scode")
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {
@@ -139,9 +140,9 @@ func (p ParkingEcharging) mapSiri(latest []OdhParkingLatest) []siri.FacilityCond
 	return ret
 }
 
-func (p ParkingEcharging) SiriFM() (siri.FMData, error) {
+func (p ParkingEcharging) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	l, err := p.odhLatest()
+	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}

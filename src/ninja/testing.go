@@ -18,8 +18,10 @@ func runReqHook(req *NinjaRequest, result any) error {
 	if err != nil {
 		return err
 	}
-	// unholy memcpy: sets the memory at p to the value of pv. Obviously they have to be the same type
-	// Has to be this way because golang does not allow for variables to hold parametrized functions.
+	// unholy memcpy: sets the memory at result to the value of r.
+
+	// They have to be the same type
+	// Has to be this way, because golang does not allow for variables to hold parametrized functions.
 	// So we have to use 'any' and hack around it with reflection. The golang.json lib does the same
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(r).Elem())
 	return nil

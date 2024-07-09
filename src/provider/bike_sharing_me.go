@@ -138,15 +138,17 @@ type OdhBikeMeLatest struct {
 	Scoordinate ninja.OdhCoord
 }
 
-func (p BikeMe) odhLatest() ([]OdhBikeMeLatest, error) {
+func (p BikeMe) odhLatest(q siri.Query) ([]OdhBikeMeLatest, error) {
 	req := ninja.DefaultNinjaRequest()
-	req.Limit = -1
+	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"Bicycle"}
 	req.DataTypes = []string{"availability"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,scoordinate"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += filterIDs(q.FacilityRef(), netex.CreateID("Vehicle", p.origin), "sname")
+
 	var res ninja.NinjaResponse[[]OdhBikeMeLatest]
 	err := ninja.Latest(req, &res)
 	if err != nil {
@@ -174,9 +176,9 @@ func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p BikeMe) SiriFM() (siri.FMData, error) {
+func (p BikeMe) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	l, err := p.odhLatest()
+	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}

@@ -43,3 +43,5 @@ test/validate.xml
 
 # Libreoffice lock files
 .~lock.*
+
+__debug_bin*

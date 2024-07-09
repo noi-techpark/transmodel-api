@@ -20,8 +20,8 @@ const (
 type NinjaRequest struct {
 	Repr     Repr
 	Origin   string
-	Limit    int64
-	Offset   uint64
+	Limit    int
+	Offset   uint
 	Select   string
 	Where    string
 	Shownull bool
