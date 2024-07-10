@@ -4,13 +4,11 @@
 package provider
 
 import (
-	"errors"
 	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
 	"slices"
-	"strings"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -118,19 +116,18 @@ func TestSiri(t *testing.T) {
 
 	st = findSiriStation(fcs, "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Funivia_del_Colle")
 	assert.Equal(t, st.FacilityStatus.Status, "partiallyAvailable")
-}
 
-func TestIDFilter(t *testing.T) {
-	b := NewBikeBz()
-	b.origin = "test"
+	filter := []string{"IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Piazza_Matteotti_-_Matteotti_Platz", "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Funivia_del_Colle"}
 
-	q := siri.Query{}
-	q["facilityRef"] = []string{netex.CreateID("Parking", b.origin, "123"), netex.CreateID("Parking", b.origin, "456")}
+	filtered := filterFacilityConditions(fcs, filter)
+	assert.Equal(t, len(filtered), 2)
 
-	ninja.TestReqHook = func(nr *ninja.NinjaRequest) (any, error) {
-		assert.Assert(t, strings.Contains(nr.Where, "sname.eq.\"123\""))
-		assert.Assert(t, strings.Contains(nr.Where, "sname.eq.\"456\""))
-		return nil, errors.New("not implemented")
-	}
-	b.odhLatest(q)
+	wrongFilter := []string{"somethingwrong"}
+
+	filtered = filterFacilityConditions(fcs, wrongFilter)
+	assert.Equal(t, len(filtered), 0)
+
+	s, err := b.SiriFM(siri.Query{"facilityRef": wrongFilter})
+	assert.NilError(t, err)
+	assert.Equal(t, len(s.Conditions), 0)
 }

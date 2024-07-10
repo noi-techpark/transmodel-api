@@ -223,13 +223,12 @@ func (p CarHAL) odhLatest(q siri.Query) ([]OdhHalSharingLatest, error) {
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.company.shortName"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
-	req.Where += filterIDs(q.FacilityRef(), netex.CreateID("Parking", p.provider), "scode")
 	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
-	err := ninja.Latest(req, &res)
-	if err != nil {
+	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
+		return res.Data, err
 	}
-	return res.Data, err
+	return res.Data, nil
 }
 
 func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
@@ -251,10 +250,15 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 }
 func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
+	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Parking"))
+	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
+		return ret, nil
+	}
+
 	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}
-	ret.Conditions = p.mapSiri(l)
+	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
 }

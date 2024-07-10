@@ -155,11 +155,11 @@ func (p ParkingGeneric) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
-	err := ninja.Latest(req, &res)
-	if err != nil {
+	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
+		return res.Data, err
 	}
-	return res.Data, err
+	return res.Data, nil
 }
 
 func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondition {
@@ -190,10 +190,15 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 
 func (p ParkingGeneric) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
+	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Parking"))
+	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
+		return ret, nil
+	}
+
 	l, err := p.odhLatest(query)
 	if err != nil {
 		return ret, err
 	}
-	ret.Conditions = p.mapSiri(l)
+	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
 }

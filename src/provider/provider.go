@@ -3,10 +3,11 @@
 package provider
 
 import (
-	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
+	"slices"
+	"strings"
 )
 
 func FetchOdhStations[T any](tp string, origin string) (T, error) {
@@ -25,14 +26,30 @@ var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
 
-func filterIDs(ids []string, idPrefix string, odhField string) string {
-	ret := ""
-	for _, f := range ids {
-		var scode string
-		_, err := fmt.Sscanf(f, fmt.Sprintf("%s:%%s", idPrefix), &scode)
-		if err == nil {
-			ret += fmt.Sprintf(",%s.eq.\"%s\"", odhField, scode)
-		}
+func maybeIdMatch(ids []string, prefix string) []string {
+	return slices.DeleteFunc(ids, func(id string) bool { return !strings.HasPrefix(id, prefix) })
+}
+
+func filterFacilityConditions(conds []siri.FacilityCondition, ids []string) []siri.FacilityCondition {
+	if len(ids) == 0 {
+		return conds
 	}
-	return ret
+	return slices.DeleteFunc(conds, func(c siri.FacilityCondition) bool {
+		for _, id := range ids {
+			if c.FacilityRef == id {
+				return false
+			}
+		}
+		return true
+	})
+}
+
+func apiBoundingBox(q siri.Query) string {
+	lat := q.Lat()
+	long := q.Lon()
+	rad := q.MaxDistance() // we assume this is radius in meters
+	if lat == 0 || long == 0 || rad == 0 {
+		return ""
+	}
+
 }

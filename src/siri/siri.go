@@ -36,12 +36,11 @@ func WrapQuery(src map[string][]string) Query {
 }
 
 func (q Query) MaxSize() int {
-	is := q["maxSize"]
-	if len(is) > 0 {
-		i, _ := strconv.Atoi(is[0])
-		return i
+	m := q.int("maxSize")
+	if m == 0 {
+		m = -1
 	}
-	return -1
+	return m
 }
 
 func (q Query) DatasetIds() []string {
@@ -49,6 +48,24 @@ func (q Query) DatasetIds() []string {
 }
 func (q Query) FacilityRef() []string {
 	return q["facilityRef"]
+}
+
+func (q Query) float(k string) float64 {
+	i, _ := strconv.ParseFloat(q[k][0], 64)
+	return i
+}
+func (q Query) int(k string) int {
+	i, _ := strconv.Atoi(q[k][0])
+	return i
+}
+func (q Query) Lat() float64 {
+	return q.float("lat")
+}
+func (q Query) Lon() float64 {
+	return q.float("lon")
+}
+func (q Query) MaxDistance() float64 {
+	return q.float("maxDistance")
 }
 
 func FM(ps []FMProvider, query Query) (Siri, error) {
