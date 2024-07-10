@@ -8,6 +8,8 @@ require (
 	gotest.tools/v3 v3.5.1
 )
 
+require github.com/paulmach/orb v0.11.1 // indirect
+
 require (
 	github.com/bytedance/sonic v1.11.3 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect

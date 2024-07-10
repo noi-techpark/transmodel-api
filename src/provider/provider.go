@@ -51,5 +51,6 @@ func apiBoundingBox(q siri.Query) string {
 	if lat == 0 || long == 0 || rad == 0 {
 		return ""
 	}
+	return ""
 
 }
