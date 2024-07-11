@@ -10,8 +10,6 @@ import (
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
-	"slices"
-	"strings"
 
 	"golang.org/x/exp/maps"
 )
@@ -58,20 +56,12 @@ func NewParkingGeneric() *ParkingGeneric {
 	return &p
 }
 
-func (p ParkingGeneric) joinOrigins() string {
-	quoted := []string{}
-	for _, o := range p.origins {
-		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
-	}
-	return strings.Join(quoted, ",")
-}
-
 func (p ParkingGeneric) odhStatic() ([]OdhParkingGeneric, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", quotedList(p.origins))
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParkingGeneric]
 	err := ninja.StationType(req, &res)
@@ -160,7 +150,7 @@ func (p ParkingGeneric) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req.DataTypes = []string{"free", "number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces"
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", quotedList(filterOpOrigins(q.Operators(), p.origins)))
 	req.Where += apiBoundingBox(q)
 
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
@@ -213,5 +203,5 @@ func (p ParkingGeneric) SiriFM(query siri.Query) (siri.FMData, error) {
 }
 
 func (b *ParkingGeneric) MatchOperator(id string) bool {
-	return slices.Contains(b.origins, id)
+	return len(filterOpOrigins([]string{id}, b.origins)) > 0
 }

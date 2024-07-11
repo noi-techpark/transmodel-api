@@ -4,6 +4,7 @@ package provider
 
 import (
 	"fmt"
+	"opendatahub/sta-nap-export/config"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
@@ -53,4 +54,26 @@ func apiBoundingBox(q siri.Query) string {
 		return ""
 	}
 	return fmt.Sprintf(",scoordinate.dlt.(%f,%f,%f)", rad, lat, long)
+}
+
+func intersect(a []string, b []string) []string {
+	return slices.DeleteFunc(a, func(s string) bool { return !slices.Contains(b, s) })
+}
+func quotedList(origins []string) string {
+	quoted := []string{}
+	for _, o := range origins {
+		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
+	}
+	return strings.Join(quoted, ",")
+}
+
+func filterOpOrigins(ops []string, origins []string) []string {
+	if len(ops) == 0 {
+		return origins
+	}
+	ret := []string{}
+	for _, op := range ops {
+		ret = append(ret, intersect(netex.GetOperatorOrigins(&config.Cfg, op), origins)...)
+	}
+	return ret
 }

@@ -21,6 +21,16 @@ func mapByOrigin(p []config.OperatorCfg) map[string]config.OperatorCfg {
 	return ret
 }
 
+func GetOperatorOrigins(c *config.Config, id string) []string {
+	origins := []string{}
+	for _, op := range c.Operators {
+		if CreateID("Operator", op.Id) == id {
+			origins = append(origins, op.Origin...)
+		}
+	}
+	return origins
+}
+
 func GetOperator(c *config.Config, id string) Operator {
 	mapped := mapByOrigin(c.Operators)
 	cfg, found := mapped[id]
