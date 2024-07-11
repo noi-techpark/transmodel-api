@@ -18,6 +18,10 @@ func (prov) SiriFM(q Query) (FMData, error) {
 	return ret, nil
 }
 
+func (prov) MatchOperator(id string) bool {
+	return true
+}
+
 func TestMaxSize(t *testing.T) {
 	q := Query{}
 	q["maxSize"] = []string{"15"}

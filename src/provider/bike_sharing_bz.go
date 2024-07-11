@@ -50,11 +50,15 @@ func NewBikeBz() *BikeBz {
 	return &b
 }
 
+func (b *BikeBz) GetOperator() netex.Operator {
+	return netex.GetOperator(&config.Cfg, b.origin)
+}
+
 func (b *BikeBz) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
 
 	// Operators
-	o := netex.GetOperator(&config.Cfg, ORIGIN_BIKE_SHARING_BOLZANO)
+	o := b.GetOperator()
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
@@ -185,6 +189,7 @@ func (p BikeBz) odhLatest(q siri.Query) ([]OdhBzSharingLatest, error) {
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,tname"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += apiBoundingBox(q)
 
 	var res ninja.NinjaResponse[[]OdhBzSharingLatest]
 	if err := ninja.Latest(req, &res); err != nil {
@@ -249,4 +254,8 @@ func (p BikeBz) SiriFM(query siri.Query) (siri.FMData, error) {
 	}
 	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
+}
+
+func (b *BikeBz) MatchOperator(id string) bool {
+	return id == b.GetOperator().Id
 }

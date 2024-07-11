@@ -10,6 +10,7 @@ import (
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
+	"slices"
 	"strings"
 
 	"golang.org/x/exp/maps"
@@ -43,17 +44,23 @@ type OdhParkingGeneric struct {
 }
 
 type ParkingGeneric struct {
+	origins []string
 }
 
-func (ParkingGeneric) origins() string {
-	origins := []string{"FBK",
+func NewParkingGeneric() *ParkingGeneric {
+	p := ParkingGeneric{}
+	p.origins = []string{"FBK",
 		"A22",
 		"Municipality Merano",
 		"FAMAS",
 		"bicincitta",
 	}
+	return &p
+}
+
+func (p ParkingGeneric) joinOrigins() string {
 	quoted := []string{}
-	for _, o := range origins {
+	for _, o := range p.origins {
 		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
 	}
 	return strings.Join(quoted, ",")
@@ -64,7 +71,7 @@ func (p ParkingGeneric) odhStatic() ([]OdhParkingGeneric, error) {
 	req.Limit = -1
 	req.StationTypes = []string{"ParkingStation", "BikeParking"}
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
 	// TODO: limit bounding box / polygon
 	var res ninja.NinjaResponse[[]OdhParkingGeneric]
 	err := ninja.StationType(req, &res)
@@ -153,7 +160,9 @@ func (p ParkingGeneric) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req.DataTypes = []string{"free", "number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces"
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
+	req.Where += apiBoundingBox(q)
+
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
 	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
@@ -201,4 +210,8 @@ func (p ParkingGeneric) SiriFM(query siri.Query) (siri.FMData, error) {
 	}
 	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
+}
+
+func (b *ParkingGeneric) MatchOperator(id string) bool {
+	return slices.Contains(b.origins, id)
 }

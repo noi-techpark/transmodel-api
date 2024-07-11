@@ -3,6 +3,7 @@
 package provider
 
 import (
+	"fmt"
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
@@ -21,7 +22,7 @@ func FetchOdhStations[T any](tp string, origin string) (T, error) {
 }
 
 var ParkingStatic = []netex.StParking{&ParkingGeneric{}, ParkingEcharging{}}
-var ParkingRt = []siri.FMProvider{&ParkingGeneric{}, ParkingEcharging{}}
+var ParkingRt = []siri.FMProvider{&ParkingGeneric{}, NewParkingEcharging()}
 var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
@@ -51,6 +52,5 @@ func apiBoundingBox(q siri.Query) string {
 	if lat == 0 || long == 0 || rad == 0 {
 		return ""
 	}
-	return ""
-
+	return fmt.Sprintf(",scoordinate.dlt.(%f,%f,%f)", rad, lat, long)
 }

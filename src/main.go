@@ -90,6 +90,7 @@ func siriLite(fn siriFn) func(*gin.Context) {
 		res, err := fn(query)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
+			return
 		}
 
 		if wantsXml(c) {

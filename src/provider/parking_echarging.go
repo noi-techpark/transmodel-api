@@ -10,6 +10,7 @@ import (
 	"opendatahub/sta-nap-export/netex"
 	"opendatahub/sta-nap-export/ninja"
 	"opendatahub/sta-nap-export/siri"
+	"slices"
 	"strings"
 
 	"golang.org/x/exp/maps"
@@ -30,16 +31,23 @@ type OdhParkingEcharging struct {
 	}
 }
 
-type ParkingEcharging struct{}
+type ParkingEcharging struct {
+	origins []string
+}
 
-func (ParkingEcharging) origins() string {
-	origins := []string{
+func NewParkingEcharging() *ParkingEcharging {
+	p := ParkingEcharging{}
+	p.origins = []string{
 		"ALPERIA",
 		"route220",
 		"DRIWE",
 	}
+	return &p
+}
+
+func (p ParkingEcharging) joinOrigins() string {
 	quoted := []string{}
-	for _, o := range origins {
+	for _, o := range p.origins {
 		quoted = append(quoted, fmt.Sprintf("\"%s\"", o))
 	}
 	return strings.Join(quoted, ",")
@@ -52,7 +60,7 @@ func (p ParkingEcharging) odhStatic() ([]OdhParkingEcharging, error) {
 	req.Where = "sactive.eq.true"
 	// Rudimentary geographical limit
 	// req.Where += ",scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
 	var res ninja.NinjaResponse[[]OdhParkingEcharging]
 	err := ninja.StationType(req, &res)
 	return res.Data, err
@@ -111,7 +119,9 @@ func (p ParkingEcharging) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
 	req.DataTypes = []string{"number-available"}
 	req.Select = "mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity"
 	req.Where = "sactive.eq.true"
-	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.origins())
+	req.Where += fmt.Sprintf(",sorigin.in.(%s)", p.joinOrigins())
+	req.Where += apiBoundingBox(q)
+
 	var res ninja.NinjaResponse[[]OdhParkingLatest]
 	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
@@ -152,4 +162,8 @@ func (p ParkingEcharging) SiriFM(query siri.Query) (siri.FMData, error) {
 	}
 	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
+}
+
+func (b *ParkingEcharging) MatchOperator(id string) bool {
+	return slices.Contains(b.origins, id)
 }

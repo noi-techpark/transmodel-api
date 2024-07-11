@@ -37,6 +37,9 @@ func NewBikeMe() *BikeMe {
 
 const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
+func (b *BikeMe) GetOperator() netex.Operator {
+	return netex.GetOperator(&config.Cfg, b.origin)
+}
 func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
 	if err := b.fetch(); err != nil {
@@ -44,7 +47,7 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 	}
 
 	// Operators
-	o := netex.GetOperator(&config.Cfg, b.origin)
+	o := b.GetOperator()
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
@@ -147,6 +150,7 @@ func (p BikeMe) odhLatest(q siri.Query) ([]OdhBikeMeLatest, error) {
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,scoordinate"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += apiBoundingBox(q)
 
 	var res ninja.NinjaResponse[[]OdhBikeMeLatest]
 	if err := ninja.Latest(req, &res); err != nil {
@@ -177,6 +181,7 @@ func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
 }
 func (p BikeMe) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
+
 	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Vehicle", p.origin))
 	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
 		return ret, nil
@@ -188,4 +193,8 @@ func (p BikeMe) SiriFM(query siri.Query) (siri.FMData, error) {
 	}
 	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
+}
+
+func (b *BikeMe) MatchOperator(id string) bool {
+	return id == b.GetOperator().Id
 }

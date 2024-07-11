@@ -72,6 +72,9 @@ func NewCarSharingHal() *CarHAL {
 	return &b
 }
 
+func (b *CarHAL) GetOperator() netex.Operator {
+	return netex.GetOperator(&config.Cfg, b.origin)
+}
 func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	ret := netex.StSharingData{}
 	if err := b.fetch(); err != nil {
@@ -80,7 +83,7 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	b.provider = b.cars[0].Pmetadata.Company.ShortName // As soon as there is more than one, we have to change some more stuff anyways
 
 	// Operators
-	o := netex.GetOperator(&config.Cfg, b.origin)
+	o := b.GetOperator()
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
@@ -223,6 +226,8 @@ func (p CarHAL) odhLatest(q siri.Query) ([]OdhHalSharingLatest, error) {
 	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.company.shortName"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
+	req.Where += apiBoundingBox(q)
+
 	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
 	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
@@ -261,4 +266,8 @@ func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
 	}
 	ret.Conditions = filterFacilityConditions(p.mapSiri(l), idFilter)
 	return ret, nil
+}
+
+func (b *CarHAL) MatchOperator(id string) bool {
+	return id == b.GetOperator().Id
 }

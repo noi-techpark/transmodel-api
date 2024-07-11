@@ -4,7 +4,9 @@
 package siri
 
 import (
+	"slices"
 	"strconv"
+	"strings"
 )
 
 type FMData struct {
@@ -12,6 +14,7 @@ type FMData struct {
 }
 type FMProvider interface {
 	SiriFM(query Query) (FMData, error)
+	MatchOperator(id string) bool
 }
 
 func MapFacilityStatus(available int, partialThreshold int) string {
@@ -35,6 +38,15 @@ func WrapQuery(src map[string][]string) Query {
 	return q
 }
 
+func (q Query) int(k string) int {
+	s, found := q[k]
+	if found && len(s) > 0 {
+		i, _ := strconv.Atoi(s[0])
+		return i
+	} else {
+		return 0
+	}
+}
 func (q Query) MaxSize() int {
 	m := q.int("maxSize")
 	if m == 0 {
@@ -42,22 +54,31 @@ func (q Query) MaxSize() int {
 	}
 	return m
 }
-
 func (q Query) DatasetIds() []string {
 	return q["datasetId"]
 }
 func (q Query) FacilityRef() []string {
 	return q["facilityRef"]
 }
+func (q Query) Operators() []string {
+	ret := []string{}
+	for _, p := range q["operators"] {
+		ss := strings.Split(p, ",")
+		ret = append(ret, ss...)
+	}
+	return ret
+}
 
 func (q Query) float(k string) float64 {
-	i, _ := strconv.ParseFloat(q[k][0], 64)
-	return i
+	s, found := q[k]
+	if found && len(s) > 0 {
+		i, _ := strconv.ParseFloat(s[0], 64)
+		return i
+	} else {
+		return 0
+	}
 }
-func (q Query) int(k string) int {
-	i, _ := strconv.Atoi(q[k][0])
-	return i
-}
+
 func (q Query) Lat() float64 {
 	return q.float("lat")
 }
@@ -68,12 +89,22 @@ func (q Query) MaxDistance() float64 {
 	return q.float("maxDistance")
 }
 
+func matchAnyOp(prov FMProvider, ids []string) bool {
+	return slices.ContainsFunc(ids, func(id string) bool {
+		return prov.MatchOperator(id)
+	})
+}
+
 func FM(ps []FMProvider, query Query) (Siri, error) {
 	siri := NewSiri()
 	maxSize := query.MaxSize()
 	cnt := 0
 
 	for _, p := range ps {
+		os := query.Operators()
+		if len(os) > 0 && !matchAnyOp(p, os) {
+			continue
+		}
 		dt, err := p.SiriFM(query)
 		if err != nil {
 			return siri, err
@@ -88,7 +119,6 @@ func FM(ps []FMProvider, query Query) (Siri, error) {
 			}
 		}
 		siri.AppencFcs(dt.Conditions)
-
 	}
 
 	return siri, nil
