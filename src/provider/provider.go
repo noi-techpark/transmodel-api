@@ -21,8 +21,8 @@ func FetchOdhStations[T any](tp string, origin string) (T, error) {
 	return res.Data, err
 }
 
-var ParkingStatic = []netex.StParking{&ParkingGeneric{}, ParkingEcharging{}}
-var ParkingRt = []siri.FMProvider{&ParkingGeneric{}, NewParkingEcharging()}
+var ParkingStatic = []netex.StParking{NewParkingGeneric(), NewParkingEcharging()}
+var ParkingRt = []siri.FMProvider{NewParkingGeneric(), NewParkingEcharging()}
 var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
