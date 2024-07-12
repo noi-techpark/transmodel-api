@@ -6,10 +6,10 @@ package provider
 import (
 	"fmt"
 	"log/slog"
-	"opendatahub/sta-nap-export/config"
-	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/ninja"
-	"opendatahub/sta-nap-export/siri"
+	"opendatahub/transmodel-api/config"
+	"opendatahub/transmodel-api/netex"
+	"opendatahub/transmodel-api/ninja"
+	"opendatahub/transmodel-api/siri"
 
 	"golang.org/x/exp/maps"
 )

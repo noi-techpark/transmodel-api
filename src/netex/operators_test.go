@@ -5,7 +5,7 @@
 package netex
 
 import (
-	"opendatahub/sta-nap-export/config"
+	"opendatahub/transmodel-api/config"
 	"testing"
 
 	"gotest.tools/v3/assert"

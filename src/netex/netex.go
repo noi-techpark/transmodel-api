@@ -4,7 +4,7 @@
 package netex
 
 import (
-	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/transmodel-api/ninja"
 	"regexp"
 	"testing"
 	"time"
@@ -12,7 +12,7 @@ import (
 
 func NinjaTestSetup() {
 	ninja.BaseUrl = "https://mobility.api.opendatahub.testingmachine.eu"
-	ninja.Referer = "sta-nap-export-unit-test"
+	ninja.Referer = "transmodel-api-unit-test"
 }
 
 func TestOdhGet[T any](t *testing.T, f func() (T, error)) {

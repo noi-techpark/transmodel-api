@@ -6,7 +6,7 @@ package netex
 
 import (
 	"log"
-	"opendatahub/sta-nap-export/config"
+	"opendatahub/transmodel-api/config"
 
 	"golang.org/x/exp/maps"
 )

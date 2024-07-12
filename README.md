@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# NeTEx and SIRI FM export for STA MaaS4Italy project
+# Transmodel (NeTEx and SIRI FM) API wrapper for Open Data Hub
 
 [![REUSE Compliance](https://github.com/noi-techpark/java-boilerplate/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 
@@ -32,7 +32,7 @@ The application is written in Go with
  - [air](https://github.com/cosmtrek/air) to provide live reloading during development (not mandatory)
 
 ## Domain documentation
-For documentation on the procotols, see the [initial issue](https://github.com/noi-techpark/sta-nap-export/issues/1)
+For documentation on the procotols, see the [initial issue](https://github.com/noi-techpark/transmodel-api/issues/1)
 
 The documents linked there are also in the [documentation](./documentation/) directory
 

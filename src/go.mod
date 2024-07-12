@@ -1,4 +1,4 @@
-module opendatahub/sta-nap-export
+module opendatahub/transmodel-api
 
 go 1.21.5
 

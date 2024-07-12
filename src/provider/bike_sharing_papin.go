@@ -4,9 +4,9 @@
 package provider
 
 import (
-	"opendatahub/sta-nap-export/config"
-	"opendatahub/sta-nap-export/netex"
-	"opendatahub/sta-nap-export/ninja"
+	"opendatahub/transmodel-api/config"
+	"opendatahub/transmodel-api/netex"
+	"opendatahub/transmodel-api/ninja"
 )
 
 type odhPapinBike []ninja.OdhStation[any]
