@@ -96,7 +96,7 @@ jobs:
           X_SERVER_PORT: ${{ env.SERVER_PORT}}
 
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
-          X_NINJA_REFERER: transmodel-api
+          X_NINJA_REFERER: transmodel-api-test
           X_GIN_MODE: release
           X_LOG_LEVEL: WARNING
 
