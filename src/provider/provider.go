@@ -53,7 +53,7 @@ func apiBoundingBox(q siri.Query) string {
 	if lat == 0 || long == 0 || rad == 0 {
 		return ""
 	}
-	return fmt.Sprintf(",scoordinate.dlt.(%f,%f,%f)", rad, lat, long)
+	return fmt.Sprintf(",scoordinate.dlt.(%f,%f,%f)", rad, long, lat)
 }
 
 func intersect(a []string, b []string) []string {
