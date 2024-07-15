@@ -1,0 +1,309 @@
+# SPDX-FileCopyrightText: 2024 NOI Techpark <digital@noi.bz.it>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+openapi: 3.0.1
+info:
+  title: Transmodel API for Open Data Hub
+  description: |
+    Wrapper API that translates certain datasets from the Open Data Hub to European standards NeTEx / SIRI.
+
+    This API was developed as part of the Regional Access Point (RAP) for the [MaaS4Italy project](https://innovazione.gov.it/progetti/mobility-as-a-service-for-italy/).
+    As the project is still evolving, we currently cannot guarantee the stability of this interface, and it may be subject to change without notice.
+
+    If you are interested in using this API in a production capacity, contact us at the email address below.
+
+    You can find the source code and documentation of this project here: [https://github.com/noi-techpark/transmodel-api](https://github.com/noi-techpark/transmodel-api)
+  version: '1.0'
+  termsOfService: https://docs.opendatahub.com/en/latest/licenses.html#apis-terms-of-service
+  contact:
+    name: Open Data Hub
+    url: https://opendatahub.com
+    email: help@opendatahub.com
+  license:
+    name: API License
+    url: https://docs.opendatahub.com/en/latest/licenses.html
+  
+servers:
+  - url: "https://transmodel.api.opendatahub.com"
+    description: Production server
+  - url: "https://transmodel.api.opendatahub.testingmachine.eu"
+    description: Testing server
+tags:
+  - name: netex
+  - name: siri-lite
+  - name: parking
+  - name: sharing
+paths:
+  /netex:
+    get:
+      tags:
+        - netex
+      summary: Full NeTEX export of data provided by Open Data Hub
+      responses:
+        200:
+          description: Full NeTEx export
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/netex-all'
+  /netex/parking:
+    get:
+      tags:
+        - netex
+        - parking
+      summary: Partial NeTEX export of parking related data
+      responses:
+        200:
+          description: NeTEx parking export
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/netex-parking'
+  /netex/sharing:
+    get:
+      tags:
+        - netex
+        - sharing
+      summary: Partial NeTEX export of sharing services related data
+      responses:
+        200:
+          description: NeTEx parking export
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/netex-sharing'
+
+  /siri-lite/fm:
+    get:
+      tags:
+        - siri-lite
+      summary: Endpoint for realtime parking and sharing service updates
+      parameters:
+        - $ref: "#/components/parameters/maxSize"
+        - $ref: "#/components/parameters/facilityRef"
+        - $ref: "#/components/parameters/maxDistance"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/operators"
+      responses:
+        200: 
+          $ref: "#/components/responses/siri-fm"
+  /siri-lite/fm/parking:
+    get:
+      tags:
+        - parking
+        - siri-lite
+      summary: Endpoint for realtime parking service
+      parameters:
+        - $ref: "#/components/parameters/maxSize"
+        - $ref: "#/components/parameters/facilityRef"
+        - $ref: "#/components/parameters/maxDistance"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/operators"
+      responses:
+        200: 
+          $ref: "#/components/responses/siri-fm"
+  /siri-lite/fm/sharing:
+    get:
+      tags:
+        - sharing
+        - siri-lite
+      summary: Endpoint for realtime parking service
+      parameters:
+        - $ref: "#/components/parameters/maxSize"
+        - $ref: "#/components/parameters/facilityRef"
+        - $ref: "#/components/parameters/maxDistance"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/operators"
+      responses:
+        200: 
+          $ref: "#/components/responses/siri-fm"
+components:
+  schemas:
+    netex-all:
+      description: NeTEx export of Open Data Hub data (unifies sub-endpoints)
+      externalDocs:
+        description: Reference Documentation of netex Italian profile
+        url: https://github.com/5Tsrl/netex-italian-profile
+
+    netex-parking:
+      description: NeTEx export of Open Data Hub static parking data
+      externalDocs:
+        description: Reference Documentation of netex Italian profile
+        url: https://github.com/5Tsrl/netex-italian-profile
+
+    netex-sharing:
+      description: NeTEx export of Open Data Hub static sharing services data
+      externalDocs:
+        description: Reference Documentation of netex Italian profile
+        url: https://github.com/5Tsrl/netex-italian-profile
+
+    siri-lite-fm-json:
+      description: JSON mapping of SIRI-lite/fm
+      externalDocs:
+        description: Reference Documentation of SIRI-lite Italian profile
+        url: https://github.com/5Tsrl/siri-italian-profile
+
+    siri-lite-fm-xml:
+      description: SIRI-lite/fm as specified by the Italian profile
+      externalDocs:
+        description: Reference Documentation of SIRI-lite Italian profile
+        url: https://github.com/5Tsrl/siri-italian-profile
+    
+  responses:
+    siri-fm:
+      description: Current state of parking and sharing services
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/siri-lite-fm-json'
+          examples:
+            parking: 
+              $ref: "#/components/examples/siri-lite-fm-parking-json"
+            sharing:
+              $ref: "#/components/examples/siri-lite-fm-sharing-json"
+            
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/siri-lite-fm-xml'
+
+  examples:
+    siri-lite-fm-parking-json:
+      value:
+        {
+          "Siri": {
+            "Version": "2.1",
+            "ServiceDelivery": {
+              "ResponseTimestamp": "2024-07-15T08:19:05Z",
+              "ProducerRef": "RAP Alto Adige - Open Data Hub",
+              "FacilityMonitoringDelivery": {
+                "ResponseTimestamp": "2024-07-15T08:19:05Z",
+                "ProducerRef": "RAP Alto Adige - Open Data Hub",
+                "FacilityCondition": [
+                  {
+                    "FacilityRef": "IT:ITH10:Parking:105",
+                    "FacilityStatus": {
+                      "Status": "available"
+                    },
+                    "MonitoredCounting": {
+                      "CountingType": "presentCount",
+                      "CountedFeatureUnit": "bays",
+                      "Count": 33
+                    }
+                  },
+                  {
+                    "FacilityRef": "IT:ITH10:Parking:TRENTO_areaexsitviacanestrinip1",
+                    "FacilityStatus": {
+                      "Status": "notAvailable"
+                    },
+                    "MonitoredCounting": {
+                      "CountingType": "presentCount",
+                      "CountedFeatureUnit": "bays",
+                      "Count": 300
+                    }
+                  },
+                ]
+              }
+            }
+          }
+        }
+
+    siri-lite-fm-sharing-json:
+      value:
+        {
+          "Siri": {
+            "Version": "2.1",
+            "ServiceDelivery": {
+              "ResponseTimestamp": "2024-07-15T08:19:05Z",
+              "ProducerRef": "RAP Alto Adige - Open Data Hub",
+              "FacilityMonitoringDelivery": {
+                "ResponseTimestamp": "2024-07-15T08:19:05Z",
+                "ProducerRef": "RAP Alto Adige - Open Data Hub",
+                "FacilityCondition": [
+                  {
+                    "FacilityRef": "IT:ITH10:Parking:BIKE_SHARING_BOLZANO:Fiera_-_Messe",
+                    "FacilityStatus": {
+                      "Status": "available"
+                    },
+                    "MonitoredCounting": {
+                      "CountingType": "availabilityCount",
+                      "CountedFeatureUnit": "otherSpaces",
+                      "Count": 0
+                    }
+                  },
+                  {
+                    "FacilityRef": "IT:ITH10:Vehicle:BIKE_SHARING_MERANO:City_Standard_39",
+                    "FacilityStatus": {
+                      "Status": "available"
+                    },
+                    "FacilityUpdatedPosition": {
+                      "Longitude": 11.148548,
+                      "Latitude": 46.656155
+                    },
+                    "Facility": {
+                      "FacilityClass": "vehicle",
+                      "FacilityLocation": {
+                        "VehicleRef": "IT:ITH10:Vehicle:BIKE_SHARING_MERANO:City_Standard_39",
+                        "OperatorRef": "IT:ITH10:Operator:Municipality_of_Merano_bikesharing"
+                      }
+                    }
+                  },
+                ]
+              }
+            }
+          }
+        }
+  parameters:
+    maxSize:
+      name: maxSize
+      in: query
+      description: Maximum number of elements returned
+      required: false
+      schema:
+        type: number
+        example: 10
+    facilityRef:
+      name: facilityRef
+      in: query
+      description: NeTEx/SIRI ID of the facility you want information about. Can be repeated to search for more than one facility
+      required: false
+      schema:
+        type: string
+        example: IT:ITC1:Parking:1234
+    maxDistance:
+      name: maxDistance
+      in: query
+      description: distance in meters from point (lat/lon) around which to search
+      required: false
+      schema:
+        type: number
+        example: 100
+    lat:
+      name: lat
+      in: query
+      description: Latitude of point around which to search (requires lon and maxDistance)
+      required: false
+      schema:
+        type: string
+        example: 45.05
+    lon:
+      name: lon
+      in: query
+      description: Longitude of point around which to search (requires lat and maxDistance)
+      required: false
+      schema:
+        type: string
+        example: 11.55
+    operators:
+      name: operators
+      in: query
+      description: One or more (separated by commas, or as multiple query parameters) Operator IDs (as specified in NeTEx) for which to search
+      required: false
+      schema:
+        type: string
+        items:
+          type: string
+        example: IT:ITC1:Operator:123456789011:op1,IT:ITC1:Operator:123456789011:op2

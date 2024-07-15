@@ -14,6 +14,7 @@ import (
 	"os"
 	"slices"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
 	sloggin "github.com/samber/slog-gin"
@@ -33,8 +34,10 @@ func main() {
 		r.Use(sloggin.New(slog.Default()))
 	}
 
-	r.Use(gin.Recovery())
+	r.Use(gin.Recovery()) //recover from panics
+	r.Use(cors.Default()) //allow all origins
 
+	r.GET("/apispec", func(c *gin.Context) { c.File("./openapi3.yaml") })
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
 	r.GET("/netex/sharing", netexEndpoint(netexSharing))

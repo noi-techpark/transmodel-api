@@ -9,6 +9,7 @@ FROM base as build
 WORKDIR app
 COPY src/main main
 COPY src/config/ config/
+COPY src/openapi3.yaml openapi3.yaml
 CMD [ "./main"]
 
 FROM base as dev
