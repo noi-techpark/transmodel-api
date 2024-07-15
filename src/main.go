@@ -37,6 +37,7 @@ func main() {
 	r.Use(gin.Recovery()) //recover from panics
 	r.Use(cors.Default()) //allow all origins
 
+	r.GET("/", func(c *gin.Context) { c.Redirect(http.StatusPermanentRedirect, os.Getenv("SWAGGER_URL")) })
 	r.GET("/apispec", func(c *gin.Context) { c.File("./openapi3.yaml") })
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
