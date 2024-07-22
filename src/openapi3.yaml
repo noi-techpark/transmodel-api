@@ -74,7 +74,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/netex-sharing'
 
-  /siri-lite/fm:
+  /siri-lite/facility-monitoring:
     get:
       tags:
         - siri-lite
@@ -89,7 +89,7 @@ paths:
       responses:
         200: 
           $ref: "#/components/responses/siri-fm"
-  /siri-lite/fm/parking:
+  /siri-lite/facility-monitoring/parking:
     get:
       tags:
         - parking
@@ -105,7 +105,7 @@ paths:
       responses:
         200: 
           $ref: "#/components/responses/siri-fm"
-  /siri-lite/fm/sharing:
+  /siri-lite/facility-monitoring/sharing:
     get:
       tags:
         - sharing
