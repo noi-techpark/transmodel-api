@@ -5,6 +5,7 @@ package main
 
 import (
 	"encoding/xml"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"opendatahub/transmodel-api/config"
@@ -37,7 +38,10 @@ func main() {
 	r.Use(gin.Recovery()) //recover from panics
 	r.Use(cors.Default()) //allow all origins
 
-	r.GET("/", func(c *gin.Context) { c.Redirect(http.StatusPermanentRedirect, os.Getenv("SWAGGER_URL")) })
+	r.NoMethod(docErr(http.StatusMethodNotAllowed, "Method not allowed"))
+	r.NoRoute(docErr(http.StatusNotFound, "Path not found"))
+
+	r.GET("/", func(c *gin.Context) { c.Redirect(http.StatusPermanentRedirect, swaggerUrl()) })
 	r.GET("/apispec", func(c *gin.Context) { c.File("./openapi3.yaml") })
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
@@ -49,8 +53,30 @@ func main() {
 	r.GET("/health", health)
 	r.Run()
 }
+
+func swaggerUrl() string {
+	return fmt.Sprintf("%s?url=%s/apispec", os.Getenv("SWAGGER_URL"), apiUrl())
+}
+func apiUrl() string {
+	return os.Getenv("API_URL")
+}
+
 func health(c *gin.Context) {
 	c.Status(http.StatusOK)
+}
+
+func docErr(code int, msg string) func(*gin.Context) {
+	return func(c *gin.Context) {
+		c.JSON(code,
+			gin.H{"error": gin.H{
+				"message": fmt.Sprintf("%s. Please refer to our OpenAPI documentation", msg),
+				"openapi": gin.H{
+					"document": fmt.Sprintf("%s/apispec", apiUrl()),
+					"swagger":  swaggerUrl(),
+				},
+			}},
+		)
+	}
 }
 
 type netexFn func() ([]netex.CompositeFrame, error)
