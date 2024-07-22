@@ -100,7 +100,7 @@ jobs:
           X_GIN_MODE: release
           X_LOG_LEVEL: WARNING
           X_SWAGGER_URL: https://swagger.opendatahub.testingmachine.eu
-          X_API_SPEC: https://transmodel.api.opendatahub.testingmachine.eu
+          X_API_URL: https://transmodel.api.opendatahub.testingmachine.eu
 
       - name: Build go application
         run: go build -o main .
