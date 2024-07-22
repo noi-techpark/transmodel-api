@@ -98,7 +98,7 @@ jobs:
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
           X_NINJA_REFERER: transmodel-api-test
           X_GIN_MODE: release
-          X_LOG_LEVEL: WARNING
+          X_LOG_LEVEL: INFO
           X_SWAGGER_URL: https://swagger.opendatahub.testingmachine.eu
           X_API_URL: https://transmodel.api.opendatahub.testingmachine.eu
 
@@ -157,7 +157,7 @@ jobs:
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.com
           X_NINJA_REFERER: transmodel-api
           X_GIN_MODE: release
-          X_LOG_LEVEL: WARNING
+          X_LOG_LEVEL: INFO
           X_SWAGGER_URL: https://swagger.opendatahub.com
           X_API_URL: https://transmodel.api.opendatahub.com
 
