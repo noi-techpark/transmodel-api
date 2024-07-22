@@ -32,7 +32,10 @@ func main() {
 	} else {
 		// Enable slog logging for gin framework
 		// https://github.com/samber/slog-gin
-		r.Use(sloggin.New(slog.Default()))
+		r.Use(sloggin.NewWithFilters(
+			slog.Default(),
+			sloggin.IgnorePath("/health", "/favicon.ico")),
+		)
 	}
 
 	r.Use(gin.Recovery()) //recover from panics
