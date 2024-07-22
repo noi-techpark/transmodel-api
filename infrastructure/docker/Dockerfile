@@ -1,6 +1,6 @@
 FROM golang:1.22.2-bookworm as base
 
-# install if docker host doesn't has libc6 installed
+# libc6 missing on host. Remove this once we are on newer hosts (read: kubernetes)
 RUN apt-get update && apt-get install -y libc6
 RUN apt-get clean
 EXPOSE 8080
@@ -16,6 +16,8 @@ WORKDIR /code
 CMD ["go", "test", "./..."]
 
 FROM alpine:3.20 as build
+# again, libc6 missing on host. Remove this once we are on newer hosts (read: kubernetes)
+RUN apk add gcompat
 WORKDIR app
 COPY src/main main
 COPY src/config/ config/

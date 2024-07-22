@@ -45,3 +45,6 @@ test/validate.xml
 .~lock.*
 
 __debug_bin*
+
+# build executable
+src/main
