@@ -19,6 +19,7 @@ FROM alpine:3.20 as build
 # again, libc6 missing on host. Remove this once we are on newer hosts (read: kubernetes)
 RUN apk add gcompat
 WORKDIR app
+EXPOSE 8080
 COPY src/main main
 COPY src/config/ config/
 COPY src/openapi3.yaml openapi3.yaml
