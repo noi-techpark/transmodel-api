@@ -5,13 +5,7 @@ on:
     paths:
       - "src/**"
       - "infrastructure/**"
-      - ".reuse/**"
-      - ".github/workflows/main.yml"
-  pull_request:
-    paths:
-      - "src/**"
-      - "infrastructure/**"
-      - ".reuse/**"
+      - "test/**"
       - ".github/workflows/main.yml"
 
 env:
