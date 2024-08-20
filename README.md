@@ -84,7 +84,9 @@ More documentation can be found at [https://opendatahub.readthedocs.io/en/latest
 
 ### License
 
-The code in this project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3 license. See the [LICENSE.md](LICENSE.md) file for more information.
+The code in this project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3 license.  
+
+For detailed licensing information, please refer to the [REUSE](https://reuse.software) spec.
 
 ### REUSE
 
