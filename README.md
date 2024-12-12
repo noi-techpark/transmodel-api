@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 # Transmodel (NeTEx and SIRI FM) API wrapper for Open Data Hub
 
-[![REUSE Compliance](https://github.com/noi-techpark/java-boilerplate/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
+[![REUSE Compliance](https://github.com/noi-techpark/transmodel-api/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 
 This API provides data from the Open Data Hub in the standard formats NeTEx (Italian Profile) and SIRI-LITE FM (JSON).
 
