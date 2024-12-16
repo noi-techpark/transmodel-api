@@ -23,4 +23,6 @@ EXPOSE 8080
 COPY src/main main
 COPY src/config/ config/
 COPY src/openapi3.yaml openapi3.yaml
+# Temporary for initial PoC testing. File has to be generated periodically in production
+COPY src/provider/testdata/skyalps.xml /shared/skyalps.xml
 CMD [ "./main"]
