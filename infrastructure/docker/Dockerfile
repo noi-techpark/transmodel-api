@@ -1,4 +1,4 @@
-FROM golang:1.22.2-bookworm as base
+FROM golang:1.23-bookworm as base
 
 # libc6 missing on host. Remove this once we are on newer hosts (read: kubernetes)
 RUN apt-get update && apt-get install -y libc6
