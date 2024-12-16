@@ -15,10 +15,10 @@ import (
 )
 
 func TestNetex(t *testing.T) {
-	sharings, err := ninja.LoadJsonFile[bikeBzSharing]("test/bike_sharing_bz_sharing.json")
+	sharings, err := ninja.LoadJsonFile[bikeBzSharing]("testdata/bike_sharing_bz_sharing.json")
 	assert.NilError(t, err, "Failed to load JSON")
 
-	cycles, err := ninja.LoadJsonFile[bikeBzCycles]("test/bike_sharing_bz_cycles.json")
+	cycles, err := ninja.LoadJsonFile[bikeBzCycles]("testdata/bike_sharing_bz_cycles.json")
 	assert.NilError(t, err, "Failed to load JSON")
 
 	ninja.TestReqHook = func(nr *ninja.NinjaRequest) (any, error) {
@@ -97,7 +97,7 @@ func TestSiri(t *testing.T) {
 	b := NewBikeBz()
 	config.InitConfig()
 
-	latest, err := ninja.LoadJsonFile[[]OdhBzSharingLatest]("test/bike_sharing_bz_latest.json")
+	latest, err := ninja.LoadJsonFile[[]OdhBzSharingLatest]("testdata/bike_sharing_bz_latest.json")
 	assert.NilError(t, err, "Failed to load JSON")
 
 	fcs := b.mapSiri(latest.Data)

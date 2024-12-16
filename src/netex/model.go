@@ -18,9 +18,7 @@ type NetexFrame struct {
 	PublicationTimestamp time.Time
 	ParticipantRef       string
 	Description          string
-	DataObjects          struct {
-		Frames []CompositeFrame `xml:"CompositeFrame"`
-	} `xml:"dataObjects"`
+	DataObjects          []CompositeFrame `xml:"dataObjects>CompositeFrame"`
 }
 
 func NewNetexFrame() NetexFrame {
@@ -45,7 +43,7 @@ type CompositeFrame struct {
 	Id             string `xml:"id,attr"`
 	Version        string `xml:"version,attr"`
 	ValidBetween   ValidBetween
-	TypeOfFrameRef TypeOfFrameRef
+	TypeOfFrameRef Ref
 	Codespaces     struct {
 		Codespace struct {
 			Id          string `xml:"id,attr"`
@@ -58,14 +56,22 @@ type CompositeFrame struct {
 	FrameDefaults struct {
 		DefaultCodespaceRef Ref
 	} `xml:"-"`
-	Frames struct{ Frames []any } `xml:"frames"`
+	Frames struct {
+		ResourceFrame        []ResourceFrame
+		SiteFrame            []SiteFrame
+		MobilityServiceFrame []MobilityServiceFrame
+		ServiceFrame         []ServiceFrame
+		ServiceCalendarFrame []ServiceCalendarFrame
+		TimetableFrame       []TimetableFrame
+		Frames               []any
+	} `xml:"frames"`
 }
 
 type ResourceFrame struct {
 	XMLName        xml.Name `xml:"ResourceFrame"`
 	Id             string   `xml:"id,attr"`
 	Version        string   `xml:"version,attr"`
-	TypeOfFrameRef TypeOfFrameRef
+	TypeOfFrameRef Ref
 
 	Operators   *[]Operator          `xml:"organisations>Operator"`
 	CarModels   *[]CarModelProfile   `xml:"vehicleModelProfiles>CarModelProfile"`
@@ -77,8 +83,9 @@ type SiteFrame struct {
 	XMLName        xml.Name `xml:"SiteFrame"`
 	Id             string   `xml:"id,attr"`
 	Version        string   `xml:"version,attr"`
-	TypeOfFrameRef TypeOfFrameRef
-	Parkings       Parkings `xml:"parkings,omitempty"`
+	TypeOfFrameRef Ref
+	Parkings       []Parking   `xml:"parkings>Parking"`
+	StopPlaces     []StopPlace `xml:"stopPlaces>StopPlace"`
 }
 
 func (c *CompositeFrame) Defaults() {
@@ -120,11 +127,6 @@ type Ref struct {
 	Ref     string `xml:"ref,attr"`
 	Version string `xml:"version,attr,omitempty"`
 }
-type TypeOfFrameRef struct {
-	XMLName xml.Name
-	Ref     string `xml:"ref,attr"`
-	Version string `xml:"versionRef,attr,omitempty"`
-}
 
 type ValidBetween struct {
 	FromDate time.Time
@@ -149,26 +151,8 @@ type Fleet struct {
 	Id           string `xml:"id,attr"`
 	Version      string `xml:"version,attr"`
 	ValidBetween ValidBetween
-	Members      Members
+	Members      []Ref `xml:"members>VehicleRef"`
 	OperatorRef  Ref
-}
-
-// structure is members>VehicleRef[], we need this hack to not render the members tag if vehicleref list is empty
-type Members []Ref
-
-func (m *Members) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if len(*m) == 0 {
-		return nil
-	}
-	members := xml.StartElement{Name: xml.Name{Local: "members"}}
-	e.EncodeToken(members)
-	for _, r := range *m {
-		if err := e.EncodeElement(r, xml.StartElement{Name: xml.Name{Local: "VehicleRef"}}); err != nil {
-			return err
-		}
-	}
-	e.EncodeToken(members.End())
-	return nil
 }
 
 type Vehicle struct {
@@ -258,23 +242,13 @@ type MobilityServiceConstraintZone struct {
 	VehicleSharingRef Ref
 }
 
-type Parkings struct {
-	XMLName  xml.Name `xml:"parkings"`
-	Parkings []Parking
-}
-
 type Parking struct {
-	XMLName   xml.Name `xml:"Parking"`
-	Id        string   `xml:"id,attr"`
-	Version   string   `xml:"version,attr"`
-	Name      string
-	ShortName string
-	Centroid  struct {
-		Location struct {
-			Longitude float32
-			Latitude  float32
-		}
-	}
+	XMLName                         xml.Name `xml:"Parking"`
+	Id                              string   `xml:"id,attr"`
+	Version                         string   `xml:"version,attr"`
+	Name                            string
+	ShortName                       string
+	Centroid                        Centroid
 	GmlPolygon                      any `xml:"gml:Polygon"`
 	OperatorRef                     Ref
 	Entrances                       any `xml:"entrances"`
@@ -288,6 +262,195 @@ type Parking struct {
 	Secure                          N[bool]
 	ParkingReservation              string
 	ParkingProperties               any
+}
+
+type Centroid struct {
+	Location struct {
+		Longitude float32
+		Latitude  float32
+	}
+}
+
+type StopPlace struct {
+	XMLName       xml.Name `xml:"StopPlace"`
+	Id            string   `xml:"id,attr"`
+	Version       string   `xml:"version,attr"`
+	Name          string
+	ShortName     string
+	PrivateCode   string
+	Centroid      Centroid
+	AccessModes   string
+	PublicCode    string
+	TransportMode string
+	StopPlaceType string
+	Levels        []Level `xml:"levels>Level"`
+	Quays         []Quay  `xml:"quays>Quay"`
+}
+type Quay struct {
+	Id       string `xml:"id,attr"`
+	Version  string `xml:"version,attr"`
+	Name     string
+	Centroid struct {
+		Location struct {
+			Longitude string `xml:"Longitude"`
+			Latitude  string `xml:"Latitude"`
+		}
+	}
+	LevelRef Ref
+	QuayType string
+}
+type Level struct {
+	Id         string `xml:"id,attr"`
+	Version    string `xml:"version,attr"`
+	Name       string
+	PublicCode string
+}
+type ServiceCalendarFrame struct {
+	Id              string `xml:"id,attr"`
+	Version         string `xml:"version,attr"`
+	TypeOfFrameRef  Ref
+	ServiceCalendar []ServiceCalendar `xml:",omitempty"`
+}
+type ServiceCalendar struct {
+	Id                 string `xml:"id,attr"`
+	Version            string `xml:"version,attr"`
+	Name               string
+	FromDate           string
+	ToDate             string
+	DayTypes           []DayType            `xml:"dayTypes>DayType"`
+	OperatingPeriods   []UicOperatingPeriod `xml:"operatingperiods>UicOperatingPeriod"`
+	DayTypeAssignments []DayTypeAssignment  `xml:"dayTypeAssignments>DayTypeAssignment"`
+}
+type DayType struct {
+	Id          string `xml:"id,attr"`
+	Version     string `xml:"version,attr"`
+	Name        string
+	Description string
+	Properties  struct {
+		PropertyOfDay struct {
+			DaysOfWeek   string
+			HolidayTypes string
+		}
+	} `xml:"properties"`
+}
+type UicOperatingPeriod struct {
+	Id           string `xml:"id,attr"`
+	Version      string `xml:"version,attr"`
+	FromDate     string
+	ToDate       string
+	ValidDayBits string
+}
+type DayTypeAssignment struct {
+	Id                 string `xml:"id,attr"`
+	Version            string `xml:"version,attr"`
+	Order              string `xml:"order,attr"`
+	OperatingPeriodRef Ref
+	DayTypeRef         Ref
+}
+type Route struct {
+	Id      string `xml:"id,attr"`
+	Version string `xml:"version,attr"`
+	Name    string
+}
+type Line struct {
+	Id            string `xml:"id,attr"`
+	Version       string `xml:"version,attr"`
+	Name          string
+	ShortName     string
+	Description   string
+	TransportMode string
+	URL           string
+	PublicCode    string
+	PrivateCode   string
+	OperatorRef   Ref
+	Monitored     string
+}
+type ScheduledStopPoint struct {
+	Id       string `xml:"id,attr"`
+	Version  string `xml:"version,attr"`
+	Name     string
+	Location struct {
+		Longitude string
+		Latitude  string
+		Altitude  string
+		Precision string
+	}
+	ShortName   string
+	Description string
+	PublicCode  string
+	PrivateCode string
+}
+type ServiceLink struct {
+	Id         string `xml:"id,attr"`
+	Version    string `xml:"version,attr"`
+	Distance   string
+	LineString struct {
+		Id      string `xml:"id,attr"`
+		PosList string `xml:"gml:posList"`
+	} `xml:"gml:LineString"`
+	FromPointRef Ref
+	ToPointRef   Ref
+}
+type PassengerStopAssignment struct {
+	Order                 string `xml:"order,attr"`
+	Id                    string `xml:"id,attr"`
+	Version               string `xml:"version,attr"`
+	ScheduledStopPointRef Ref
+	StopPlaceRef          Ref
+	QuayRef               Ref
+}
+type ServiceJourneyPattern struct {
+	Id        string `xml:"id,attr"`
+	Version   string `xml:"version,attr"`
+	Name      string
+	Distance  string
+	RouteView struct {
+		LineRef Ref
+	}
+	PointsInSequence string `xml:"pointsInSequence"`
+}
+
+type ServiceFrame struct {
+	Id                  string `xml:"id,attr"`
+	Version             string `xml:"version,attr"`
+	TypeOfFrameRef      Ref
+	Routes              []Route                   `xml:"routes>Route"`
+	Lines               []Line                    `xml:"lines>Line"`
+	ScheduledStopPoints []ScheduledStopPoint      `xml:"scheduledStopPoints>ScheduledStopPoint"`
+	ServiceLinks        []ServiceLink             `xml:"serviceLinks>ServiceLink"`
+	StopAssignments     []PassengerStopAssignment `xml:"stopAssignments>PassengerStopAssignment"`
+	JourneyPatterns     []ServiceJourneyPattern   `xml:"journeyPatterns>ServiceJourneyPattern"`
+}
+
+type TimetabledPassingTime struct {
+	Id                           string `xml:"id,attr"`
+	Version                      string `xml:"version,attr"`
+	StopPointInJourneyPatternRef Ref
+	ArrivalTime                  string
+	ArrivalDayOffset             string
+	DepartureTime                string
+	DepartureDayOffset           string
+}
+
+type ServiceJourney struct {
+	Id                       string `xml:"id,attr"`
+	Version                  string `xml:"version,attr"`
+	Name                     string
+	Distance                 string
+	TransportMode            string
+	DepartureTime            string
+	DepartureDayOffset       string
+	JourneyDuration          string
+	DayTypes                 []Ref `xml:"dayTypes>DayTypeRef"`
+	ServiceJourneyPatternRef Ref
+	OperatorRef              Ref
+	PassingTimes             []TimetabledPassingTime `xml:"passingTimes>TimetabledPassingTime"`
+}
+type TimetableFrame struct {
+	Id              string `xml:"id,attr"`
+	Version         string `xml:"version,attr"`
+	TypeOfFrameRef  Ref
+	VehicleJourneys []ServiceJourney `xml:"vehicleJourneys>ServiceJourney"`
 }
 
 // Nullable wrapper. If not explicitly set, it doesn't render in xml

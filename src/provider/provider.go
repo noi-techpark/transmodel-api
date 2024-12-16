@@ -27,6 +27,7 @@ var ParkingRt = []siri.FMProvider{NewParkingGeneric(), NewParkingEcharging()}
 var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
+var FlightsStatic = []netex.StFlights{NewFlightsSkyalps("/shared/skyalps.xml")}
 
 func maybeIdMatch(ids []string, prefix string) []string {
 	return slices.DeleteFunc(ids, func(id string) bool { return !strings.HasPrefix(id, prefix) })

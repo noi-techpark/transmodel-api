@@ -92,7 +92,7 @@ func compSharing(serviceName string, ps []StSharing) (CompositeFrame, error) {
 		res.CycleModels = AppendSafe(res.CycleModels, d.CycleModels...)
 		res.Operators = AppendSafe(res.Operators, d.Operators...)
 
-		site.Parkings.Parkings = append(site.Parkings.Parkings, d.Parkings...)
+		site.Parkings = append(site.Parkings, d.Parkings...)
 	}
 
 	comp := CompositeFrame{}

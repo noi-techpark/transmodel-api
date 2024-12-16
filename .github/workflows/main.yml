@@ -5,7 +5,7 @@ on:
     paths:
       - "src/**"
       - "infrastructure/**"
-      - "test/**"
+      - "testdata/**"
       - ".github/workflows/main.yml"
 
 env:

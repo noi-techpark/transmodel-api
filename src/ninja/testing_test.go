@@ -16,14 +16,14 @@ type BikeShareMeta struct {
 }
 
 func TestLoadJson(t *testing.T) {
-	j, err := LoadJsonFile[[]OdhStation[BikeShareMeta]]("test/ninja_loadjson.json")
+	j, err := LoadJsonFile[[]OdhStation[BikeShareMeta]]("testdata/ninja_loadjson.json")
 	assert.NilError(t, err, "Failed to load JSON")
 	assert.Equal(t, j.Data[0].Sname, "Viale della Stazione - Bahnhofsallee", "Unexpected mapping from JSON")
 	assert.Equal(t, j.Data[0].Smeta.TotalBays, 12, "Unexpected mapping from JSON")
 }
 
 func TestReqHook1(t *testing.T) {
-	j, err := LoadJsonFile[[]OdhStation[BikeShareMeta]]("test/ninja_loadjson.json")
+	j, err := LoadJsonFile[[]OdhStation[BikeShareMeta]]("testdata/ninja_loadjson.json")
 	assert.NilError(t, err, "Failed to load JSON")
 
 	req := NinjaRequest{}

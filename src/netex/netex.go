@@ -51,8 +51,8 @@ func MkRef(tp string, id string) Ref {
 	return r
 }
 
-func MkTypeOfFrameRef(tp string) TypeOfFrameRef {
-	r := TypeOfFrameRef{}
+func MkTypeOfFrameRef(tp string) Ref {
+	r := Ref{}
 	r.Ref = "epip:" + tp
 	r.Version = "1"
 	r.XMLName.Local = "TypeOfFrameRef"

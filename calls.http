@@ -5,6 +5,8 @@ GET {{host}}/health
 GET {{host}}/netex/parking
 ### static NeTEx mobility sharing data
 GET {{host}}/netex/sharing
+### static NeTEx flight data
+GET {{host}}/netex/flights
 ### SIRI-FM real time parking availability. Station ID as a parameter
 GET {{host}}/siri/fm/115
 

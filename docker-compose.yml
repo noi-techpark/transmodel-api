@@ -13,6 +13,7 @@ services:
     volumes:
       - ./src:/code
       - pkg:/go/pkg/mod
+      - ./src/provider/testdata/skyalps.xml:/shared/skyalps.xml
     working_dir: /code
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]

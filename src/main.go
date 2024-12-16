@@ -49,6 +49,7 @@ func main() {
 	r.GET("/netex", netexEndpoint(netexAll))
 	r.GET("/netex/parking", netexEndpoint(netexParking))
 	r.GET("/netex/sharing", netexEndpoint(netexSharing))
+	r.GET("/netex/flights", netexEndpoint(netexFlights))
 	r.GET("/siri-lite/facility-monitoring", siriLite(siriFM))
 	r.GET("/siri-lite/facility-monitoring/parking", siriLite(siriFMParking))
 	r.GET("/siri-lite/facility-monitoring/sharing", siriLite(siriFMSharing))
@@ -91,14 +92,14 @@ func netexEndpoint(fn netexFn) func(*gin.Context) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
 		n := netex.NewNetexFrame()
-		n.DataObjects.Frames = append(n.DataObjects.Frames, comp...)
+		n.DataObjects = append(n.DataObjects, comp...)
 		prettyXML(c, http.StatusOK, n)
 	}
 }
 
 func netexAll() ([]netex.CompositeFrame, error) {
 	ret := []netex.CompositeFrame{}
-	for _, s := range []netexFn{netexParking, netexSharing} {
+	for _, s := range []netexFn{netexParking, netexSharing, netexFlights} {
 		sr, err := s()
 		if err != nil {
 			return ret, err
@@ -113,6 +114,9 @@ func netexParking() ([]netex.CompositeFrame, error) {
 }
 func netexSharing() ([]netex.CompositeFrame, error) {
 	return netex.GetSharing(provider.SharingBikesStatic, provider.SharingCarsStatic)
+}
+func netexFlights() ([]netex.CompositeFrame, error) {
+	return netex.GetFlights(provider.FlightsStatic)
 }
 
 type siriFn func(siri.Query) (siri.Siri, error)

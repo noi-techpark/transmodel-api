@@ -33,7 +33,7 @@ func compFrame(pd StParkingData) CompositeFrame {
 	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
-	site.Parkings = Parkings{Parkings: pd.Parkings}
+	site.Parkings = pd.Parkings
 	res.Operators = &pd.Operators
 
 	return ret
