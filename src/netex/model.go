@@ -7,12 +7,11 @@ import (
 	"time"
 )
 
+const NetexNamespace = "http://www.netex.org.uk/netex"
+
 type NetexFrame struct {
-	XMLName              xml.Name `xml:"PublicationDelivery"`
+	XMLName              xml.Name `xml:"http://www.netex.org.uk/netex PublicationDelivery"`
 	Version              string   `xml:"version,attr"`
-	NsGml                string   `xml:"xmlns:gml,attr"`
-	NsSiri               string   `xml:"xmlns:siri,attr"`
-	NsNetex              string   `xml:"xmlns,attr"`
 	NsXsi                string   `xml:"xmlns:xsi,attr"`
 	XsiSchemaLocation    string   `xml:"xsi:schemaLocation,attr"`
 	PublicationTimestamp time.Time
@@ -24,9 +23,6 @@ type NetexFrame struct {
 func NewNetexFrame() NetexFrame {
 	n := NetexFrame{}
 	n.Version = "1.0"
-	n.NsGml = "http://www.opengis.net/gml/3.2"
-	n.NsSiri = "http://www.siri.org.uk/siri"
-	n.NsNetex = "http://www.netex.org.uk/netex"
 	n.NsXsi = "http://www.w3.org/2001/XMLSchema-instance"
 	n.XsiSchemaLocation = "http://www.netex.org.uk/netex https://raw.githubusercontent.com/5Tsrl/netex-italian-profile/main/xsd/NeTEx_publication_Lev4.xsd"
 	n.PublicationTimestamp = time.Now()
@@ -128,6 +124,16 @@ type Ref struct {
 	Version string `xml:"version,attr,omitempty"`
 }
 
+// Avoid having the explicit namespace there for every Ref
+func (r *Ref) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type ReRef Ref
+	err := d.DecodeElement((*ReRef)(r), &start)
+	if err == nil {
+		r.XMLName.Space = ""
+	}
+	return err
+}
+
 type ValidBetween struct {
 	FromDate time.Time
 	ToDate   time.Time
@@ -222,8 +228,8 @@ type VehicleSharingService struct {
 }
 
 type GmlPolygon struct {
-	XMLName xml.Name `xml:"gml:Polygon"`
-	Id      string   `xml:"gml:id,attr"`
+	XMLName xml.Name `xml:"http://www.opengis.net/gml/3.2 Polygon"`
+	Id      string   `xml:"id,attr"`
 	Polygon string   `xml:",innerxml"`
 }
 
@@ -377,26 +383,14 @@ type ServiceLink struct {
 	Id           string `xml:"id,attr"`
 	Version      string `xml:"version,attr"`
 	Distance     string
-	LineString   LineString
+	LineString   LineString `xml:"http://www.opengis.net/gml/3.2 LineString"`
 	FromPointRef Ref
 	ToPointRef   Ref
 }
 
 type LineString struct {
-	XMLName xml.Name `xml:"http://www.opengis.net/gml/3.2 LineString"`
-	Id      string   `xml:"http://www.opengis.net/gml/3.2 id,attr"`
-	PosList string   `xml:"http://www.opengis.net/gml/3.2 posList"`
-}
-
-// Hack to strip local namespace and use the global `gml` hardcoded one
-// The proper namespaces have to be there when Unmarshalling
-func (l *LineString) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Name.Space = ""
-	start.Name.Local = "gml:LineString"
-	return e.EncodeElement(struct {
-		Id      string `xml:"gml:id,attr"`
-		PosList string `xml:"gml:posList"`
-	}{Id: l.Id, PosList: l.PosList}, start)
+	Id      string `xml:"id,attr"`
+	PosList string `xml:"posList"`
 }
 
 type PassengerStopAssignment struct {
