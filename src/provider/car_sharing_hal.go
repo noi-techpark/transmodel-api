@@ -168,7 +168,7 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.provider)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.provider
-	c.GmlPolygon.SetPoly(config.GML_PROVINCE_BZ)
+	c.GmlPolygon.Polygon = config.GML_PROVINCE_BZ
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 

@@ -123,7 +123,7 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.origin
-	c.GmlPolygon.SetPoly(config.GML_MUNICIPALITY_ME)
+	c.GmlPolygon.Polygon = config.GML_MUNICIPALITY_ME
 	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 

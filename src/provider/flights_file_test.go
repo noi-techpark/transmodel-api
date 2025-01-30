@@ -25,4 +25,8 @@ func TestUnmarshalFlight(t *testing.T) {
 	assert.Equal(t, len(dt.ServiceLinks), 52, "wrong number of service links")
 	assert.Equal(t, len(dt.StopAssignments), 28, "wrong number of stop assignments")
 	assert.Equal(t, len(dt.VehicleJourneys), 1814, "wrong number of vehicle journeys")
+
+	// unmarshalling of gml with namespaces and such
+	assert.Assert(t, dt.ServiceLinks[0].LineString.Id != "")
+	assert.Assert(t, dt.ServiceLinks[0].LineString.PosList != "")
 }

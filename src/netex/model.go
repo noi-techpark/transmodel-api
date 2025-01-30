@@ -221,18 +221,10 @@ type VehicleSharingService struct {
 	Fleets            []Ref `xml:"fleets>FleetRef"`
 }
 
-// Some hackery to always get the "gml" namespace prefix for our xmlns
-// The hardcoded polygons use the gml prefix, so we have to bind the namespace to it
 type GmlPolygon struct {
 	XMLName xml.Name `xml:"gml:Polygon"`
 	Id      string   `xml:"gml:id,attr"`
 	Polygon string   `xml:",innerxml"`
-	Xmlns   string   `xml:"xmlns:gml,attr"`
-}
-
-func (g *GmlPolygon) SetPoly(p string) {
-	g.Polygon = p
-	g.Xmlns = "http://www.opengis.net/gml/3.2"
 }
 
 type MobilityServiceConstraintZone struct {
@@ -249,7 +241,7 @@ type Parking struct {
 	Name                            string
 	ShortName                       string
 	Centroid                        Centroid
-	GmlPolygon                      any `xml:"gml:Polygon"`
+	GmlPolygon                      any `xml:"http://www.opengis.net/gml/3.2 Polygon"`
 	OperatorRef                     Ref
 	Entrances                       any `xml:"entrances"`
 	ParkingType                     string
@@ -360,7 +352,7 @@ type Line struct {
 	ShortName     string
 	Description   string
 	TransportMode string
-	URL           string
+	Url           string
 	PublicCode    string
 	PrivateCode   string
 	OperatorRef   Ref
@@ -382,16 +374,31 @@ type ScheduledStopPoint struct {
 	PrivateCode string
 }
 type ServiceLink struct {
-	Id         string `xml:"id,attr"`
-	Version    string `xml:"version,attr"`
-	Distance   string
-	LineString struct {
-		Id      string `xml:"id,attr"`
-		PosList string `xml:"gml:posList"`
-	} `xml:"gml:LineString"`
+	Id           string `xml:"id,attr"`
+	Version      string `xml:"version,attr"`
+	Distance     string
+	LineString   LineString
 	FromPointRef Ref
 	ToPointRef   Ref
 }
+
+type LineString struct {
+	XMLName xml.Name `xml:"http://www.opengis.net/gml/3.2 LineString"`
+	Id      string   `xml:"http://www.opengis.net/gml/3.2 id,attr"`
+	PosList string   `xml:"http://www.opengis.net/gml/3.2 posList"`
+}
+
+// Hack to strip local namespace and use the global `gml` hardcoded one
+// The proper namespaces have to be there when Unmarshalling
+func (l *LineString) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Space = ""
+	start.Name.Local = "gml:LineString"
+	return e.EncodeElement(struct {
+		Id      string `xml:"gml:id,attr"`
+		PosList string `xml:"gml:posList"`
+	}{Id: l.Id, PosList: l.PosList}, start)
+}
+
 type PassengerStopAssignment struct {
 	Order                 string `xml:"order,attr"`
 	Id                    string `xml:"id,attr"`
