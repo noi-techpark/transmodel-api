@@ -17,4 +17,5 @@ function vUrl () {
 
 vUrl $endpoint/netex/parking \
 && vUrl $endpoint/netex/sharing \
+&& vUrl $endpoint/netex/flights \
 && vUrl $endpoint/netex

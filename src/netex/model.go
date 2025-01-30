@@ -306,8 +306,9 @@ type Level struct {
 	PublicCode string
 }
 type ServiceCalendarFrame struct {
-	Id              string `xml:"id,attr"`
-	Version         string `xml:"version,attr"`
+	XMLName         xml.Name `xml:"ServiceCalendarFrame"`
+	Id              string   `xml:"id,attr"`
+	Version         string   `xml:"version,attr"`
 	TypeOfFrameRef  Ref
 	ServiceCalendar []ServiceCalendar `xml:",omitempty"`
 }
@@ -411,8 +412,9 @@ type ServiceJourneyPattern struct {
 }
 
 type ServiceFrame struct {
-	Id                  string `xml:"id,attr"`
-	Version             string `xml:"version,attr"`
+	XMLName             xml.Name `xml:"ServiceFrame"`
+	Id                  string   `xml:"id,attr"`
+	Version             string   `xml:"version,attr"`
 	TypeOfFrameRef      Ref
 	Routes              []Route                   `xml:"routes>Route"`
 	Lines               []Line                    `xml:"lines>Line"`
@@ -447,8 +449,9 @@ type ServiceJourney struct {
 	PassingTimes             []TimetabledPassingTime `xml:"passingTimes>TimetabledPassingTime"`
 }
 type TimetableFrame struct {
-	Id              string `xml:"id,attr"`
-	Version         string `xml:"version,attr"`
+	XMLName         xml.Name `xml:"TimetableFrame"`
+	Id              string   `xml:"id,attr"`
+	Version         string   `xml:"version,attr"`
 	TypeOfFrameRef  Ref
 	VehicleJourneys []ServiceJourney `xml:"vehicleJourneys>ServiceJourney"`
 }
