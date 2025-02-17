@@ -2,11 +2,6 @@ name: CI/CD
 
 on:
   push:
-    paths:
-      - "src/**"
-      - "infrastructure/**"
-      - "testdata/**"
-      - ".github/workflows/main.yml"
 
 env:
   PROJECT_NAME: transmodel-api
