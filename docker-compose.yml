@@ -33,7 +33,7 @@ services:
         FROM alpine:latest
         RUN apk add --no-cache bash curl libxml2-utils
     environment:
-      ENDPOINT: app:8080
+      ENDPOINT: transmodel:8080
       TMPFILE: /val/test/validate.xml
     entrypoint: ./validate.sh
     working_dir: /val/test
