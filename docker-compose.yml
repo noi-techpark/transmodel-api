@@ -25,7 +25,7 @@ services:
   # Runs xml validation
   validate:
     depends_on:
-      app:
+      transmodel:
         condition: service_healthy
     profiles: [validate]
     build:
