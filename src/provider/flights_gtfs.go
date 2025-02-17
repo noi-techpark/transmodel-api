@@ -17,16 +17,25 @@ import (
 )
 
 type FlightsGtfs struct {
-	url       string
+	Url       string
+	NUTS      string
+	Vat       string
+	Company   string
+	Version   string
 	maxAge    time.Duration
 	cache     *netex.StFlightData
 	cacheTime time.Time
 }
 
-var lock sync.Mutex
-
-func NewFlightsGtfs(url string, maxAge time.Duration) *FlightsGtfs {
-	return &FlightsGtfs{url: url, maxAge: maxAge}
+func NewFlightsSkyalps() *FlightsGtfs {
+	return &FlightsGtfs{
+		Url:     "https://gtfs.api.opendatahub.com/v1/dataset/skyalps-flight-data/raw",
+		NUTS:    "IT:ITH10",
+		Company: "SKYALPS",
+		Vat:     "03067170211",
+		Version: "240202",
+		maxAge:  8 * time.Hour,
+	}
 }
 
 func (FlightsGtfs) getRemoteGtfs(url string) (*[]byte, error) {
@@ -48,7 +57,7 @@ func (FlightsGtfs) getRemoteGtfs(url string) (*[]byte, error) {
 	return &gtfs, nil
 }
 
-func (FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
+func (f FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
 	var b bytes.Buffer
 	writer := multipart.NewWriter(&b)
 
@@ -61,10 +70,10 @@ func (FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
 		return nil, err
 	}
 
-	writer.WriteField("nuts", "ITH10")
-	writer.WriteField("az", "BZ")
-	writer.WriteField("vat", "02595720216")
-	writer.WriteField("version", "240202")
+	writer.WriteField("nuts", f.NUTS)
+	writer.WriteField("az", f.Company)
+	writer.WriteField("vat", f.Vat)
+	writer.WriteField("version", f.Version)
 
 	if err := writer.Close(); err != nil {
 		return nil, err
@@ -131,6 +140,8 @@ func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (netex.StFlightData, error) {
 	return ret, nil
 }
 
+var lock sync.Mutex
+
 func (fs *FlightsGtfs) StFlights() (netex.StFlightData, error) {
 	if err := func() error {
 		lock.Lock()
@@ -138,7 +149,7 @@ func (fs *FlightsGtfs) StFlights() (netex.StFlightData, error) {
 
 		// only do this one at a time
 		if time.Since(fs.cacheTime) > fs.maxAge {
-			gtfs, err := fs.getRemoteGtfs(fs.url)
+			gtfs, err := fs.getRemoteGtfs(fs.Url)
 			if err != nil {
 				return err
 			}

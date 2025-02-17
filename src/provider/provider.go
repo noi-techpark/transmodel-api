@@ -10,7 +10,6 @@ import (
 	"opendatahub/transmodel-api/siri"
 	"slices"
 	"strings"
-	"time"
 )
 
 func FetchOdhStations[T any](tp string, origin string) (T, error) {
@@ -28,7 +27,7 @@ var ParkingRt = []siri.FMProvider{NewParkingGeneric(), NewParkingEcharging()}
 var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
 var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
-var FlightsStatic = []netex.StFlights{NewFlightsGtfs("https://gtfs.api.opendatahub.com/v1/dataset/skyalps-flight-data/raw", 8*time.Hour)}
+var FlightsStatic = []netex.StFlights{NewFlightsSkyalps()}
 
 func maybeIdMatch(ids []string, prefix string) []string {
 	return slices.DeleteFunc(ids, func(id string) bool { return !strings.HasPrefix(id, prefix) })

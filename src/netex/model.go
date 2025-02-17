@@ -409,7 +409,17 @@ type ServiceJourneyPattern struct {
 	RouteView struct {
 		LineRef Ref
 	}
-	PointsInSequence string `xml:"pointsInSequence"`
+	PointsInSequence []StopPointInJourneyPattern `xml:"pointsInSequence>StopPointInJourneyPattern"`
+}
+
+type StopPointInJourneyPattern struct {
+	Id                    string `xml:"id,attr"`
+	Version               string `xml:"version,attr"`
+	Order                 string `xml:"order,attr"`
+	ScheduledStopPointRef Ref
+	OnwardServiceLinkRef  Ref
+	ForAlighting          bool
+	ForBoarding           bool
 }
 
 type ServiceFrame struct {

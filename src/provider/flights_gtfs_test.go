@@ -7,13 +7,12 @@ package provider
 import (
 	"os"
 	"testing"
-	"time"
 
 	"gotest.tools/v3/assert"
 )
 
 func TestUnmarshalFlight(t *testing.T) {
-	fs := NewFlightsGtfs("", time.Second)
+	fs := NewFlightsSkyalps()
 	f, err := os.ReadFile("./testdata/skyalps.xml")
 	assert.NilError(t, err)
 	dt, err := fs.fromNetex(&f)
