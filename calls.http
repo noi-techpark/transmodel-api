@@ -1,6 +1,10 @@
 @host=http://localhost:{{$dotenv SERVER_PORT}}
+# @host=https://transmodel.api.opendatahub.testingmachine.eu
+# @host=https://transmodel.api.opendatahub.com
 ### Healthcheck 
 GET {{host}}/health
+### all static NeTEx data
+GET {{host}}/netex
 ### static NeTEx parking data
 GET {{host}}/netex/parking
 ### static NeTEx mobility sharing data
