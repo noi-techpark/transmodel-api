@@ -1,5 +1,5 @@
 services:
-  app:
+  transmodel:
     image: ${DOCKER_IMAGE}:${DOCKER_TAG}
     restart: unless-stopped
     env_file: .env
@@ -11,3 +11,7 @@ services:
       start_period: 10s
     ports:
       - ${SERVER_PORT}:8080
+
+  gtfs2netex:
+    image: ghcr.io/noi-techpark/gtfs2netex-api/gtfs2netex-api:1.0
+    restart: unless-stopped

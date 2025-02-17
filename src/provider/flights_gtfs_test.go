@@ -5,14 +5,18 @@
 package provider
 
 import (
+	"os"
 	"testing"
+	"time"
 
 	"gotest.tools/v3/assert"
 )
 
 func TestUnmarshalFlight(t *testing.T) {
-	fs := NewFlightsSkyalps("./testdata/skyalps.xml")
-	dt, err := fs.StFlights()
+	fs := NewFlightsGtfs("", time.Second)
+	f, err := os.ReadFile("./testdata/skyalps.xml")
+	assert.NilError(t, err)
+	dt, err := fs.fromNetex(&f)
 	assert.NilError(t, err, "error getting the flights")
 
 	assert.Equal(t, len(dt.Operators), 1, "wrong number of operators")

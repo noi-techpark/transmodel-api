@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 services:
-  app:
+  transmodel:
     build:
       dockerfile: infrastructure/docker/Dockerfile
       context: . 
@@ -61,6 +61,10 @@ services:
     environment:
       URL: http://localhost:8000/apispec
     attach: false
+
+  gtfs2netex:
+    image: ghcr.io/noi-techpark/gtfs2netex-api/gtfs2netex-api:1.0
+    restart: unless-stopped
         
 volumes:
   pkg:
