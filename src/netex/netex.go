@@ -4,29 +4,9 @@
 package netex
 
 import (
-	"opendatahub/transmodel-api/ninja"
 	"regexp"
-	"testing"
 	"time"
 )
-
-func NinjaTestSetup() {
-	ninja.BaseUrl = "https://mobility.api.opendatahub.testingmachine.eu"
-	ninja.Referer = "transmodel-api-unit-test"
-}
-
-func TestOdhGet[T any](t *testing.T, f func() (T, error)) {
-	NinjaTestSetup()
-
-	res, err := f()
-
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
-
-	t.Log(res)
-}
 
 // As per NeTEx spec, IDs must only contain non-accented charaters, numbers, hyphens and underscores
 var idInvalid = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
