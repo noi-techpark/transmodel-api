@@ -8,6 +8,7 @@ env:
   DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-app
   DOCKER_TAG: ${{ github.sha }}
   SERVER_PORT: 1055
+  GTFS2NETEX_TAG: 1.1
 
 jobs:
   test:
@@ -27,6 +28,8 @@ jobs:
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
             
           X_SERVER_PORT: ${{ env.SERVER_PORT}}
+          
+          X_GTFS2NETEX_TAG: ${{ env.GTFS2NETEX_TAG }}
 
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
           X_NINJA_REFERER: transmodel-api-cicd
@@ -55,6 +58,8 @@ jobs:
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
             
           X_SERVER_PORT: ${{ env.SERVER_PORT}}
+
+          X_GTFS2NETEX_TAG: ${{ env.GTFS2NETEX_TAG }}
 
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
           X_NINJA_REFERER: transmodel-api-test
@@ -97,6 +102,8 @@ jobs:
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
             
           X_SERVER_PORT: ${{ env.SERVER_PORT}}
+
+          X_GTFS2NETEX_TAG: ${{ env.GTFS2NETEX_TAG }}
 
           X_NINJA_BASE_URL: https://mobility.api.opendatahub.com
           X_NINJA_REFERER: transmodel-api

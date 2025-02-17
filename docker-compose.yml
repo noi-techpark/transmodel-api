@@ -63,7 +63,7 @@ services:
     attach: false
 
   gtfs2netex:
-    image: ghcr.io/noi-techpark/gtfs2netex-api/gtfs2netex-api:1.0
+    image: ghcr.io/noi-techpark/gtfs2netex-api/gtfs2netex-api:${GTFS2NETEX_TAG}
     restart: unless-stopped
         
 volumes:
