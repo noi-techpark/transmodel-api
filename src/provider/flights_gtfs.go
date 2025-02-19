@@ -21,7 +21,6 @@ type FlightsGtfs struct {
 	NUTS      string
 	Vat       string
 	Company   string
-	Version   string
 	maxAge    time.Duration
 	cache     *netex.StFlightData
 	cacheTime time.Time
@@ -33,7 +32,6 @@ func NewFlightsSkyalps() *FlightsGtfs {
 		NUTS:    "IT:ITH10",
 		Company: "SKYALPS",
 		Vat:     "03067170211",
-		Version: "240202",
 		maxAge:  8 * time.Hour,
 	}
 }
@@ -73,7 +71,7 @@ func (f FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
 	writer.WriteField("nuts", f.NUTS)
 	writer.WriteField("az", f.Company)
 	writer.WriteField("vat", f.Vat)
-	writer.WriteField("version", f.Version)
+	writer.WriteField("version", time.Now().Format("060102"))
 
 	if err := writer.Close(); err != nil {
 		return nil, err
