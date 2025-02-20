@@ -9,12 +9,11 @@ info:
     Wrapper API that translates certain datasets from the Open Data Hub to European standards NeTEx / SIRI.
 
     This API was developed as part of the Regional Access Point (RAP) for the [MaaS4Italy project](https://innovazione.gov.it/progetti/mobility-as-a-service-for-italy/).
-    As the project is still evolving, we currently cannot guarantee the stability of this interface, and it may be subject to change without notice.
 
     If you are interested in using this API in a production capacity, contact us at the email address below.
 
     You can find the source code and documentation of this project here: [https://github.com/noi-techpark/transmodel-api](https://github.com/noi-techpark/transmodel-api)
-  version: '1.0'
+  version: '1.1'
   termsOfService: https://docs.opendatahub.com/en/latest/licenses.html#apis-terms-of-service
   contact:
     name: Open Data Hub
@@ -34,6 +33,7 @@ tags:
   - name: siri-lite
   - name: parking
   - name: sharing
+  - name: flights
 paths:
   /netex:
     get:
@@ -73,6 +73,19 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/netex-sharing'
+  /netex/flights:
+    get:
+      tags:
+        - netex
+        - flights
+      summary: NeTEX export of flights
+      responses:
+        200:
+          description: NeTEx flights export
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/netex-flights'
 
   /siri-lite/facility-monitoring:
     get:
@@ -137,6 +150,12 @@ components:
 
     netex-sharing:
       description: NeTEx export of Open Data Hub static sharing services data
+      externalDocs:
+        description: Reference Documentation of netex Italian profile
+        url: https://github.com/5Tsrl/netex-italian-profile
+
+    netex-flights:
+      description: NeTEx export of Open Data Hub flights
       externalDocs:
         description: Reference Documentation of netex Italian profile
         url: https://github.com/5Tsrl/netex-italian-profile
