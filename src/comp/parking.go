@@ -22,16 +22,16 @@ type OdhEcharging struct {
 
 func compFrame(pd StParkingData) netex.CompositeFrame {
 	ret := DefaultCompositFrame()
-	ret.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "PARKING", "ita")
-	ret.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+	ret.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, "PARKING", "ita")
+	ret.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStopOffer)
 
 	site := siteFrame()
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
 	res := netex.ResourceFrame{}
-	res.Id = CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
+	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, "ita")
 	res.Version = "1"
-	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
+	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
 	site.Parkings = pd.Parkings
@@ -70,8 +70,8 @@ func GetParking(ps []StParking) ([]netex.CompositeFrame, error) {
 
 func siteFrame() netex.SiteFrame {
 	var site netex.SiteFrame
-	site.Id = CreateFrameId("SiteFrame_EU_PI_STOP", "ita")
+	site.Id = CreateFrameId(netex.TypeSiteFrameStop, "ita")
 	site.Version = "1"
-	site.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_STOP")
+	site.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStop)
 	return site
 }

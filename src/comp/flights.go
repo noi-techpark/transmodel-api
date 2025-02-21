@@ -51,24 +51,24 @@ func GetFlights(ps []StFlights) ([]netex.CompositeFrame, error) {
 
 func compFlights(pd StFlightData) netex.CompositeFrame {
 	ret := DefaultCompositFrame()
-	ret.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "FLIGHTS", "ita")
-	ret.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+	ret.Id = CreateFrameId(netex.TypeCompositeFrameLineOffer, "FLIGHTS", "ita")
+	ret.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeLineOffer)
 
 	site := siteFrame()
 	site.StopPlaces = pd.StopPlaces
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
 	res := netex.ResourceFrame{}
-	res.Id = CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
+	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, "ita")
 	res.Version = "1"
-	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
+	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 	res.Operators = &pd.Operators
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
 	ser := netex.ServiceFrame{}
-	ser.Id = CreateFrameId("ServiceFrame_EU_PI_NETWORK", "ita")
+	ser.Id = CreateFrameId(netex.TypeServiceFrameNetwork, "ita")
 	ser.Version = "1"
-	ser.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_NETWORK")
+	ser.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeNetwork)
 	ser.JourneyPatterns = append(ser.JourneyPatterns, pd.JourneyPatterns...)
 	ser.Lines = append(ser.Lines, pd.Lines...)
 	ser.Routes = append(ser.Routes, pd.Routes...)
@@ -78,16 +78,16 @@ func compFlights(pd StFlightData) netex.CompositeFrame {
 	ret.Frames.Frames = append(ret.Frames.Frames, ser)
 
 	cal := netex.ServiceCalendarFrame{}
-	cal.Id = CreateFrameId("ServiceCalendarFrame_EU_PI_CALENDAR", "ita")
+	cal.Id = CreateFrameId(netex.TypeServiceCalendarFrameCalendar, "ita")
 	cal.Version = "1"
-	cal.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_CALENDAR")
+	cal.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCalendar)
 	cal.ServiceCalendar = append(cal.ServiceCalendar, pd.ServiceCalendars...)
 	ret.Frames.Frames = append(ret.Frames.Frames, cal)
 
 	tim := netex.TimetableFrame{}
-	tim.Id = CreateFrameId("TimetableFrame_EU_PI_TIMETABLE", "ita")
+	tim.Id = CreateFrameId(netex.TypeTimetableFrameTimetable, "ita")
 	tim.Version = "1"
-	tim.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_TIMETABLE")
+	tim.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeTimetable)
 	tim.VehicleJourneys = append(tim.VehicleJourneys, pd.VehicleJourneys...)
 	ret.Frames.Frames = append(ret.Frames.Frames, tim)
 

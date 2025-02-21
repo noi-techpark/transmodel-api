@@ -64,19 +64,19 @@ func GetSharing(bikeProviders []StSharing, carProviders []StSharing) ([]netex.Co
 }
 func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, error) {
 	mob := netex.MobilityServiceFrame{}
-	mob.Id = CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", serviceName)
+	mob.Id = CreateFrameId(netex.TypeMobilityServiceFrameMobility, serviceName)
 	mob.Version = "1"
 	mob.FrameDefaults.DefaultCurrency = "EUR"
 
 	res := netex.ResourceFrame{}
-	res.Id = CreateFrameId("ResourceFrame_EU_PI_COMMON", serviceName)
+	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, serviceName)
 	res.Version = "1"
-	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
+	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 
 	site := netex.SiteFrame{}
-	site.Id = CreateFrameId("SiteFrame_EU_PI_STOP", serviceName)
+	site.Id = CreateFrameId(netex.TypeSiteFrameStop, serviceName)
 	site.Version = "1"
-	site.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_STOP")
+	site.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStop)
 
 	for _, p := range ps {
 		d, err := p.StSharing()
@@ -98,8 +98,8 @@ func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, erro
 	}
 
 	comp := DefaultCompositFrame()
-	comp.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", serviceName)
-	comp.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
+	comp.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, "SHARING", serviceName)
+	comp.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStopOffer)
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res, site)
 
 	return comp, nil

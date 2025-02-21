@@ -4,41 +4,25 @@
 package comp
 
 import (
-	"regexp"
 	"time"
 
 	"github.com/noi-techpark/go-netex"
 )
 
-// As per NeTEx spec, IDs must only contain non-accented charaters, numbers, hyphens and underscores
-var idInvalid = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
-
 func CreateID(segments ...string) string {
-	id := "IT:ITH10"
-	for _, s := range segments {
-		id += (":" + idInvalid.ReplaceAllString(s, "_"))
-	}
-	return id
+	return netex.NewId(append([]string{"IT", "ITH10"}, segments...)...)
 }
 
 func CreateFrameId(segments ...string) string {
-	return "edp:" + CreateID(segments...)
+	return netex.NewFrameId(segments...)
 }
 
 func MkRef(tp string, id string) netex.Ref {
-	r := netex.Ref{}
-	r.Ref = id
-	r.Version = "1"
-	r.XMLName.Local = tp + "Ref"
-	return r
+	return netex.NewRef(tp, id, "1")
 }
 
 func MkTypeOfFrameRef(tp string) netex.Ref {
-	r := netex.Ref{}
-	r.Ref = "epip:" + tp
-	r.Version = "1"
-	r.XMLName.Local = "TypeOfFrameRef"
-	return r
+	return netex.NewTypeOfFrameRef(tp, "1")
 }
 
 func ValidAYear() netex.ValidBetween {
