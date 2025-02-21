@@ -485,7 +485,7 @@ func (n *N[t]) Maybe(v *t) {
 	n.v = v
 }
 
-// Sets value and makes it render
+// Don't render value
 func (n *N[t]) Ignore() {
 	n.Maybe(nil)
 }
