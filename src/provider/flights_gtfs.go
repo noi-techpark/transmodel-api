@@ -11,9 +11,11 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"opendatahub/transmodel-api/netex"
+	"opendatahub/transmodel-api/comp"
 	"sync"
 	"time"
+
+	"github.com/noi-techpark/go-netex"
 )
 
 type FlightsGtfs struct {
@@ -22,7 +24,7 @@ type FlightsGtfs struct {
 	Vat       string
 	Company   string
 	maxAge    time.Duration
-	cache     *netex.StFlightData
+	cache     *comp.StFlightData
 	cacheTime time.Time
 }
 
@@ -103,9 +105,9 @@ func (f FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
 	return &responseData, nil
 }
 
-func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (netex.StFlightData, error) {
-	ret := netex.StFlightData{}
-	var n netex.NetexFrame
+func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (comp.StFlightData, error) {
+	ret := comp.StFlightData{}
+	var n netex.PublicationDelivery
 
 	err := xml.Unmarshal(*netexXml, &n)
 	if err != nil {
@@ -140,7 +142,7 @@ func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (netex.StFlightData, error) {
 
 var lock sync.Mutex
 
-func (fs *FlightsGtfs) StFlights() (netex.StFlightData, error) {
+func (fs *FlightsGtfs) StFlights() (comp.StFlightData, error) {
 	if err := func() error {
 		lock.Lock()
 		defer lock.Unlock()
@@ -164,7 +166,7 @@ func (fs *FlightsGtfs) StFlights() (netex.StFlightData, error) {
 		}
 		return nil
 	}(); err != nil {
-		return netex.StFlightData{}, err
+		return comp.StFlightData{}, err
 	}
 	return *fs.cache, nil
 }

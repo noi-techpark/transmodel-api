@@ -4,9 +4,11 @@
 package provider
 
 import (
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
+
+	"github.com/noi-techpark/go-netex"
 )
 
 type odhPapinBike []ninja.OdhStation[any]
@@ -24,22 +26,22 @@ func (b *BikePapin) init() error {
 	return b.fetch()
 }
 
-func (b *BikePapin) StSharing() (netex.StSharingData, error) {
-	ret := netex.StSharingData{}
+func (b *BikePapin) StSharing() (comp.StSharingData, error) {
+	ret := comp.StSharingData{}
 	if err := b.init(); err != nil {
 		return ret, err
 	}
 
 	// Operators
-	o := netex.GetOperator(&config.Cfg, b.origin)
+	o := comp.GetOperator(&config.Cfg, b.origin)
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
 	m := netex.VehicleSharing{}
-	m.Id = netex.CreateID("VehicleSharing", b.origin)
+	m.Id = comp.CreateID("VehicleSharing", b.origin)
 	m.Version = "1"
 	sub := netex.Submode{}
-	sub.Id = netex.CreateID("Submode", b.origin)
+	sub.Id = comp.CreateID("Submode", b.origin)
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
 	sub.SelfDriveSubmode = "hireCycle"
@@ -48,20 +50,20 @@ func (b *BikePapin) StSharing() (netex.StSharingData, error) {
 
 	// Fleets = all Vehicles + operator
 	f := netex.Fleet{}
-	f.Id = netex.CreateID("Fleet", b.origin)
+	f.Id = comp.CreateID("Fleet", b.origin)
 	f.Version = "1"
-	f.ValidBetween.AYear()
-	f.OperatorRef = netex.MkRef("Operator", o.Id)
+	f.ValidBetween = comp.ValidAYear()
+	f.OperatorRef = comp.MkRef("Operator", o.Id)
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
 	s := netex.VehicleSharingService{}
-	s.Id = netex.CreateID("VehicleSharingService", b.origin)
+	s.Id = comp.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
-	s.VehicleSharingRef = netex.MkRef("VehicleSharing", m.Id)
+	s.VehicleSharingRef = comp.MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
 	for _, fl := range ret.Fleets {
-		s.Fleets = append(s.Fleets, netex.MkRef("Fleet", fl.Id))
+		s.Fleets = append(s.Fleets, comp.MkRef("Fleet", fl.Id))
 	}
 	ret.Services = append(ret.Services, s)
 

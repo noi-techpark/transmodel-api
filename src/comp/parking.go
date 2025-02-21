@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package comp
+
+import "github.com/noi-techpark/go-netex"
 
 type OdhEcharging struct {
 	Scode       string
@@ -18,16 +20,15 @@ type OdhEcharging struct {
 	}
 }
 
-func compFrame(pd StParkingData) CompositeFrame {
-	var ret CompositeFrame
-	ret.Defaults()
+func compFrame(pd StParkingData) netex.CompositeFrame {
+	ret := DefaultCompositFrame()
 	ret.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "PARKING", "ita")
 	ret.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 
 	site := siteFrame()
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
-	res := ResourceFrame{}
+	res := netex.ResourceFrame{}
 	res.Id = CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
@@ -40,16 +41,16 @@ func compFrame(pd StParkingData) CompositeFrame {
 }
 
 type StParkingData struct {
-	Parkings  []Parking
-	Operators []Operator
+	Parkings  []netex.Parking
+	Operators []netex.Operator
 }
 
 type StParking interface {
 	StParking() (StParkingData, error)
 }
 
-func GetParking(ps []StParking) ([]CompositeFrame, error) {
-	ret := []CompositeFrame{}
+func GetParking(ps []StParking) ([]netex.CompositeFrame, error) {
+	ret := []netex.CompositeFrame{}
 
 	apd := StParkingData{}
 
@@ -67,8 +68,8 @@ func GetParking(ps []StParking) ([]CompositeFrame, error) {
 	return ret, nil
 }
 
-func siteFrame() SiteFrame {
-	var site SiteFrame
+func siteFrame() netex.SiteFrame {
+	var site netex.SiteFrame
 	site.Id = CreateFrameId("SiteFrame_EU_PI_STOP", "ita")
 	site.Version = "1"
 	site.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_STOP")

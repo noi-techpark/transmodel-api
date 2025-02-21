@@ -6,11 +6,12 @@ package provider
 import (
 	"fmt"
 	"log/slog"
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 
+	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
@@ -38,10 +39,10 @@ func NewBikeMe() *BikeMe {
 const ORIGIN_BIKE_SHARING_MERANO = "BIKE_SHARING_MERANO"
 
 func (b *BikeMe) GetOperator() netex.Operator {
-	return netex.GetOperator(&config.Cfg, b.origin)
+	return comp.GetOperator(&config.Cfg, b.origin)
 }
-func (b *BikeMe) StSharing() (netex.StSharingData, error) {
-	ret := netex.StSharingData{}
+func (b *BikeMe) StSharing() (comp.StSharingData, error) {
+	ret := comp.StSharingData{}
 	if err := b.fetch(); err != nil {
 		return ret, err
 	}
@@ -52,10 +53,10 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 
 	// Modes of Operation
 	m := netex.VehicleSharing{}
-	m.Id = netex.CreateID("VehicleSharing", b.origin)
+	m.Id = comp.CreateID("VehicleSharing", b.origin)
 	m.Version = "1"
 	sub := netex.Submode{}
-	sub.Id = netex.CreateID("Submode", b.origin)
+	sub.Id = comp.CreateID("Submode", b.origin)
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
 	sub.SelfDriveSubmode = "hireCycle"
@@ -69,7 +70,7 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 		if !found {
 			// Cycle model profile
 			p = netex.CycleModelProfile{}
-			p.Id = netex.CreateID("CycleModelProfile", b.origin, c.Smeta.Model)
+			p.Id = comp.CreateID("CycleModelProfile", b.origin, c.Smeta.Model)
 			p.Version = "1"
 			p.ChildSeat = "none"
 			// Assume model and features map correctly, just take the first one we encounter
@@ -83,48 +84,48 @@ func (b *BikeMe) StSharing() (netex.StSharingData, error) {
 
 		// Vehicles
 		v := netex.Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.origin, c.Sname)
+		v.Id = comp.CreateID("Vehicle", b.origin, c.Sname)
 		v.Version = "1"
-		v.ValidBetween.AYear()
+		v.ValidBetween = comp.ValidAYear()
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
-		v.OperatorRef = netex.MkRef("Operator", o.Id)
-		v.VehicleTypeRef = netex.MkRef("CycleModelProfile", p.Id)
+		v.OperatorRef = comp.MkRef("Operator", o.Id)
+		v.VehicleTypeRef = comp.MkRef("CycleModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
 	ret.CycleModels = maps.Values(models)
 
 	// Fleets = all Vehicles + operator
 	f := netex.Fleet{}
-	f.Id = netex.CreateID("Fleet", b.origin)
+	f.Id = comp.CreateID("Fleet", b.origin)
 	f.Version = "1"
-	f.ValidBetween.AYear()
+	f.ValidBetween = comp.ValidAYear()
 	for _, v := range ret.Vehicles {
-		f.Members = append(f.Members, netex.MkRef("Vehicle", v.Id))
+		f.Members = append(f.Members, comp.MkRef("Vehicle", v.Id))
 	}
-	f.OperatorRef = netex.MkRef("Operator", o.Id)
+	f.OperatorRef = comp.MkRef("Operator", o.Id)
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
 
 	s := netex.VehicleSharingService{}
-	s.Id = netex.CreateID("VehicleSharingService", b.origin)
+	s.Id = comp.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
-	s.VehicleSharingRef = netex.MkRef("VehicleSharing", m.Id)
+	s.VehicleSharingRef = comp.MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
 	for _, fl := range ret.Fleets {
-		s.Fleets = append(s.Fleets, netex.MkRef("Fleet", fl.Id))
+		s.Fleets = append(s.Fleets, comp.MkRef("Fleet", fl.Id))
 	}
 	ret.Services = append(ret.Services, s)
 
 	// Constraint zone
 	c := netex.MobilityServiceConstraintZone{}
-	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.origin)
+	c.Id = comp.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.origin
 	c.GmlPolygon.Polygon = config.GML_MUNICIPALITY_ME
-	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
+	c.VehicleSharingRef = comp.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
 	return ret, nil
@@ -164,15 +165,15 @@ func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
 	ret := []siri.FacilityCondition{}
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
-		fc.FacilityRef = netex.CreateID("Vehicle", p.origin, o.Sname)
+		fc.FacilityRef = comp.CreateID("Vehicle", p.origin, o.Sname)
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 0)
 		fc.FacilityUpdatedPosition = &siri.FacilityUpdatedPosition{}
 		fc.FacilityUpdatedPosition.Longitude = o.Scoordinate.X
 		fc.FacilityUpdatedPosition.Latitude = o.Scoordinate.Y
 		fc.Facility = &siri.Facility{}
 		fc.Facility.FacilityClass = "vehicle"
-		fc.Facility.FacilityLocation.VehicleRef = netex.CreateID("Vehicle", p.origin, o.Sname)
-		fc.Facility.FacilityLocation.OperatorRef = netex.GetOperator(&config.Cfg, p.origin).Id
+		fc.Facility.FacilityLocation.VehicleRef = comp.CreateID("Vehicle", p.origin, o.Sname)
+		fc.Facility.FacilityLocation.OperatorRef = comp.GetOperator(&config.Cfg, p.origin).Id
 
 		ret = append(ret, fc)
 	}
@@ -182,7 +183,7 @@ func (p BikeMe) mapSiri(latest []OdhBikeMeLatest) []siri.FacilityCondition {
 func (p BikeMe) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
 
-	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Vehicle", p.origin))
+	idFilter := maybeIdMatch(query.FacilityRef(), comp.CreateID("Vehicle", p.origin))
 	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
 		return ret, nil
 	}

@@ -1,10 +1,13 @@
 module opendatahub/transmodel-api
 
-go 1.23
+go 1.23.6
+
+replace github.com/noi-techpark/go-netex => ../../go-netex
 
 require (
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/noi-techpark/go-netex v1.0.0
 	github.com/samber/slog-gin v1.13.6
 	gotest.tools/v3 v3.5.1
 )

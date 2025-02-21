@@ -6,11 +6,12 @@ package provider
 import (
 	"fmt"
 	"log/slog"
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 
+	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
@@ -73,10 +74,10 @@ func NewCarSharingHal() *CarHAL {
 }
 
 func (b *CarHAL) GetOperator() netex.Operator {
-	return netex.GetOperator(&config.Cfg, b.origin)
+	return comp.GetOperator(&config.Cfg, b.origin)
 }
-func (b *CarHAL) StSharing() (netex.StSharingData, error) {
-	ret := netex.StSharingData{}
+func (b *CarHAL) StSharing() (comp.StSharingData, error) {
+	ret := comp.StSharingData{}
 	if err := b.fetch(); err != nil {
 		return ret, err
 	}
@@ -88,10 +89,10 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 
 	// Modes of Operation
 	m := netex.VehicleSharing{}
-	m.Id = netex.CreateID("VehicleSharing", b.provider)
+	m.Id = comp.CreateID("VehicleSharing", b.provider)
 	m.Version = "1"
 	sub := netex.Submode{}
-	sub.Id = netex.CreateID("Submode", b.provider)
+	sub.Id = comp.CreateID("Submode", b.provider)
 	sub.Version = "1"
 	sub.TransportMode = "car"
 	sub.SelfDriveSubmode = "hireCar"
@@ -106,7 +107,7 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 		if !found {
 			// Car model profile
 			p = netex.CarModelProfile{}
-			p.Id = netex.CreateID("CarModelProfile", b.provider, modelname)
+			p.Id = comp.CreateID("CarModelProfile", b.provider, modelname)
 			p.Version = "1"
 			p.ChildSeat = c.Smeta.Features.Childseat
 			p.Seats = c.Smeta.Features.Seats
@@ -128,48 +129,48 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 
 		// Vehicles
 		v := netex.Vehicle{}
-		v.Id = netex.CreateID("Vehicle", b.provider, c.Scode)
+		v.Id = comp.CreateID("Vehicle", b.provider, c.Scode)
 		v.Version = "1"
-		v.ValidBetween.AYear()
+		v.ValidBetween = comp.ValidAYear()
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
 		v.RegistrationNumber = c.Smeta.LicensePlate
-		v.OperatorRef = netex.MkRef("Operator", o.Id)
-		v.VehicleTypeRef = netex.MkRef("CarModelProfile", p.Id)
+		v.OperatorRef = comp.MkRef("Operator", o.Id)
+		v.VehicleTypeRef = comp.MkRef("CarModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
 	}
 	ret.CarModels = maps.Values(models)
 
 	// Fleets = all Vehicles + operator
 	f := netex.Fleet{}
-	f.Id = netex.CreateID("Fleet", b.provider)
+	f.Id = comp.CreateID("Fleet", b.provider)
 	f.Version = "1"
-	f.ValidBetween.AYear()
+	f.ValidBetween = comp.ValidAYear()
 	for _, v := range ret.Vehicles {
-		f.Members = append(f.Members, netex.MkRef("Vehicle", v.Id))
+		f.Members = append(f.Members, comp.MkRef("Vehicle", v.Id))
 	}
-	f.OperatorRef = netex.MkRef("Operator", o.Id)
+	f.OperatorRef = comp.MkRef("Operator", o.Id)
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
 	s := netex.VehicleSharingService{}
-	s.Id = netex.CreateID("VehicleSharingService", b.provider)
+	s.Id = comp.CreateID("VehicleSharingService", b.provider)
 	s.Version = "1"
-	s.VehicleSharingRef = netex.MkRef("VehicleSharing", m.Id)
+	s.VehicleSharingRef = comp.MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
 	for _, fl := range ret.Fleets {
-		s.Fleets = append(s.Fleets, netex.MkRef("Fleet", fl.Id))
+		s.Fleets = append(s.Fleets, comp.MkRef("Fleet", fl.Id))
 	}
 	ret.Services = append(ret.Services, s)
 
 	// Constraint zone
 	c := netex.MobilityServiceConstraintZone{}
-	c.Id = netex.CreateID("MobilityServiceConstraintZone", b.provider)
+	c.Id = comp.CreateID("MobilityServiceConstraintZone", b.provider)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.provider
 	c.GmlPolygon.Polygon = config.GML_PROVINCE_BZ
-	c.VehicleSharingRef = netex.MkRef("VehicleSharingService", s.Id)
+	c.VehicleSharingRef = comp.MkRef("VehicleSharingService", s.Id)
 	ret.Constraints = append(ret.Constraints, c)
 
 	// Sharing as Parking (for SIRI reference)
@@ -179,12 +180,12 @@ func (b *CarHAL) StSharing() (netex.StSharingData, error) {
 	}
 	for _, s := range ss {
 		p := netex.Parking{}
-		p.Id = netex.CreateID("Parking", s.Smeta.Company.ShortName, s.Scode)
+		p.Id = comp.CreateID("Parking", s.Smeta.Company.ShortName, s.Scode)
 		p.Version = "1"
 		p.ShortName = s.Sname
 		p.Centroid.Location.Longitude = s.Scoord.X
 		p.Centroid.Location.Latitude = s.Scoord.Y
-		p.OperatorRef = netex.MkRef("Operator", o.Id)
+		p.OperatorRef = comp.MkRef("Operator", o.Id)
 		p.GmlPolygon = nil
 		p.Entrances = nil
 		p.ParkingType = "rentalCarParking"
@@ -241,7 +242,7 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
-		fc.FacilityRef = netex.CreateID("Parking", o.Provider, o.Scode)
+		fc.FacilityRef = comp.CreateID("Parking", o.Provider, o.Scode)
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 1)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
 		fc.MonitoredCounting.CountingType = "availabilityCount"
@@ -255,7 +256,7 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 }
 func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Parking"))
+	idFilter := maybeIdMatch(query.FacilityRef(), comp.CreateID("Parking"))
 	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
 		return ret, nil
 	}

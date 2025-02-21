@@ -4,8 +4,8 @@ package provider
 
 import (
 	"fmt"
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 	"slices"
@@ -22,12 +22,12 @@ func FetchOdhStations[T any](tp string, origin string) (T, error) {
 	return res.Data, err
 }
 
-var ParkingStatic = []netex.StParking{NewParkingGeneric(), NewParkingEcharging()}
+var ParkingStatic = []comp.StParking{NewParkingGeneric(), NewParkingEcharging()}
 var ParkingRt = []siri.FMProvider{NewParkingGeneric(), NewParkingEcharging()}
-var SharingBikesStatic = []netex.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
-var SharingCarsStatic = []netex.StSharing{NewCarSharingHal()}
+var SharingBikesStatic = []comp.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
+var SharingCarsStatic = []comp.StSharing{NewCarSharingHal()}
 var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
-var FlightsStatic = []netex.StFlights{NewFlightsSkyalps()}
+var FlightsStatic = []comp.StFlights{NewFlightsSkyalps()}
 
 func maybeIdMatch(ids []string, prefix string) []string {
 	return slices.DeleteFunc(ids, func(id string) bool { return !strings.HasPrefix(id, prefix) })
@@ -74,7 +74,7 @@ func filterOpOrigins(ops []string, origins []string) []string {
 	}
 	ret := []string{}
 	for _, op := range ops {
-		ret = append(ret, intersect(netex.GetOperatorOrigins(&config.Cfg, op), origins)...)
+		ret = append(ret, intersect(comp.GetOperatorOrigins(&config.Cfg, op), origins)...)
 	}
 	return ret
 }

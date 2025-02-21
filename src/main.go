@@ -8,16 +8,18 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/provider"
 	"opendatahub/transmodel-api/siri"
 	"os"
 	"slices"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
+	"github.com/noi-techpark/go-netex"
 	sloggin "github.com/samber/slog-gin"
 )
 
@@ -91,10 +93,20 @@ func netexEndpoint(fn netexFn) func(*gin.Context) {
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
-		n := netex.NewNetexFrame()
+		n := NewNetexFrame()
 		n.DataObjects = append(n.DataObjects, comp...)
 		prettyXML(c, http.StatusOK, n)
 	}
+}
+func NewNetexFrame() netex.PublicationDelivery {
+	n := netex.PublicationDelivery{}
+	n.Version = "1.0"
+	n.NsXsi = netex.XsiNamespace
+	n.XsiSchemaLocation = netex.NetexNamespace + " https://raw.githubusercontent.com/5Tsrl/netex-italian-profile/main/xsd/NeTEx_publication_Lev4.xsd"
+	n.PublicationTimestamp = time.Now()
+	n.ParticipantRef = "RAP"
+	n.Description = "Open Data Hub Netex export"
+	return n
 }
 
 func netexAll() ([]netex.CompositeFrame, error) {
@@ -110,13 +122,13 @@ func netexAll() ([]netex.CompositeFrame, error) {
 }
 
 func netexParking() ([]netex.CompositeFrame, error) {
-	return netex.GetParking(provider.ParkingStatic)
+	return comp.GetParking(provider.ParkingStatic)
 }
 func netexSharing() ([]netex.CompositeFrame, error) {
-	return netex.GetSharing(provider.SharingBikesStatic, provider.SharingCarsStatic)
+	return comp.GetSharing(provider.SharingBikesStatic, provider.SharingCarsStatic)
 }
 func netexFlights() ([]netex.CompositeFrame, error) {
-	return netex.GetFlights(provider.FlightsStatic)
+	return comp.GetFlights(provider.FlightsStatic)
 }
 
 type siriFn func(siri.Query) (siri.Siri, error)

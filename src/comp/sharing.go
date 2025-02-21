@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package comp
 
 import (
 	"encoding/json"
 	"log/slog"
+
+	"github.com/noi-techpark/go-netex"
 )
 
 type Company struct {
@@ -28,23 +30,23 @@ func (pc *Company) UnmarshalJSON(p []byte) error {
 }
 
 type StSharingData struct {
-	Fleets      []Fleet
-	Vehicles    []Vehicle
-	CarModels   []CarModelProfile
-	CycleModels []CycleModelProfile
-	Operators   []Operator
-	Modes       []VehicleSharing
-	Services    []VehicleSharingService
-	Constraints []MobilityServiceConstraintZone
-	Parkings    []Parking
+	Fleets      []netex.Fleet
+	Vehicles    []netex.Vehicle
+	CarModels   []netex.CarModelProfile
+	CycleModels []netex.CycleModelProfile
+	Operators   []netex.Operator
+	Modes       []netex.VehicleSharing
+	Services    []netex.VehicleSharingService
+	Constraints []netex.MobilityServiceConstraintZone
+	Parkings    []netex.Parking
 }
 
 type StSharing interface {
 	StSharing() (StSharingData, error)
 }
 
-func GetSharing(bikeProviders []StSharing, carProviders []StSharing) ([]CompositeFrame, error) {
-	ret := []CompositeFrame{}
+func GetSharing(bikeProviders []StSharing, carProviders []StSharing) ([]netex.CompositeFrame, error) {
+	ret := []netex.CompositeFrame{}
 
 	c, err := compSharing("BikeSharing", bikeProviders)
 	if err != nil {
@@ -60,18 +62,18 @@ func GetSharing(bikeProviders []StSharing, carProviders []StSharing) ([]Composit
 
 	return ret, nil
 }
-func compSharing(serviceName string, ps []StSharing) (CompositeFrame, error) {
-	mob := MobilityServiceFrame{}
+func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, error) {
+	mob := netex.MobilityServiceFrame{}
 	mob.Id = CreateFrameId("MobilityServiceFrame_EU_PI_MOBILITY", serviceName)
 	mob.Version = "1"
 	mob.FrameDefaults.DefaultCurrency = "EUR"
 
-	res := ResourceFrame{}
+	res := netex.ResourceFrame{}
 	res.Id = CreateFrameId("ResourceFrame_EU_PI_COMMON", serviceName)
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
 
-	site := SiteFrame{}
+	site := netex.SiteFrame{}
 	site.Id = CreateFrameId("SiteFrame_EU_PI_STOP", serviceName)
 	site.Version = "1"
 	site.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_STOP")
@@ -79,7 +81,7 @@ func compSharing(serviceName string, ps []StSharing) (CompositeFrame, error) {
 	for _, p := range ps {
 		d, err := p.StSharing()
 		if err != nil {
-			return CompositeFrame{}, err
+			return netex.CompositeFrame{}, err
 		}
 
 		mob.Fleets = append(mob.Fleets, d.Fleets...)
@@ -95,8 +97,7 @@ func compSharing(serviceName string, ps []StSharing) (CompositeFrame, error) {
 		site.Parkings = append(site.Parkings, d.Parkings...)
 	}
 
-	comp := CompositeFrame{}
-	comp.Defaults()
+	comp := DefaultCompositFrame()
 	comp.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "SHARING", serviceName)
 	comp.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res, site)

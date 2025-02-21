@@ -4,13 +4,14 @@
 package provider
 
 import (
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 	"slices"
 	"testing"
 
+	model "github.com/noi-techpark/go-netex"
 	"gotest.tools/v3/assert"
 )
 
@@ -51,7 +52,7 @@ func TestNetex(t *testing.T) {
 	assert.Equal(t, len(nt.Services), 1)
 	assert.Equal(t, len(nt.Services[0].Fleets), 1)
 
-	var c52 *netex.Vehicle
+	var c52 *model.Vehicle
 	for _, v := range nt.Vehicles {
 		if v.Id == "IT:ITH10:Vehicle:BIKE_SHARING_BOLZANO:City_52M" {
 			c52 = &v
@@ -69,13 +70,13 @@ func TestNetex(t *testing.T) {
 	// Operator correctly included
 	// Referential integrity should already be checked by the validation
 	assert.Equal(t, c52.OperatorRef.Ref, "IT:ITH10:Operator:Municipality_of_Bolzano_bikesharing")
-	o := netex.GetOperator(&config.Cfg, b.origin)
+	o := comp.GetOperator(&config.Cfg, b.origin)
 	assert.Equal(t, o.Id, c52.OperatorRef.Ref)
 	assert.DeepEqual(t, o, nt.Operators[0])
 
 	assert.Equal(t, c52.VehicleTypeRef.Ref, "IT:ITH10:CycleModelProfile:BIKE_SHARING_BOLZANO:muscular")
 
-	mus := nt.CycleModels[slices.IndexFunc(nt.CycleModels, func(m netex.CycleModelProfile) bool { return m.Id == c52.VehicleTypeRef.Ref })]
+	mus := nt.CycleModels[slices.IndexFunc(nt.CycleModels, func(m model.CycleModelProfile) bool { return m.Id == c52.VehicleTypeRef.Ref })]
 	assert.Equal(t, mus.Basket, true)
 	assert.Equal(t, mus.Battery, false)
 	assert.Equal(t, mus.ChildSeat, "none")
@@ -83,7 +84,7 @@ func TestNetex(t *testing.T) {
 	assert.Equal(t, mus.Lock, false)
 	assert.Equal(t, mus.Pump, false)
 
-	park := nt.Parkings[slices.IndexFunc(nt.Parkings, func(m netex.Parking) bool { return m.ShortName == "Viale Europa" })]
+	park := nt.Parkings[slices.IndexFunc(nt.Parkings, func(m model.Parking) bool { return m.ShortName == "Viale Europa" })]
 	assert.Equal(t, park.TotalCapacity, int32(12))
 }
 

@@ -2,12 +2,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package comp
 
 import (
 	"log"
 	"opendatahub/transmodel-api/config"
 
+	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
@@ -31,14 +32,14 @@ func GetOperatorOrigins(c *config.Config, id string) []string {
 	return origins
 }
 
-func GetOperator(c *config.Config, id string) Operator {
+func GetOperator(c *config.Config, id string) netex.Operator {
 	mapped := mapByOrigin(c.Operators)
 	cfg, found := mapped[id]
 	if !found {
 		log.Panicln("Unable to map operator. Probably got some origin that we shouldn't have?", id, maps.Keys(mapped))
 	}
 
-	o := Operator{}
+	o := netex.Operator{}
 	o.Id = CreateID("Operator", cfg.Id)
 	o.Version = "1"
 	o.PrivateCode = cfg.Id

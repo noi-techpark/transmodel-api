@@ -1,27 +1,29 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-package netex
+package comp
+
+import "github.com/noi-techpark/go-netex"
 
 type StFlightData struct {
-	Operators           []Operator
-	StopPlaces          []StopPlace
-	ServiceCalendars    []ServiceCalendar
-	Routes              []Route
-	Lines               []Line
-	ScheduledStopPoints []ScheduledStopPoint
-	ServiceLinks        []ServiceLink
-	StopAssignments     []PassengerStopAssignment
-	JourneyPatterns     []ServiceJourneyPattern
-	VehicleJourneys     []ServiceJourney
+	Operators           []netex.Operator
+	StopPlaces          []netex.StopPlace
+	ServiceCalendars    []netex.ServiceCalendar
+	Routes              []netex.Route
+	Lines               []netex.Line
+	ScheduledStopPoints []netex.ScheduledStopPoint
+	ServiceLinks        []netex.ServiceLink
+	StopAssignments     []netex.PassengerStopAssignment
+	JourneyPatterns     []netex.ServiceJourneyPattern
+	VehicleJourneys     []netex.ServiceJourney
 }
 
 type StFlights interface {
 	StFlights() (StFlightData, error)
 }
 
-func GetFlights(ps []StFlights) ([]CompositeFrame, error) {
-	ret := []CompositeFrame{}
+func GetFlights(ps []StFlights) ([]netex.CompositeFrame, error) {
+	ret := []netex.CompositeFrame{}
 
 	apd := StFlightData{}
 
@@ -47,9 +49,8 @@ func GetFlights(ps []StFlights) ([]CompositeFrame, error) {
 	return ret, nil
 }
 
-func compFlights(pd StFlightData) CompositeFrame {
-	var ret CompositeFrame
-	ret.Defaults()
+func compFlights(pd StFlightData) netex.CompositeFrame {
+	ret := DefaultCompositFrame()
 	ret.Id = CreateFrameId("CompositeFrame_EU_PI_STOP_OFFER", "FLIGHTS", "ita")
 	ret.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_LINE_OFFER")
 
@@ -57,14 +58,14 @@ func compFlights(pd StFlightData) CompositeFrame {
 	site.StopPlaces = pd.StopPlaces
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
-	res := ResourceFrame{}
+	res := netex.ResourceFrame{}
 	res.Id = CreateFrameId("ResourceFrame_EU_PI_MOBILITY", "ita")
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_COMMON")
 	res.Operators = &pd.Operators
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
-	ser := ServiceFrame{}
+	ser := netex.ServiceFrame{}
 	ser.Id = CreateFrameId("ServiceFrame_EU_PI_NETWORK", "ita")
 	ser.Version = "1"
 	ser.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_NETWORK")
@@ -76,14 +77,14 @@ func compFlights(pd StFlightData) CompositeFrame {
 	ser.StopAssignments = append(ser.StopAssignments, pd.StopAssignments...)
 	ret.Frames.Frames = append(ret.Frames.Frames, ser)
 
-	cal := ServiceCalendarFrame{}
+	cal := netex.ServiceCalendarFrame{}
 	cal.Id = CreateFrameId("ServiceCalendarFrame_EU_PI_CALENDAR", "ita")
 	cal.Version = "1"
 	cal.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_CALENDAR")
 	cal.ServiceCalendar = append(cal.ServiceCalendar, pd.ServiceCalendars...)
 	ret.Frames.Frames = append(ret.Frames.Frames, cal)
 
-	tim := TimetableFrame{}
+	tim := netex.TimetableFrame{}
 	tim.Id = CreateFrameId("TimetableFrame_EU_PI_TIMETABLE", "ita")
 	tim.Version = "1"
 	tim.TypeOfFrameRef = MkTypeOfFrameRef("EU_PI_TIMETABLE")

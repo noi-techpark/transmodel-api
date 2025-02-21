@@ -6,11 +6,12 @@ package provider
 import (
 	"fmt"
 	"log/slog"
+	"opendatahub/transmodel-api/comp"
 	"opendatahub/transmodel-api/config"
-	"opendatahub/transmodel-api/netex"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 
+	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
@@ -63,15 +64,15 @@ func (ParkingEcharging) mapNetex(os []OdhParkingEcharging) ([]netex.Parking, []n
 	for _, o := range os {
 		var p netex.Parking
 
-		p.Id = netex.CreateID("Parking", o.Scode)
+		p.Id = comp.CreateID("Parking", o.Scode)
 		p.Version = "1"
 		p.ShortName = o.Sname
 		p.Centroid.Location.Longitude = o.Scoordinate.X
 		p.Centroid.Location.Latitude = o.Scoordinate.Y
 		p.GmlPolygon = nil
-		op := netex.GetOperator(&config.Cfg, o.Sorigin)
+		op := comp.GetOperator(&config.Cfg, o.Sorigin)
 		ops[op.Id] = op
-		p.OperatorRef = netex.MkRef("Operator", op.Id)
+		p.OperatorRef = comp.MkRef("Operator", op.Id)
 
 		p.Entrances = nil
 		p.ParkingType = "roadside"
@@ -92,13 +93,13 @@ func (ParkingEcharging) mapNetex(os []OdhParkingEcharging) ([]netex.Parking, []n
 	return ps, maps.Values(ops)
 }
 
-func (p ParkingEcharging) StParking() (netex.StParkingData, error) {
+func (p ParkingEcharging) StParking() (comp.StParkingData, error) {
 	odh, err := p.odhStatic()
 	if err != nil {
-		return netex.StParkingData{}, err
+		return comp.StParkingData{}, err
 	}
 	parkings, operators := p.mapNetex(odh)
-	return netex.StParkingData{Parkings: parkings, Operators: operators}, nil
+	return comp.StParkingData{Parkings: parkings, Operators: operators}, nil
 }
 
 func (p ParkingEcharging) odhLatest(q siri.Query) ([]OdhParkingLatest, error) {
@@ -125,7 +126,7 @@ func (p ParkingEcharging) mapSiri(latest []OdhParkingLatest) []siri.FacilityCond
 
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
-		fc.FacilityRef = netex.CreateID("Parking", o.Scode)
+		fc.FacilityRef = comp.CreateID("Parking", o.Scode)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
 		fc.MonitoredCounting.CountingType = "presentCount"
 
@@ -141,7 +142,7 @@ func (p ParkingEcharging) mapSiri(latest []OdhParkingLatest) []siri.FacilityCond
 
 func (p ParkingEcharging) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
-	idFilter := maybeIdMatch(query.FacilityRef(), netex.CreateID("Parking"))
+	idFilter := maybeIdMatch(query.FacilityRef(), comp.CreateID("Parking"))
 	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
 		return ret, nil
 	}
