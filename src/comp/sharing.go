@@ -94,7 +94,7 @@ func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, erro
 		res.CycleModels = AppendSafe(res.CycleModels, d.CycleModels...)
 		res.Operators = AppendSafe(res.Operators, d.Operators...)
 
-		site.Parkings = append(site.Parkings, d.Parkings...)
+		site.Parkings = AppendSafe(site.Parkings, d.Parkings...)
 	}
 
 	comp := DefaultCompositFrame()

@@ -34,7 +34,7 @@ func compFrame(pd StParkingData) netex.CompositeFrame {
 	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
-	site.Parkings = pd.Parkings
+	site.Parkings = &pd.Parkings
 	res.Operators = &pd.Operators
 
 	return ret

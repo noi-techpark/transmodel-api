@@ -59,6 +59,12 @@ github.com/noi-techpark/go-netex v1.1.1-0.20250221154928-c1db4e4bb5e0 h1:dq8UZ/K
 github.com/noi-techpark/go-netex v1.1.1-0.20250221154928-c1db4e4bb5e0/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
 github.com/noi-techpark/go-netex v1.2.0 h1:SYJpekn5yz/kRxOB9thf+vKhlG3WJRGDReSTr/fvHCc=
 github.com/noi-techpark/go-netex v1.2.0/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
+github.com/noi-techpark/go-netex v1.2.1-0.20250227151835-927875d42bfb h1:uw8Pq2sS3KQhYoYDhsMTOvuMUELmFVoPDQ5JAvQHY8E=
+github.com/noi-techpark/go-netex v1.2.1-0.20250227151835-927875d42bfb/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
+github.com/noi-techpark/go-netex v1.2.1-0.20250227152248-2ec9ffb90793 h1:xdHeVl7nRoa181Lo80P7Z3xRkszc0X0/Sd0y+YfARNo=
+github.com/noi-techpark/go-netex v1.2.1-0.20250227152248-2ec9ffb90793/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
+github.com/noi-techpark/go-netex v1.3.0 h1:hRQABLCa8WL28MJeHC6XBXzH2CJy1xx0CW3Z0XE1KQk=
+github.com/noi-techpark/go-netex v1.3.0/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
 github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNHvL12M=
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

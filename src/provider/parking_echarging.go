@@ -25,7 +25,6 @@ type OdhParkingEcharging struct {
 		Srid uint32
 	}
 	Smetadata struct {
-		State    string
 		Capacity int32
 	}
 }

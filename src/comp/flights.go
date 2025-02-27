@@ -55,7 +55,7 @@ func compFlights(pd StFlightData) netex.CompositeFrame {
 	ret.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeLineOffer)
 
 	site := siteFrame()
-	site.StopPlaces = pd.StopPlaces
+	site.StopPlaces = &pd.StopPlaces
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
 	res := netex.ResourceFrame{}

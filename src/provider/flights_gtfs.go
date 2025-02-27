@@ -119,7 +119,7 @@ func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (comp.StFlightData, error) {
 			ret.Operators = append(ret.Operators, *rf.Operators...)
 		}
 		for _, sf := range do.Frames.SiteFrame {
-			ret.StopPlaces = append(ret.StopPlaces, sf.StopPlaces...)
+			ret.StopPlaces = append(ret.StopPlaces, *sf.StopPlaces...)
 		}
 		for _, sf := range do.Frames.ServiceFrame {
 			ret.JourneyPatterns = append(ret.JourneyPatterns, sf.JourneyPatterns...)
