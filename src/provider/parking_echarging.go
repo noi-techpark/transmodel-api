@@ -36,9 +36,9 @@ type ParkingEcharging struct {
 func NewParkingEcharging() *ParkingEcharging {
 	p := ParkingEcharging{}
 	p.origins = []string{
-		"ALPERIA",
+		"Neogy",
 		"route220",
-		"DRIWE",
+		"DRIWE-OCPI",
 	}
 	return &p
 }

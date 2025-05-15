@@ -114,7 +114,7 @@
   postcode: 39100
   country: Italy
   
-- origin: [ALPERIA]
+- origin: [Neogy]
   id: Neogy
   name: Neogy
   email: info@neogy.it
@@ -125,7 +125,7 @@
   postcode: 39100
   country: Italy
   
-- origin: [DRIWE]
+- origin: [DRIWE-OCPI]
   id: DRIWE
   name: DRIWE
   email: info@driwe.eu
