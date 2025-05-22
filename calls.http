@@ -34,12 +34,12 @@ GET https://mobility.api.opendatahub.com/v2/flat/Bicycle
 ### Bike sharing PAPIN
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation
 ?where=sorigin.eq.BIKE_SHARING_PAPIN,sactive.eq.true
-### Car sharing HAL
+### Car sharing AlpsGo
 GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation
-?where=sorigin.eq.HAL-API,sactive.eq.true
-### Car sharing HAL single cars
+?where=sorigin.eq.AlpsGo,sactive.eq.true
+### Car sharing AlpsGo single cars
 GET https://mobility.api.opendatahub.com/v2/flat/CarsharingCar
-?where=sorigin.eq.HAL-API,sactive.eq.true
+?where=sorigin.eq.AlpsGo,sactive.eq.true
 ### parking station Echarging
 GET https://mobility.api.opendatahub.com/v2/flat/EChargingStation
 ?where=sactive.eq.true,scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)
@@ -60,7 +60,7 @@ GET https://mobility.api.opendatahub.com/v2/flat/Bicycle/availability/latest
 
 ### Carsharing station realtime
 GET https://mobility.api.opendatahub.com/v2/flat/CarsharingStation/number-available/latest
-?where=sorigin.eq.HAL-API,sactive.eq.true
+?where=sorigin.eq.AlpsGo,sactive.eq.true
 
 ###
 GET https://mobility.api.opendatahub.com/v2/flat/BikesharingStation/availability,free-bays/latest

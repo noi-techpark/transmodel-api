@@ -25,8 +25,8 @@ func FetchOdhStations[T any](tp string, origin string) (T, error) {
 var ParkingStatic = []comp.StParking{NewParkingGeneric(), NewParkingEcharging()}
 var ParkingRt = []siri.FMProvider{NewParkingGeneric(), NewParkingEcharging()}
 var SharingBikesStatic = []comp.StSharing{NewBikeBz(), NewBikeMe(), &BikePapin{}}
-var SharingCarsStatic = []comp.StSharing{NewCarSharingHal()}
-var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingHal()}
+var SharingCarsStatic = []comp.StSharing{NewCarSharingAlpsGo()}
+var SharingRt = []siri.FMProvider{NewBikeBz(), NewBikeMe(), NewCarSharingAlpsGo()}
 var FlightsStatic = []comp.StFlights{NewFlightsSkyalps()}
 
 func maybeIdMatch(ids []string, prefix string) []string {

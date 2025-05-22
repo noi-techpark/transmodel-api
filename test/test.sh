@@ -15,7 +15,7 @@ if [ $result -ne 0 ]; then
     exitcode=$result
 fi
 
-docker compose --profile validate up --attach validate --abort-on-container-exit
+docker compose --profile validate up --build --attach validate --abort-on-container-exit
 result=$?
 if [ $result -ne 0 ]; then
     echo Live validation failed!

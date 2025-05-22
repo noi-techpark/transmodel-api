@@ -10,13 +10,14 @@ import (
 	"opendatahub/transmodel-api/config"
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
+	"regexp"
 
 	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
-type odhHALCar []struct {
-	ninja.OdhStation[halCarMeta]
+type odhAlpsGoCar []struct {
+	ninja.OdhStation[alpsGoCarMeta]
 	Pmetadata struct {
 		Company struct {
 			Uid       string
@@ -26,62 +27,64 @@ type odhHALCar []struct {
 	}
 }
 
-type CarHAL struct {
-	cars     odhHALCar
+type CarSharingAlpsGo struct {
+	cars     odhAlpsGoCar
 	origin   string
 	provider string
 }
 
-type halCarMeta struct {
-	Brand        string
-	Model        string
-	LicensePlate string
-	Features     *struct {
-		Doors           uint8
-		Seats           uint8
-		Chains          bool
-		Satnav          bool
-		Skirack         bool
-		Roofrack        bool
-		Childseat       string
-		Cyclerack       bool
-		Wintertyres     bool
-		Transmission    string
-		Cruisecontrol   bool
-		Trailerhitch    bool
-		Usbpowersockets bool
-	}
+//	type alpsGoCarMeta struct {
+//		Brand        string
+//		Model        string
+//		LicensePlate string
+//		Features     *struct {
+//			Doors           uint8
+//			Seats           uint8
+//			Chains          bool
+//			Satnav          bool
+//			Skirack         bool
+//			Roofrack        bool
+//			Childseat       string
+//			Cyclerack       bool
+//			Wintertyres     bool
+//			Transmission    string
+//			Cruisecontrol   bool
+//			Trailerhitch    bool
+//			Usbpowersockets bool
+//		}
+//	}
+type alpsGoCarMeta struct {
+	FuelType     string `json:"fuel_type"`
+	Transmission string `json:"transmission"`
+	VehicleModel struct {
+		ModelName string `json:"model_name"`
+	} `json:"vehicle_model"`
 }
 
-type halSharingMeta struct {
-	Company struct {
-		Uid       string
-		ShortName string
-		FullName  string
-	}
+type alpsGoSharingMeta struct {
 	Bookahead         bool
 	FixedParking      bool
 	Spontaneously     bool
 	AvailableVehicles int
 }
 
-const ORIGIN_CAR_SHARING_HAL_API = "HAL-API"
+const ORIGIN_CAR_SHARING_ALPSGO = "AlpsGo"
 
-func NewCarSharingHal() *CarHAL {
-	b := CarHAL{}
-	b.origin = ORIGIN_CAR_SHARING_HAL_API
+func NewCarSharingAlpsGo() *CarSharingAlpsGo {
+	b := CarSharingAlpsGo{}
+	b.origin = "AlpsGo"
+	b.provider = b.origin
 	return &b
 }
 
-func (b *CarHAL) GetOperator() netex.Operator {
+func (b *CarSharingAlpsGo) GetOperator() netex.Operator {
 	return comp.GetOperator(&config.Cfg, b.origin)
 }
-func (b *CarHAL) StSharing() (comp.StSharingData, error) {
+func (b *CarSharingAlpsGo) StSharing() (comp.StSharingData, error) {
 	ret := comp.StSharingData{}
 	if err := b.fetch(); err != nil {
 		return ret, err
 	}
-	b.provider = b.cars[0].Pmetadata.Company.ShortName // As soon as there is more than one, we have to change some more stuff anyways
 
 	// Operators
 	o := b.GetOperator()
@@ -102,28 +105,28 @@ func (b *CarHAL) StSharing() (comp.StSharingData, error) {
 	models := make(map[string]netex.CarModelProfile)
 
 	for _, c := range b.cars {
-		modelname := c.Smeta.Brand
+		modelname := c.Smeta.VehicleModel.ModelName
 		p, found := models[modelname]
 		if !found {
 			// Car model profile
 			p = netex.CarModelProfile{}
 			p.Id = comp.CreateID("CarModelProfile", b.provider, modelname)
 			p.Version = "1"
-			p.ChildSeat = c.Smeta.Features.Childseat
-			p.Seats = c.Smeta.Features.Seats
-			p.Doors = c.Smeta.Features.Doors
-			p.Transmission = c.Smeta.Features.Transmission
-			p.CruiseControl = c.Smeta.Features.Cruisecontrol
-			p.SatNav = c.Smeta.Features.Satnav
-			p.AirConditioning = true
-			p.Convertible = false
-			p.UsbPowerSockets = c.Smeta.Features.Usbpowersockets
-			p.WinterTyres = c.Smeta.Features.Wintertyres
-			p.Chains = c.Smeta.Features.Chains
-			p.TrailerHitch = c.Smeta.Features.Trailerhitch
-			p.RoofRack = c.Smeta.Features.Roofrack
-			p.CycleRack = c.Smeta.Features.Cyclerack
-			p.SkiRack = c.Smeta.Features.Skirack
+			// p.ChildSeat = c.Smeta.Features.Childseat
+			// p.Seats = c.Smeta.Features.Seats
+			// p.Doors = c.Smeta.Features.Doors
+			p.Transmission = &c.Smeta.Transmission
+			// p.CruiseControl = c.Smeta.Features.Cruisecontrol
+			// p.SatNav = c.Smeta.Features.Satnav
+			// p.AirConditioning = true
+			// p.Convertible = false
+			// p.UsbPowerSockets = c.Smeta.Features.Usbpowersockets
+			// p.WinterTyres = c.Smeta.Features.Wintertyres
+			// p.Chains = c.Smeta.Features.Chains
+			// p.TrailerHitch = c.Smeta.Features.Trailerhitch
+			// p.RoofRack = c.Smeta.Features.Roofrack
+			// p.CycleRack = c.Smeta.Features.Cyclerack
+			// p.SkiRack = c.Smeta.Features.Skirack
 			models[modelname] = p
 		}
 
@@ -135,7 +138,7 @@ func (b *CarHAL) StSharing() (comp.StSharingData, error) {
 		v.Name = c.Sname
 		v.ShortName = c.Sname
 		v.PrivateCode = c.Scode
-		v.RegistrationNumber = c.Smeta.LicensePlate
+		v.RegistrationNumber = regexp.MustCompile(`\b\w+$`).FindString(c.Sname) // format AlpsGo 702 - GT029GC
 		v.OperatorRef = comp.MkRef("Operator", o.Id)
 		v.VehicleTypeRef = comp.MkRef("CarModelProfile", p.Id)
 		ret.Vehicles = append(ret.Vehicles, v)
@@ -174,13 +177,13 @@ func (b *CarHAL) StSharing() (comp.StSharingData, error) {
 	ret.Constraints = append(ret.Constraints, c)
 
 	// Sharing as Parking (for SIRI reference)
-	ss, err := FetchOdhStations[[]ninja.OdhStation[halSharingMeta]]("CarsharingStation", b.origin)
+	ss, err := FetchOdhStations[[]ninja.OdhStation[alpsGoSharingMeta]]("CarsharingStation", b.origin)
 	if err != nil {
 		return ret, err
 	}
 	for _, s := range ss {
 		p := netex.Parking{}
-		p.Id = comp.CreateID("Parking", s.Smeta.Company.ShortName, s.Scode)
+		p.Id = comp.CreateID("Parking", b.provider, s.Scode)
 		p.Version = "1"
 		p.ShortName = s.Sname
 		p.Centroid.Location.Longitude = s.Scoord.X
@@ -191,9 +194,9 @@ func (b *CarHAL) StSharing() (comp.StSharingData, error) {
 		p.ParkingType = "rentalCarParking"
 		p.ParkingVehicleTypes = "car"
 		p.ParkingLayout = "undefined"
-		p.ProhibitedForHazardousMaterials.Set(true)
-		p.RechargingAvailable.Ignore()
-		p.Secure.Ignore()
+		p.ProhibitedForHazardousMaterials = netex.Just(true)
+		p.RechargingAvailable = nil
+		p.Secure = nil
 		p.ParkingReservation = "reservationRequired"
 		p.ParkingProperties = nil
 
@@ -206,30 +209,29 @@ func (b *CarHAL) StSharing() (comp.StSharingData, error) {
 	return ret, nil
 }
 
-func (b *CarHAL) fetch() error {
-	cs, err := FetchOdhStations[odhHALCar]("CarsharingCar", b.origin)
+func (b *CarSharingAlpsGo) fetch() error {
+	cs, err := FetchOdhStations[odhAlpsGoCar]("CarsharingCar", b.origin)
 	b.cars = cs
 	return err
 }
 
-type OdhHalSharingLatest struct {
+type OdhAlpsGoSharingLatest struct {
 	ninja.OdhLatest
-	Sname    string
-	Provider string `json:"smetadata.company.shortName"`
+	Sname string
 }
 
-func (p CarHAL) odhLatest(q siri.Query) ([]OdhHalSharingLatest, error) {
+func (p CarSharingAlpsGo) odhLatest(q siri.Query) ([]OdhAlpsGoSharingLatest, error) {
 	req := ninja.DefaultNinjaRequest()
 	req.Limit = q.MaxSize()
 	req.Repr = ninja.FlatNode
 	req.StationTypes = []string{"CarsharingStation"}
 	req.DataTypes = []string{"number-available"}
-	req.Select = "mperiod,mvalue,mvalidtime,scode,sname,smetadata.company.shortName"
+	req.Select = "mperiod,mvalue,mvalidtime,scode,sname"
 	req.Where = "sactive.eq.true"
 	req.Where += fmt.Sprintf(",sorigin.eq.%s", p.origin)
 	req.Where += apiBoundingBox(q)
 
-	var res ninja.NinjaResponse[[]OdhHalSharingLatest]
+	var res ninja.NinjaResponse[[]OdhAlpsGoSharingLatest]
 	if err := ninja.Latest(req, &res); err != nil {
 		slog.Error("Error retrieving parking state", "err", err)
 		return res.Data, err
@@ -237,12 +239,12 @@ func (p CarHAL) odhLatest(q siri.Query) ([]OdhHalSharingLatest, error) {
 	return res.Data, nil
 }
 
-func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
+func (p CarSharingAlpsGo) mapSiri(latest []OdhAlpsGoSharingLatest) []siri.FacilityCondition {
 	ret := []siri.FacilityCondition{}
 
 	for _, o := range latest {
 		fc := siri.FacilityCondition{}
-		fc.FacilityRef = comp.CreateID("Parking", o.Provider, o.Scode)
+		fc.FacilityRef = comp.CreateID("Parking", p.provider, o.Scode)
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 1)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
 		fc.MonitoredCounting.CountingType = "availabilityCount"
@@ -254,7 +256,7 @@ func (p CarHAL) mapSiri(latest []OdhHalSharingLatest) []siri.FacilityCondition {
 
 	return ret
 }
-func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
+func (p CarSharingAlpsGo) SiriFM(query siri.Query) (siri.FMData, error) {
 	ret := siri.FMData{}
 	idFilter := maybeIdMatch(query.FacilityRef(), comp.CreateID("Parking"))
 	if len(query.FacilityRef()) > 0 && len(idFilter) == 0 {
@@ -269,6 +271,6 @@ func (p CarHAL) SiriFM(query siri.Query) (siri.FMData, error) {
 	return ret, nil
 }
 
-func (b *CarHAL) MatchOperator(id string) bool {
+func (b *CarSharingAlpsGo) MatchOperator(id string) bool {
 	return id == b.GetOperator().Id
 }

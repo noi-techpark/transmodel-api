@@ -11,7 +11,7 @@ import (
 	"opendatahub/transmodel-api/ninja"
 	"opendatahub/transmodel-api/siri"
 
-	model "github.com/noi-techpark/go-netex"
+	"github.com/noi-techpark/go-netex"
 	"golang.org/x/exp/maps"
 )
 
@@ -51,7 +51,7 @@ func NewBikeBz() *BikeBz {
 	return &b
 }
 
-func (b *BikeBz) GetOperator() model.Operator {
+func (b *BikeBz) GetOperator() netex.Operator {
 	return comp.GetOperator(&config.Cfg, b.origin)
 }
 
@@ -63,10 +63,10 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	ret.Operators = append(ret.Operators, o)
 
 	// Modes of Operation
-	m := model.VehicleSharing{}
+	m := netex.VehicleSharing{}
 	m.Id = comp.CreateID("VehicleSharing", b.origin)
 	m.Version = "1"
-	sub := model.Submode{}
+	sub := netex.Submode{}
 	sub.Id = comp.CreateID("Submode", b.origin)
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
@@ -74,7 +74,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	m.Submodes = append(m.Submodes, sub)
 	ret.Modes = append(ret.Modes, m)
 
-	models := make(map[string]model.CycleModelProfile)
+	models := make(map[string]netex.CycleModelProfile)
 
 	cycles, err := b.cycles(b.origin)
 	if err != nil {
@@ -85,7 +85,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 		p, found := models[c.Smeta.Model]
 		if !found {
 			// Cycle model profile
-			p = model.CycleModelProfile{}
+			p = netex.CycleModelProfile{}
 			p.Id = comp.CreateID("CycleModelProfile", b.origin, c.Smeta.Model)
 			p.Version = "1"
 			p.ChildSeat = "none"
@@ -99,7 +99,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 		}
 
 		// Vehicles
-		v := model.Vehicle{}
+		v := netex.Vehicle{}
 		v.Id = comp.CreateID("Vehicle", b.origin, c.Scode)
 		v.Version = "1"
 		v.ValidBetween = comp.ValidAYear()
@@ -113,7 +113,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	ret.CycleModels = maps.Values(models)
 
 	// Fleets = all Vehicles + operator
-	f := model.Fleet{}
+	f := netex.Fleet{}
 	f.Id = comp.CreateID("Fleet", b.origin)
 	f.Version = "1"
 	f.ValidBetween = comp.ValidAYear()
@@ -124,7 +124,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	ret.Fleets = append(ret.Fleets, f)
 
 	// Mobility services = Fleet + mode
-	s := model.VehicleSharingService{}
+	s := netex.VehicleSharingService{}
 	s.Id = comp.CreateID("VehicleSharingService", b.origin)
 	s.Version = "1"
 	s.VehicleSharingRef = comp.MkRef("VehicleSharing", m.Id)
@@ -135,7 +135,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	ret.Services = append(ret.Services, s)
 
 	// Constraint zone
-	c := model.MobilityServiceConstraintZone{}
+	c := netex.MobilityServiceConstraintZone{}
 	c.Id = comp.CreateID("MobilityServiceConstraintZone", b.origin)
 	c.Version = "1"
 	c.GmlPolygon.Id = b.origin
@@ -149,7 +149,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 		return ret, err
 	}
 	for _, s := range ss {
-		p := model.Parking{}
+		p := netex.Parking{}
 		p.Id = comp.CreateID("Parking", b.origin, s.Sname)
 		p.Version = "1"
 		p.ShortName = s.Sname
@@ -161,9 +161,9 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 		p.ParkingType = "cycleRental"
 		p.ParkingVehicleTypes = "cycle"
 		p.ParkingLayout = "cycleHire"
-		p.ProhibitedForHazardousMaterials.Ignore()
-		p.RechargingAvailable.Set(true)
-		p.Secure.Set(false)
+		p.ProhibitedForHazardousMaterials = nil
+		p.RechargingAvailable = netex.Just(true)
+		p.Secure = netex.Just(false)
 		p.ParkingReservation = "registrationRequired"
 		p.ParkingProperties = nil
 

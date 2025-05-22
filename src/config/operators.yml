@@ -35,12 +35,12 @@
   postcode: 39038
   country: Italy
   
-- origin: [HAL-API]
-  id: Car Sharing Alto Adige
-  name: Car Sharing Alto Adige
-  email: info@carsharing.bz.it
-  phone: 0471061319
-  url: https://www.carsharing.bz.it/it/
+- origin: [AlpsGo]
+  id: AlpsGo
+  name: AlpsGo GmbH
+  email: hello@alpsgo.it
+  phone: 04711390502
+  url: https://www.alpsgo.it
   street: Via Beda Weber 1
   town: Bolzano
   postcode: 39100
