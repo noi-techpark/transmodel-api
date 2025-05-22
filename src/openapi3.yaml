@@ -208,7 +208,7 @@ components:
                       "Status": "available"
                     },
                     "MonitoredCounting": {
-                      "CountingType": "presentCount",
+                      "CountingType": "inUseCount",
                       "CountedFeatureUnit": "bays",
                       "Count": 33
                     }
@@ -219,7 +219,7 @@ components:
                       "Status": "notAvailable"
                     },
                     "MonitoredCounting": {
-                      "CountingType": "presentCount",
+                      "CountingType": "inUseCount",
                       "CountedFeatureUnit": "bays",
                       "Count": 300
                     }

@@ -169,7 +169,7 @@ func (p ParkingGeneric) mapSiri(latest []OdhParkingLatest) []siri.FacilityCondit
 		fc := siri.FacilityCondition{}
 		fc.FacilityRef = comp.CreateID("Parking", o.Scode)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
-		fc.MonitoredCounting.CountingType = "presentCount"
+		fc.MonitoredCounting.CountingType = "inUseCount"
 
 		switch o.Stype {
 		case "BikeParking":

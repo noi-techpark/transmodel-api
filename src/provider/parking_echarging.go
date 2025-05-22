@@ -127,7 +127,7 @@ func (p ParkingEcharging) mapSiri(latest []OdhParkingLatest) []siri.FacilityCond
 		fc := siri.FacilityCondition{}
 		fc.FacilityRef = comp.CreateID("Parking", o.Scode)
 		fc.MonitoredCounting = &siri.MonitoredCounting{}
-		fc.MonitoredCounting.CountingType = "presentCount"
+		fc.MonitoredCounting.CountingType = "inUseCount"
 
 		fc.FacilityStatus.Status = siri.MapFacilityStatus(o.MValue, 1)
 		fc.MonitoredCounting.CountedFeatureUnit = "devices"
