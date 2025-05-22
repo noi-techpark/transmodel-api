@@ -51,6 +51,8 @@ github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9Gz0M=
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
+github.com/noi-techpark/go-netex v0.2.0 h1:3fgzBP6JgSUCFvnApinZyzibtJBaOGJnIic+O7FuAu4=
+github.com/noi-techpark/go-netex v0.2.0/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
 github.com/noi-techpark/go-netex v1.3.0 h1:hRQABLCa8WL28MJeHC6XBXzH2CJy1xx0CW3Z0XE1KQk=
 github.com/noi-techpark/go-netex v1.3.0/go.mod h1:DDY9+ROb6h+/gPs97F44tVHbldaXPj3po/gavQgcay8=
 github.com/noi-techpark/go-netex v1.3.1-0.20250522123712-12ac8ce09eb8 h1:bX0CvwtSUSNu6yV94YcsNZkGuaR4pG+/lz5Asw6x/sY=

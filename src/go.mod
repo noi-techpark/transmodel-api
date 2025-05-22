@@ -5,7 +5,7 @@ go 1.23.6
 require (
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-gonic/gin v1.10.1
-	github.com/noi-techpark/go-netex v1.4.0
+	github.com/noi-techpark/go-netex v0.2.0
 	github.com/samber/slog-gin v1.15.1
 	gotest.tools/v3 v3.5.2
 )
