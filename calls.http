@@ -45,7 +45,7 @@ GET https://mobility.api.opendatahub.com/v2/flat/EChargingStation
 ?where=sactive.eq.true,scoordinate.bbi.(10.368347,46.185535,12.551880,47.088826,4326)
 ### parking station realtime
 GET https://mobility.api.opendatahub.com/v2/flat/ParkingStation,BikeParking,EChargingStation/free,number-available/latest
-?where=sactive.eq.true,sorigin.in.(FBK,A22,Municipality Merano,FAMAS,bicincitta,ALPERIA,route220,DRIWE)
+?where=sactive.eq.true,sorigin.in.(FBK,A22,Municipality Merano,FAMAS,bicincitta,Neogy,route220,DRIWE-OCPI)
 &select=mperiod,mvalue,mvalidtime,scode,stype,smetadata.capacity,smetadata.totalPlaces
 
 ### Bikesharing station realtime (station based)
