@@ -62,10 +62,7 @@ type alpsGoCarMeta struct {
 }
 
 type alpsGoSharingMeta struct {
-	Bookahead         bool
-	FixedParking      bool
-	Spontaneously     bool
-	AvailableVehicles int
+	CapacityMax int `json:"capacity_max"`
 }
 
 const ORIGIN_CAR_SHARING_ALPSGO = "AlpsGo"
@@ -201,8 +198,8 @@ func (b *CarSharingAlpsGo) StSharing() (comp.StSharingData, error) {
 		p.ParkingProperties = nil
 
 		p.Name = s.Sname
-		p.PrincipalCapacity = int32(s.Smeta.AvailableVehicles)
-		p.TotalCapacity = int32(s.Smeta.AvailableVehicles)
+		p.PrincipalCapacity = int32(s.Smeta.CapacityMax)
+		p.TotalCapacity = int32(s.Smeta.CapacityMax)
 		ret.Parkings = append(ret.Parkings, p)
 	}
 
