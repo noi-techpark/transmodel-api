@@ -10,9 +10,16 @@ info:
 
     This API was developed as part of the Regional Access Point (RAP) for the [MaaS4Italy project](https://innovazione.gov.it/progetti/mobility-as-a-service-for-italy/).
 
+    Additional Siri-lite endpoints provided by [STA](https://www.sta.bz.it) can be found here:
+    - [https://efa.sta.bz.it/siri-lite/estimated-timetable](https://efa.sta.bz.it/siri-lite/estimated-timetable)
+    - [https://efa.sta.bz.it/siri-lite/vehicle-monitoring](https://efa.sta.bz.it/siri-lite/vehicle-monitoring)
+    - [https://efa.sta.bz.it/siri-lite/situation-exchange](https://efa.sta.bz.it/siri-lite/situation-exchange)
+
     If you are interested in using this API in a production capacity, contact us at the email address below.
 
-    You can find the source code and documentation of this project here: [https://github.com/noi-techpark/transmodel-api](https://github.com/noi-techpark/transmodel-api)
+    You can find the source code and documentation of this project here:  
+    [https://github.com/noi-techpark/transmodel-api](https://github.com/noi-techpark/transmodel-api)
+    
   version: '1.1'
   termsOfService: https://docs.opendatahub.com/en/latest/licenses.html#apis-terms-of-service
   contact:
