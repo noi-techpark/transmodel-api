@@ -12,6 +12,8 @@ This API provides data from the Open Data Hub in the standard formats NeTEx (Ita
 
 It acts as a wrapper of the Open Data Hub API and has no internal data storage.
 
+The API is accessible under [https://transmodel.api.opendatahub.com](https://transmodel.api.opendatahub.com)
+
 ## Getting started
 
 Clone the repository and cd into it
