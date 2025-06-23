@@ -42,7 +42,7 @@ func TestNetex(t *testing.T) {
 	// Cardinalities
 	assert.Equal(t, len(nt.Vehicles), len(cycles.Data))
 	assert.Equal(t, len(nt.Fleets), 1)
-	assert.Equal(t, len(nt.Fleets[0].Members), len(cycles.Data))
+	assert.Equal(t, len(*nt.Fleets[0].Members), len(cycles.Data))
 	assert.Equal(t, len(nt.Parkings), len(sharings.Data))
 	assert.Equal(t, len(nt.Operators), 1)
 	assert.Equal(t, len(nt.Constraints), 1)

@@ -101,9 +101,15 @@ func (b *BikeMe) StSharing() (comp.StSharingData, error) {
 	f.Id = comp.CreateID("Fleet", b.origin)
 	f.Version = "1"
 	f.ValidBetween = comp.ValidAYear()
+
+	members := []netex.Ref{}
 	for _, v := range ret.Vehicles {
-		f.Members = append(f.Members, comp.MkRef("Vehicle", v.Id))
+		members = append(members, comp.MkRef("Vehicle", v.Id))
 	}
+	if len(members) > 0 {
+		f.Members = &members
+	}
+
 	f.OperatorRef = comp.MkRef("Operator", o.Id)
 	ret.Fleets = append(ret.Fleets, f)
 
