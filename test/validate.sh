@@ -9,10 +9,11 @@ endpoint="${ENDPOINT:-localhost:8000}"
 tmpfile="${TMPFILE:-validate.xml}"
 
 function vUrl () {
+    xsddir=../netex-italian-profile/xsd
     content=`curl $1`
 
     xmllint --format - <<<"$content" > $tmpfile
-    xmllint --noout  $tmpfile
+    xmllint --noout  --schema $xsddir/NeTEx_publication_Lev4.xsd $tmpfile
 }
 
 vUrl $endpoint/netex/parking \
