@@ -21,7 +21,7 @@ func MkRef(tp string, id string) netex.Ref {
 	return netex.NewRef(tp, id, "1")
 }
 
-func MkTypeOfFrameRef(tp string) netex.Ref {
+func MkTypeOfFrameRef(tp string) netex.TypeOfFrameRef {
 	return netex.NewTypeOfFrameRef(tp, "1")
 }
 
