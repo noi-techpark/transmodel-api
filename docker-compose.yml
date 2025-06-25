@@ -29,9 +29,8 @@ services:
         condition: service_healthy
     profiles: [validate]
     build:
-      dockerfile_inline: |
-        FROM alpine:latest
-        RUN apk add --no-cache bash curl libxml2-utils
+      dockerfile: test/validate.dockerfile
+      context: . 
     environment:
       ENDPOINT: transmodel:8080
       TMPFILE: /val/test/validate.xml

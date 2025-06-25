@@ -8,6 +8,9 @@
 
 exitcode=0
 
+# go to base directory
+cd "$(dirname "$0")/.."
+
 (cd src; go test ./...)
 result=$?
 if [ $result -ne 0 ]; then
