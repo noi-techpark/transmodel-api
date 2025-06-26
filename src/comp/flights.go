@@ -51,22 +51,22 @@ func GetFlights(ps []StFlights) ([]netex.CompositeFrame, error) {
 
 func compFlights(pd StFlightData) netex.CompositeFrame {
 	ret := DefaultCompositFrame()
-	ret.Id = CreateFrameId(netex.TypeCompositeFrameLineOffer, "FLIGHTS", "ita")
+	ret.Id = CreateFrameId(netex.TypeCompositeFrameLineOffer, "FLIGHTS")
 	ret.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeLineOffer)
 
-	site := siteFrame()
+	site := siteFrame("FLIGHTS")
 	site.StopPlaces = &pd.StopPlaces
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
 	res := netex.ResourceFrame{}
-	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, "ita")
+	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, "FLIGHTS")
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 	res.Operators = &pd.Operators
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
 
 	ser := netex.ServiceFrame{}
-	ser.Id = CreateFrameId(netex.TypeServiceFrameNetwork, "ita")
+	ser.Id = CreateFrameId(netex.TypeServiceFrameNetwork, "FLIGHTS")
 	ser.Version = "1"
 	ser.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeNetwork)
 	ser.JourneyPatterns = netex.JustSlice(pd.JourneyPatterns)
@@ -78,7 +78,7 @@ func compFlights(pd StFlightData) netex.CompositeFrame {
 	ret.Frames.Frames = append(ret.Frames.Frames, ser)
 
 	cal := netex.ServiceCalendarFrame{}
-	cal.Id = CreateFrameId(netex.TypeServiceCalendarFrameCalendar, "ita")
+	cal.Id = CreateFrameId(netex.TypeServiceCalendarFrameCalendar, "FLIGHTS")
 	cal.Version = "1"
 	cal.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCalendar)
 	cal.ServiceCalendar = append(cal.ServiceCalendar, pd.ServiceCalendars...)

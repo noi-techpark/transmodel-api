@@ -20,16 +20,16 @@ type OdhEcharging struct {
 	}
 }
 
-func compFrame(pd StParkingData) netex.CompositeFrame {
+func compFrame(serviceName string, pd StParkingData) netex.CompositeFrame {
 	ret := DefaultCompositFrame()
-	ret.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, "PARKING", "ita")
+	ret.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, serviceName)
 	ret.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStopOffer)
 
-	site := siteFrame()
+	site := siteFrame(serviceName)
 	ret.Frames.Frames = append(ret.Frames.Frames, &site)
 
 	res := netex.ResourceFrame{}
-	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, "ita")
+	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, serviceName)
 	res.Version = "1"
 	res.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeCommon)
 	ret.Frames.Frames = append(ret.Frames.Frames, &res)
@@ -63,15 +63,7 @@ func GetParking(ps []StParking) ([]netex.CompositeFrame, error) {
 		apd.Operators = append(apd.Operators, pd.Operators...)
 	}
 
-	ret = append(ret, compFrame(apd))
+	ret = append(ret, compFrame("PARKING", apd))
 
 	return ret, nil
-}
-
-func siteFrame() netex.SiteFrame {
-	var site netex.SiteFrame
-	site.Id = CreateFrameId(netex.TypeSiteFrameStop, "ita")
-	site.Version = "1"
-	site.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStop)
-	return site
 }

@@ -43,3 +43,11 @@ func DefaultCompositFrame() netex.CompositeFrame {
 	c.FrameDefaults.DefaultCodespaceRef.Ref = "ita"
 	return c
 }
+
+func siteFrame(serviceName string) netex.SiteFrame {
+	var site netex.SiteFrame
+	site.Id = CreateFrameId(netex.TypeSiteFrameStop, serviceName)
+	site.Version = "1"
+	site.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStop)
+	return site
+}

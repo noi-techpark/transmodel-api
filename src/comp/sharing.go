@@ -102,7 +102,7 @@ func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, erro
 	}
 
 	comp := DefaultCompositFrame()
-	comp.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, "SHARING", serviceName)
+	comp.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, serviceName)
 	comp.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeStopOffer)
 	comp.Frames.Frames = append(comp.Frames.Frames, mob, res, site)
 
