@@ -32,17 +32,6 @@ func ValidAYear() netex.ValidBetween {
 	return v
 }
 
-func AppendSafe[T any](h *[]T, t ...T) *[]T {
-	if len(t) > 0 {
-		if h == nil {
-			h = &t
-		} else {
-			*h = append(*h, t...)
-		}
-	}
-	return h
-}
-
 func DefaultCompositFrame() netex.CompositeFrame {
 	c := netex.CompositeFrame{}
 	c.Version = "1"

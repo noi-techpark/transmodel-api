@@ -122,22 +122,29 @@ func (fs FlightsGtfs) fromNetex(netexXml *[]byte) (comp.StFlightData, error) {
 			ret.StopPlaces = append(ret.StopPlaces, *sf.StopPlaces...)
 		}
 		for _, sf := range do.Frames.ServiceFrame {
-			ret.JourneyPatterns = append(ret.JourneyPatterns, sf.JourneyPatterns...)
-			ret.Lines = append(ret.Lines, sf.Lines...)
-			ret.Routes = append(ret.Routes, sf.Routes...)
-			ret.ScheduledStopPoints = append(ret.ScheduledStopPoints, sf.ScheduledStopPoints...)
-			ret.ServiceLinks = append(ret.ServiceLinks, sf.ServiceLinks...)
-			ret.StopAssignments = append(ret.StopAssignments, sf.StopAssignments...)
+			ret.JourneyPatterns = appendSafe(ret.JourneyPatterns, sf.JourneyPatterns)
+			ret.Lines = appendSafe(ret.Lines, sf.Lines)
+			ret.Routes = appendSafe(ret.Routes, sf.Routes)
+			ret.ScheduledStopPoints = appendSafe(ret.ScheduledStopPoints, sf.ScheduledStopPoints)
+			ret.ServiceLinks = appendSafe(ret.ServiceLinks, sf.ServiceLinks)
+			ret.StopAssignments = appendSafe(ret.StopAssignments, sf.StopAssignments)
 		}
 		for _, cf := range do.Frames.ServiceCalendarFrame {
 			ret.ServiceCalendars = append(ret.ServiceCalendars, cf.ServiceCalendar...)
 		}
 		for _, tf := range do.Frames.TimetableFrame {
-			ret.VehicleJourneys = append(ret.VehicleJourneys, tf.VehicleJourneys...)
+			ret.VehicleJourneys = appendSafe(ret.VehicleJourneys, tf.VehicleJourneys)
 		}
 	}
 
 	return ret, nil
+}
+
+func appendSafe[T any](slice []T, pt netex.Maybe[[]T]) []T {
+	if pt != nil {
+		return append(slice, *pt...)
+	}
+	return slice
 }
 
 var lock sync.Mutex

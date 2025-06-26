@@ -71,7 +71,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	sub.Version = "1"
 	sub.TransportMode = "bicycle"
 	sub.SelfDriveSubmode = "hireCycle"
-	m.Submodes = append(m.Submodes, sub)
+	m.Submodes = netex.AppendMaybe(m.Submodes, sub)
 	ret.Modes = append(ret.Modes, m)
 
 	models := make(map[string]netex.CycleModelProfile)
@@ -134,7 +134,7 @@ func (b *BikeBz) StSharing() (comp.StSharingData, error) {
 	s.VehicleSharingRef = comp.MkRef("VehicleSharing", m.Id)
 	s.FloatingVehicles = false
 	for _, fl := range ret.Fleets {
-		s.Fleets = append(s.Fleets, comp.MkRef("Fleet", fl.Id))
+		s.Fleets = netex.AppendMaybe(s.Fleets, comp.MkRef("Fleet", fl.Id))
 	}
 	ret.Services = append(ret.Services, s)
 

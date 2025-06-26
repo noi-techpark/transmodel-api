@@ -48,9 +48,9 @@ func TestNetex(t *testing.T) {
 	assert.Equal(t, len(nt.Constraints), 1)
 	assert.Equal(t, len(nt.CycleModels), 2)
 	assert.Equal(t, len(nt.Modes), 1)
-	assert.Equal(t, len(nt.Modes[0].Submodes), 1)
+	assert.Equal(t, len(*nt.Modes[0].Submodes), 1)
 	assert.Equal(t, len(nt.Services), 1)
-	assert.Equal(t, len(nt.Services[0].Fleets), 1)
+	assert.Equal(t, len(*nt.Services[0].Fleets), 1)
 
 	var c52 *model.Vehicle
 	for _, v := range nt.Vehicles {

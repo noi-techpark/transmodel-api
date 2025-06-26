@@ -69,12 +69,12 @@ func compFlights(pd StFlightData) netex.CompositeFrame {
 	ser.Id = CreateFrameId(netex.TypeServiceFrameNetwork, "ita")
 	ser.Version = "1"
 	ser.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeNetwork)
-	ser.JourneyPatterns = append(ser.JourneyPatterns, pd.JourneyPatterns...)
-	ser.Lines = append(ser.Lines, pd.Lines...)
-	ser.Routes = append(ser.Routes, pd.Routes...)
-	ser.ScheduledStopPoints = append(ser.ScheduledStopPoints, pd.ScheduledStopPoints...)
-	ser.ServiceLinks = append(ser.ServiceLinks, pd.ServiceLinks...)
-	ser.StopAssignments = append(ser.StopAssignments, pd.StopAssignments...)
+	ser.JourneyPatterns = netex.JustSlice(pd.JourneyPatterns)
+	ser.Lines = netex.JustSlice(pd.Lines)
+	ser.Routes = netex.JustSlice(pd.Routes)
+	ser.ScheduledStopPoints = netex.JustSlice(pd.ScheduledStopPoints)
+	ser.ServiceLinks = netex.JustSlice(pd.ServiceLinks)
+	ser.StopAssignments = netex.JustSlice(pd.StopAssignments)
 	ret.Frames.Frames = append(ret.Frames.Frames, ser)
 
 	cal := netex.ServiceCalendarFrame{}
@@ -88,7 +88,7 @@ func compFlights(pd StFlightData) netex.CompositeFrame {
 	tim.Id = CreateFrameId(netex.TypeTimetableFrameTimetable, "ita")
 	tim.Version = "1"
 	tim.TypeOfFrameRef = MkTypeOfFrameRef(netex.EpipTypeTimetable)
-	tim.VehicleJourneys = append(tim.VehicleJourneys, pd.VehicleJourneys...)
+	tim.VehicleJourneys = netex.JustSlice(pd.VehicleJourneys)
 	ret.Frames.Frames = append(ret.Frames.Frames, tim)
 
 	return ret

@@ -67,6 +67,10 @@ func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, erro
 	mob.Id = CreateFrameId(netex.TypeMobilityServiceFrameMobility, serviceName)
 	mob.Version = "1"
 	mob.FrameDefaults.DefaultCurrency = "EUR"
+	mob.Fleets = new([]netex.Fleet)
+	mob.ModesOfOperation = new([]netex.VehicleSharing)
+	mob.MobilityServices = new([]netex.VehicleSharingService)
+	mob.MobilityServiceConstraintZones = new([]netex.MobilityServiceConstraintZone)
 
 	res := netex.ResourceFrame{}
 	res.Id = CreateFrameId(netex.TypeResourceFrameCommon, serviceName)
@@ -84,17 +88,17 @@ func compSharing(serviceName string, ps []StSharing) (netex.CompositeFrame, erro
 			return netex.CompositeFrame{}, err
 		}
 
-		mob.Fleets = append(mob.Fleets, d.Fleets...)
-		mob.ModesOfOperation = append(mob.ModesOfOperation, d.Modes...)
-		mob.MobilityServices = append(mob.MobilityServices, d.Services...)
-		mob.MobilityServiceConstraintZones = append(mob.MobilityServiceConstraintZones, d.Constraints...)
+		mob.Fleets = netex.AppendMaybe(mob.Fleets, d.Fleets...)
+		mob.ModesOfOperation = netex.AppendMaybe(mob.ModesOfOperation, d.Modes...)
+		mob.MobilityServices = netex.AppendMaybe(mob.MobilityServices, d.Services...)
+		mob.MobilityServiceConstraintZones = netex.AppendMaybe(mob.MobilityServiceConstraintZones, d.Constraints...)
 
-		res.Vehicles = AppendSafe(res.Vehicles, d.Vehicles...)
-		res.CarModels = AppendSafe(res.CarModels, d.CarModels...)
-		res.CycleModels = AppendSafe(res.CycleModels, d.CycleModels...)
-		res.Operators = AppendSafe(res.Operators, d.Operators...)
+		res.Vehicles = netex.AppendMaybe(res.Vehicles, d.Vehicles...)
+		res.CarModels = netex.AppendMaybe(res.CarModels, d.CarModels...)
+		res.CycleModels = netex.AppendMaybe(res.CycleModels, d.CycleModels...)
+		res.Operators = netex.AppendMaybe(res.Operators, d.Operators...)
 
-		site.Parkings = AppendSafe(site.Parkings, d.Parkings...)
+		site.Parkings = netex.AppendMaybe(site.Parkings, d.Parkings...)
 	}
 
 	comp := DefaultCompositFrame()
