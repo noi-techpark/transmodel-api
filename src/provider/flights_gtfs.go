@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"opendatahub/transmodel-api/comp"
+	"os"
 	"sync"
 	"time"
 
@@ -29,8 +30,12 @@ type FlightsGtfs struct {
 }
 
 func NewFlightsSkyalps() *FlightsGtfs {
+	url := os.Getenv("SKYALPS_GTFS_URL")
+	if url == "" {
+		url = "https://gtfs.api.opendatahub.com/v1/dataset/skyalps-flight-data/raw"
+	}
 	return &FlightsGtfs{
-		Url:     "https://gtfs.api.opendatahub.com/v1/dataset/skyalps-flight-data/raw",
+		Url:     url,
 		NUTS:    "IT:ITH10",
 		Company: "SKYALPS",
 		Vat:     "03067170211",

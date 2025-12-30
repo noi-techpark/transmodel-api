@@ -69,6 +69,7 @@ jobs:
           X_LOG_LEVEL: INFO
           X_SWAGGER_URL: https://swagger.opendatahub.testingmachine.eu
           X_API_URL: https://transmodel.api.opendatahub.testingmachine.eu
+          X_SKYALPS_GTFS_URL: https://gtfs.api.opendatahub.testingmachine.eu/v1/dataset/skyalps-flight-data/raw
 
       - name: Build and push images
         uses: noi-techpark/github-actions/docker-build-and-push@v2
