@@ -20,7 +20,7 @@ ENTRYPOINT [ "./main"]
 FROM base AS dev
 WORKDIR /code
 # Air for auto rebuild on changes
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.61.4
 CMD ["air", "-c", ".air.toml"]
 
 FROM base AS test
