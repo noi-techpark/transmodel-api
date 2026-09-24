@@ -1,0 +1,245 @@
+<!--
+SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transmodel API Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: #e1e0d9;
+    --critical: #d03b3b;
+  }
+  html, body { height: 100%; margin: 0; font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--surface); }
+  body { display: flex; }
+  #panel { width: 300px; flex: none; overflow-y: auto; padding: 12px; box-sizing: border-box; border-right: 1px solid var(--hairline); }
+  #map { flex: 1; }
+  h1 { font-size: 16px; margin: 0 0 8px; }
+  .layer { margin-bottom: 12px; }
+  .layer > label { font-weight: 600; }
+  .ops { margin: 4px 0 0 20px; }
+  .ops label { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .count { color: var(--muted); margin-left: auto; }
+  .msg { color: var(--ink-2); margin-left: 20px; font-size: 12px; }
+  .err { color: var(--critical); }
+  .popup td { padding: 0 6px 0 0; vertical-align: top; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Transmodel API</h1>
+  <div id="layers"></div>
+</div>
+<div id="map"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Categorical slots in fixed order (validated adjacent-pair CVD/normal-vision separation); never cycled.
+// Operators past the 8th fold into the neutral "other" colour.
+const CATEGORICAL = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
+const OTHER = "#898781";
+const INK_2 = "#52514e", SURFACE = "#fcfcfb";
+const operatorSlots = {};
+// Colour follows the operator, not its rank: the first operator seen keeps its slot in every layer
+const operatorColor = name => operatorSlots[name] ??= CATEGORICAL[Object.keys(operatorSlots).length] ?? OTHER;
+
+const kids = (el, name) => [...el.children].filter(c => c.localName === name);
+const kid = (el, name) => kids(el, name)[0];
+const txt = (el, name) => kid(el, name)?.textContent.trim() || "";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const lastPart = id => id.split(":").pop();
+
+function point(el) {
+  const loc = kid(kid(el, "Centroid") ?? el, "Location") ?? kid(el, "Location");
+  if (!loc) return null;
+  const lat = parseFloat(txt(loc, "Latitude")), lon = parseFloat(txt(loc, "Longitude"));
+  return isNaN(lat) || isNaN(lon) ? null : [lat, lon];
+}
+
+function operatorNames(doc) {
+  const m = {};
+  for (const o of doc.getElementsByTagName("Operator")) m[o.getAttribute("id")] = txt(o, "Name") || lastPart(o.getAttribute("id"));
+  return m;
+}
+
+// Reserved status palette (good / warning / critical); unknown is neutral
+const STATUS_COLORS = { available: "#0ca30c", partiallyAvailable: "#fab219", notAvailable: "#d03b3b", unknown: OTHER };
+const cache = {};
+const once = (key, fn) => cache[key] ??= fn().catch(e => { delete cache[key]; throw e; });
+
+// Served by the API itself under /debug: always query the API this page came from
+const baseUrl = () => location.origin + location.pathname.replace(/\/debug(\/.*)?$/, "");
+
+const getNetex = ep => once(`netex/${ep}`, async () => {
+  const r = await fetch(`${baseUrl()}/netex/${ep}`);
+  if (!r.ok) throw new Error(`NeTEx ${ep}: HTTP ${r.status}`);
+  return new DOMParser().parseFromString(await r.text(), "application/xml");
+});
+
+// FacilityRef -> FacilityCondition, plus the delivery timestamp
+const getSiri = ep => once(`siri/${ep}`, async () => {
+  const r = await fetch(`${baseUrl()}/siri-lite/facility-monitoring/${ep}`, { headers: { Accept: "application/json" } });
+  if (!r.ok) throw new Error(`SIRI ${ep}: HTTP ${r.status}`);
+  const j = await r.json();
+  const delivery = j.Siri?.ServiceDelivery?.FacilityMonitoringDelivery;
+  const conds = delivery?.FacilityCondition ?? [];
+  return {
+    byRef: Object.fromEntries(conds.map(c => [c.FacilityRef, c])),
+    updated: new Date(delivery?.ResponseTimestamp ?? j.Siri?.ServiceDelivery?.ResponseTimestamp).toLocaleString(),
+  };
+});
+
+function siriProps(c, updated) {
+  const props = { Status: c.FacilityStatus?.Status, "SIRI updated": updated };
+  const m = c.MonitoredCounting;
+  if (m) props[m.CountingType] = `${m.Count} (${m.CountedFeatureUnit})`;
+  return props;
+}
+
+const getStations = ep => once(`stations/${ep}`, async () => {
+  const doc = await getNetex(ep);
+  const ops = operatorNames(doc);
+  return [...doc.getElementsByTagName("Parking")].map(p => {
+    const id = p.getAttribute("id"), pos = point(p);
+    const opId = kid(p, "OperatorRef")?.getAttribute("ref");
+    return pos && {
+      id, pos, op: ops[opId] || opId || "unknown", title: txt(p, "Name"),
+      props: {
+        Type: txt(p, "ParkingType"),
+        Vehicles: txt(p, "ParkingVehicleTypes"),
+        Capacity: txt(p, "TotalCapacity"),
+        Charging: txt(p, "RechargingAvailable"),
+        Reservation: txt(p, "ParkingReservation"),
+      },
+    };
+  }).filter(Boolean);
+});
+
+// NeTEx station layer with the SIRI status of the same station merged into the popup
+const netexStations = ep => async () => {
+  const [stations, siri] = await Promise.all([getStations(ep), getSiri(ep).catch(() => ({ byRef: {} }))]);
+  return { features: stations.map(f => siri.byRef[f.id] ? { ...f, props: { ...f.props, ...siriProps(siri.byRef[f.id], siri.updated) } } : f) };
+};
+
+// SIRI layer: positions and operators come from the linked NeTEx station, colour from the status
+const siriStations = ep => async () => {
+  const [stations, siri] = await Promise.all([getStations(ep), getSiri(ep)]);
+  const byId = Object.fromEntries(stations.map(f => [f.id, f]));
+  const features = [];
+  let unlinked = 0;
+  for (const c of Object.values(siri.byRef)) {
+    const st = byId[c.FacilityRef];
+    if (!st) { unlinked++; continue; }
+    features.push({
+      ...st, props: siriProps(c, siri.updated),
+      fill: STATUS_COLORS[c.FacilityStatus?.Status] ?? STATUS_COLORS.unknown,
+    });
+  }
+  return { features, updated: siri.updated, note: unlinked ? `${unlinked} not shown (no linked NeTEx station, e.g. vehicles)` : "" };
+};
+
+const LAYERS = [
+  { key: "parking", label: "NeTEx parking", load: netexStations("parking") },
+  { key: "sharing", label: "NeTEx sharing", load: netexStations("sharing") },
+  {
+    key: "flights", label: "NeTEx flights",
+    async load() {
+      const doc = await getNetex("flights");
+      // Airports carry no operator; group by the dataset segment of the id
+      const features = [...doc.getElementsByTagName("StopPlace")].map(s => {
+        const id = s.getAttribute("id"), pos = point(s);
+        return pos && {
+          id, pos, op: id.split(":")[3] || "unknown", title: txt(s, "Name"),
+          props: { Code: txt(s, "PrivateCode"), Type: txt(s, "StopPlaceType") },
+        };
+      }).filter(Boolean);
+      return { features };
+    },
+  },
+  { key: "siri-parking", label: "SIRI FM parking", siri: true, load: siriStations("parking") },
+  { key: "siri-sharing", label: "SIRI FM sharing", siri: true, load: siriStations("sharing") },
+];
+
+const map = L.map("map", { maxZoom: 16 }).setView([46.6, 11.3], 8);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+  { maxZoom: 16, attribution: "Tiles &copy; Esri" }).addTo(map);
+
+const state = {};
+
+function popup(f) {
+  const rows = Object.entries(f.props).filter(([, v]) => v !== "" && v !== undefined)
+    .map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+  return `<b>${esc(f.title)}</b><br>${esc(f.op)}<table class="popup">${rows}</table><small>${esc(f.id)}</small>`;
+}
+
+function buildLayer(def, features, box) {
+  const groups = {};
+  features.forEach(f => (groups[f.op] ??= []).push(f));
+  const opsEl = document.createElement("div");
+  opsEl.className = "ops";
+  const all = L.featureGroup();
+
+  Object.keys(groups).sort().forEach(name => {
+    const color = operatorColor(name);
+    const g = L.featureGroup(groups[name].map(f =>
+      // SIRI layers: fill shows status, outline shows operator
+      L.circleMarker(f.pos, def.siri
+        ? { radius: 7, color, weight: 3, fillColor: f.fill, fillOpacity: 0.9 }
+        : { radius: 6, color: INK_2, weight: 1, fillColor: color, fillOpacity: 0.9 }).bindPopup(popup(f))));
+    g.addTo(all);
+    const l = document.createElement("label");
+    l.innerHTML = `<input type="checkbox" checked><span class="dot" style="background:${color}"></span>${esc(name)}<span class="count">${groups[name].length}</span>`;
+    l.firstChild.addEventListener("change", e => e.target.checked ? g.addTo(all) : all.removeLayer(g));
+    opsEl.appendChild(l);
+  });
+  box.appendChild(opsEl);
+  return all;
+}
+
+async function toggle(def, on, box, msg) {
+  const st = state[def.key] ??= {};
+  st.enabled = on;
+  if (!on) { st.all && map.removeLayer(st.all); return; }
+  if (st.all) { st.all.addTo(map); return; }
+  msg.className = "msg"; msg.textContent = "loading…";
+  try {
+    const { features, note, updated } = await def.load();
+    st.all = buildLayer(def, features, box);
+    msg.textContent = [`${features.length} features`, updated && `updated ${updated}`, note].filter(Boolean).join(", ");
+    if (st.enabled) {
+      st.all.addTo(map);
+      if (features.length) map.fitBounds(st.all.getBounds(), { maxZoom: 14, padding: [30, 30] });
+    }
+  } catch (e) {
+    msg.className = "msg err"; msg.textContent = e.message;
+  }
+}
+
+const layersEl = document.getElementById("layers");
+for (const def of LAYERS) {
+  const box = document.createElement("div");
+  box.className = "layer";
+  const legend = def.siri
+    ? `<div class="msg">${Object.entries(STATUS_COLORS).map(([k, c]) => `<span style="color:${c}">●</span> ${k}`).join(" &nbsp; ")}</div>` : "";
+  box.innerHTML = `<label><input type="checkbox"> ${esc(def.label)}</label>${legend}<div class="msg status"></div>`;
+  const msg = box.querySelector(".status");
+  box.querySelector("input").addEventListener("change", e => toggle(def, e.target.checked, box, msg));
+  layersEl.appendChild(box);
+  if (location.hash.slice(1).split(",").includes(def.key)) {
+    box.querySelector("input").checked = true;
+    toggle(def, true, box, msg);
+  }
+}
+</script>
+</body>
+</html>

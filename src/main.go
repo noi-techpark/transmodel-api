@@ -4,8 +4,10 @@
 package main
 
 import (
+	"embed"
 	"encoding/xml"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"opendatahub/transmodel-api/comp"
@@ -22,6 +24,9 @@ import (
 	"github.com/noi-techpark/go-netex"
 	sloggin "github.com/samber/slog-gin"
 )
+
+//go:embed webapp
+var webapp embed.FS
 
 func main() {
 	InitLogger()
@@ -55,6 +60,9 @@ func main() {
 	r.GET("/siri-lite/facility-monitoring", siriLite(siriFM))
 	r.GET("/siri-lite/facility-monitoring/parking", siriLite(siriFMParking))
 	r.GET("/siri-lite/facility-monitoring/sharing", siriLite(siriFMSharing))
+
+	debugFS, _ := fs.Sub(webapp, "webapp")
+	r.StaticFS("/debug", http.FS(debugFS))
 
 	r.GET("/health", health)
 	r.Run()
