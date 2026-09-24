@@ -53,6 +53,7 @@ func NewParkingGeneric() *ParkingGeneric {
 		"Municipality Merano",
 		"FAMAS",
 		"bicincitta",
+		"loewenbytes",
 	}
 	return &p
 }
