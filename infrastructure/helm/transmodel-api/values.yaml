@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/noi-techpark/sta-nap-export/sta-nap-export-app
+  repository: ghcr.io/noi-techpark/transmodel-api/transmodel-api-app
   pullPolicy: IfNotPresent
   tag: latest
 
