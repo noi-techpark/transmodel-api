@@ -5,21 +5,6 @@ package comp
 
 import "github.com/noi-techpark/go-netex"
 
-type OdhEcharging struct {
-	Scode       string
-	Sname       string
-	Sorigin     string
-	Scoordinate struct {
-		X    float32
-		Y    float32
-		Srid uint32
-	}
-	Smetadata struct {
-		State    string
-		Capacity int32
-	}
-}
-
 func compFrame(serviceName string, pd StParkingData) netex.CompositeFrame {
 	ret := DefaultCompositFrame()
 	ret.Id = CreateFrameId(netex.TypeCompositeFrameStopOffer, serviceName)
