@@ -1,4 +1,4 @@
-FROM golang:1.24-bookworm AS base
+FROM golang:1.26-bookworm AS base
 
 FROM base AS build-env
 WORKDIR /app
@@ -7,7 +7,7 @@ RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -o main
 
 # BUILD published image
-FROM alpine:latest AS build
+FROM alpine:3.24 AS build
 WORKDIR /app
 COPY --from=build-env /app/main .
 COPY src/config/ config/
@@ -20,7 +20,7 @@ ENTRYPOINT [ "./main"]
 FROM base AS dev
 WORKDIR /code
 # Air for auto rebuild on changes
-RUN go install github.com/air-verse/air@v1.61.4
+RUN go install github.com/air-verse/air@v1.67.4
 CMD ["air", "-c", ".air.toml"]
 
 FROM base AS test
