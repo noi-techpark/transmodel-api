@@ -1,0 +1,19 @@
+image:
+  repository: ghcr.io/noi-techpark/sta-nap-export/sta-nap-export-app
+  pullPolicy: IfNotPresent
+  tag: latest
+
+gtfs2netex:
+  image: ghcr.io/noi-techpark/gtfs2netex-api/gtfs2netex-api
+  tag: "1.2"
+
+service:
+  port: 80
+
+ingress:
+  className: nginx
+  hosts: []
+
+env: {}
+
+resources: {}

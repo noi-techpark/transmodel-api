@@ -1,0 +1,12 @@
+ingress:
+  hosts:
+    - transmodel.api.opendatahub.testingmachine.eu
+
+env:
+  NINJA_BASE_URL: https://mobility.api.opendatahub.testingmachine.eu
+  NINJA_REFERER: transmodel-api-test
+  GIN_MODE: release
+  LOG_LEVEL: INFO
+  SWAGGER_URL: https://swagger.opendatahub.testingmachine.eu
+  API_URL: https://transmodel.api.opendatahub.testingmachine.eu
+  SKYALPS_GTFS_URL: https://gtfs.api.opendatahub.testingmachine.eu/v1/dataset/skyalps-flight-data/raw

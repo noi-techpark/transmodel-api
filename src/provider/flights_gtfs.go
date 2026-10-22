@@ -84,8 +84,11 @@ func (f FlightsGtfs) gtfs2Netex(gtfs *[]byte) (*[]byte, error) {
 		return nil, err
 	}
 
-	// call docker internal conversion API
-	req, err := http.NewRequest("POST", `http://gtfs2netex:8080`, &b)
+	url := os.Getenv("GTFS2NETEX_URL")
+	if url == "" {
+		url = "http://gtfs2netex:8080"
+	}
+	req, err := http.NewRequest("POST", url, &b)
 	if err != nil {
 		return nil, err
 	}

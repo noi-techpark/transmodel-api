@@ -1,0 +1,11 @@
+ingress:
+  hosts:
+    - transmodel.api.opendatahub.com
+
+env:
+  NINJA_BASE_URL: https://mobility.api.opendatahub.com
+  NINJA_REFERER: transmodel-api
+  GIN_MODE: release
+  LOG_LEVEL: INFO
+  SWAGGER_URL: https://swagger.opendatahub.com
+  API_URL: https://transmodel.api.opendatahub.com

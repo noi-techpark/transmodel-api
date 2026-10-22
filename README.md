@@ -28,6 +28,10 @@ go run .
 ```
 Refer to the [docker file](infrastructure/docker/Dockerfile) and [docker-compose](docker-compose.yml) for more details
 
+## Deployment
+Deployed on Kubernetes in the `core` namespace via the Helm chart in [infrastructure/helm/transmodel-api](infrastructure/helm/transmodel-api), with `test.yaml` and `prod.yaml` as environment values.  
+The `gtfs2netex` conversion service runs as a sidecar in the same pod (the API listens on port 8000 there).
+
 ## Tech stack
 The application is written in Go with
  - [gin](https://github.com/gin-gonic/gin) for REST
